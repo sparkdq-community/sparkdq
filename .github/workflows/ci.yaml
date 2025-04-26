@@ -49,13 +49,13 @@ jobs:
         run: uv sync --group test
 
       - name: Run unit tests
-        run: uv run pytest --cov=sparkdq -v --cov-report=term --junitxml=junit.xml -o junit_family=legacy
+        run: uv run pytest --cov=sparkdq -v --cov-report=term --cov-branch --cov-report=xml
 
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          slug: sparkdq-community/sparkdq
 
   deploy-pages:
     name: "🚀 Deploy Documentation to GitHub Pages"

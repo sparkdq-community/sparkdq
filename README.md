@@ -1,6 +1,6 @@
 [![CI Pipeline](https://github.com/sparkdq-community/sparkdq/actions/workflows/ci.yaml/badge.svg)](https://github.com/sparkdq-community/sparkdq/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/sparkdq-community/sparkdq/branch/main/graph/badge.svg?token=3TVZE8J2DN)](https://codecov.io/gh/sparkdq-community/sparkdq)
-[![Docs](https://img.shields.io/badge/docs-online-green.svg)](https://sparkdq-community.github.io/sparkdq/)
+[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://sparkdq-community.github.io/sparkdq/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue.svg)](https://github.com/sparkdq-community/sparkdq)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
