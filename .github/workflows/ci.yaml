@@ -6,10 +6,6 @@ on:
   pull_request:
 
 env:
-  UV_VERSION: "0.6"
-  PYTHON_VERSION: "3.12"
-  BASE_LAYER: "bookworm"
-  BASE_LAYER_SLIM: "bookworm-slim"
   UV_LINK_MODE: "copy"
   UV_FROZEN: "1"
 
@@ -18,7 +14,7 @@ jobs:
     name: "🔍 Code Linting"
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-${BASE_LAYER_SLIM}
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm-slim
     steps:
       - uses: actions/checkout@v4
 
