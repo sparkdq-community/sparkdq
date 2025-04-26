@@ -68,7 +68,7 @@ jobs:
         run: uv sync --group docs
 
       - name: Build documentation
-        run: sphinx-build -b html docs/ public
+        run: uv run sphinx-build -b html docs/ public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
