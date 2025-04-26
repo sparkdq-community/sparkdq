@@ -28,11 +28,14 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Operating System :: OS Independent"
 ]
-
 requires-python = ">=3.10"
 dependencies = [
     "pyspark>=3.5.0,<4.0.0",
 ]
+
+[project.urls]
+homepage = "https://github.com/sparkdq-community/sparkdq"
+documentation = "https://sparkdq-community.github.io/sparkdq/"
 
 [tool.uv]
 default-groups = "all"
