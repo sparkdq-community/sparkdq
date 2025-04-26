@@ -1,15 +1,10 @@
 # SparkDQ — Declarative Data Quality Validation for Apache Spark
 
-Let’s be honest: Most data quality frameworks were never built for PySpark.
+Most data quality frameworks weren’t built for PySpark.
 
-* ❌ They're not Spark-native — they treat PySpark as an afterthought, and often rely on `toPandas()` under the hood, causing memory issues on large datasets
+They aren’t Spark-native — often relying on `toPandas()` under the hood, which breaks on large datasets. They don’t support declarative pipelines, forcing you to write fragile wrappers just to use them in production. And they only validate after the fact, so you can’t react dynamically or fail early.
 
-* ❌ They don't support declarative pipelines — you're forced to build fragile wrappers around their logic just to use them in production
-
-* ❌ They can't run inside your transformations — validation happens after the fact, so you can’t react dynamically or fail early
-
-That’s where **SparkDQ** comes in. It’s a data quality framework built specifically for PySpark.   You define and run validation checks directly in your Spark pipelines — using Python, not SQL or custom DSLs.<br>
-Whether you're checking ingestion data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
+**SparkDQ** takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you're validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
 
 ## Quickstart Examples
 
