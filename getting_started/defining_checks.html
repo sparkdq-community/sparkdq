@@ -1,0 +1,549 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Defining Checks &#8212; SparkDQ Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/defining_checks';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Validating DataFrames" href="validation_dataframes.html" />
+    <link rel="prev" title="The Validation Lifecycle" href="validation_lifecycle.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">The Validation Lifecycle</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Defining Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-in Checks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/count-checks.html">Count Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/numeric-checks.html">Numeric Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/date-checks.html">Date Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/timestamp-checks.html">Timestamp Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/null-checks.html">Null Checks</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/getting_started/defining_checks.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Defining Checks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-checks">Types of Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration-yaml-json">Declarative Configuration (YAML / JSON)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-usage-internals">Mixed Usage &amp; Internals</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="defining-checks">
+<h1>Defining Checks<a class="headerlink" href="#defining-checks" title="Link to this heading">#</a></h1>
+<p>To validate data with SparkDQ, you first define a set of data quality rules that describe what “good data”
+looks like. These rules are called checks, and they can operate on either individual records or entire datasets.</p>
+<p>SparkDQ is built to support both Python-native definitions and declarative configurations
+(like YAML, JSON, databases) — depending on your team’s preferences and workflow setup.</p>
+<section id="types-of-checks">
+<h2>Types of Checks<a class="headerlink" href="#types-of-checks" title="Link to this heading">#</a></h2>
+<p>SparkDQ offers two types of checks, each suited to a different level of data validation.</p>
+<p><strong>Row-Level Checks</strong></p>
+<p>These validate each record individually. For example:</p>
+<ul class="simple">
+<li><p>Missing or null values (<cite>NullCheck</cite>)</p></li>
+<li><p>Invalid formats using regex (<cite>RegexCheck</cite>)</p></li>
+<li><p>Numeric bounds (<cite>MinValueCheck</cite>, <cite>MaxValueCheck</cite>)</p></li>
+</ul>
+<p>If a row fails one of these checks, it is marked as invalid and annotated with failure context. This allows
+you to isolate problematic rows for filtering, remediation, or quarantine.</p>
+<p><strong>Aggregate Checks</strong></p>
+<p>These evaluate the dataset as a whole (or grouped subsets), including:</p>
+<ul class="simple">
+<li><p>Record count constraints (<cite>RowCountBetweenCheck</cite>)</p></li>
+<li><p>Uniqueness across one or more columns (<cite>DistinctCountCheck</cite>)</p></li>
+<li><p>Distributional metrics (e.g. min/max/avg/ratio checks)</p></li>
+</ul>
+<p>If an aggregate check fails, all rows are marked as failed — even if they appear valid individually. This
+reflects scenarios like: “if the dataset has too few records, treat the whole batch as suspicious.”</p>
+</section>
+<section id="check-severity">
+<h2>Check Severity<a class="headerlink" href="#check-severity" title="Link to this heading">#</a></h2>
+<p>Each check can be assigned a severity level to control how violations should be interpreted:</p>
+<ul class="simple">
+<li><p>🚨 <strong>critical</strong> (default): indicates a strict failure condition</p></li>
+<li><p>⚠️ <strong>warning</strong>: indicates a non-blocking issue that should be recorded but not treated as invalid</p></li>
+</ul>
+<p>The severity determines how the validation engine classifies results later on. Critical checks are typically
+used to enforce quality gates, while warnings are useful for logging soft constraints or monitoring potential issues.</p>
+</section>
+<section id="python-native-configuration">
+<h2>Python-native Configuration<a class="headerlink" href="#python-native-configuration" title="Link to this heading">#</a></h2>
+<p>For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
+using type-safe config classes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span><span class="p">,</span> <span class="n">RowCountBetweenCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
+
+<span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
+<span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
+    <span class="n">NullCheckConfig</span><span class="p">(</span>
+        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
+    <span class="n">RowCountBetweenCheckConfig</span><span class="p">(</span>
+        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-count-check&quot;</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_count</span><span class="o">=</span><span class="mi">5000</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="declarative-configuration-yaml-json">
+<h2>Declarative Configuration (YAML / JSON)<a class="headerlink" href="#declarative-configuration-yaml-json" title="Link to this heading">#</a></h2>
+<p>If you use a metadata-driven or config-as-code approach, SparkDQ also supports declarative check
+definitions via dictionaries — for example loaded from YAML or JSON files.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># dq_checks.yaml</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-null-check</span>
+<span class="w">  </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">row-count-between-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-count-check</span>
+<span class="w">  </span><span class="nt">min_count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="nt">max_count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+</pre></div>
+</div>
+<p>To load the configuration into SparkDQ, use the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>  <span class="c1"># Optional: SparkDQ does not install pyyaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;dq_checks.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
+<span class="n">check_set</span><span class="o">.</span><span class="n">add_checks_from_dicts</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: SparkDQ is intentionally designed to process plain Python dictionaries only — avoiding direct
+dependencies on YAML, JSON, or database connectors. This lightweight, integration-friendly design ensures
+that you stay in full control of how configurations are loaded, making it easy to plug SparkDQ into any
+existing system or pipeline.</p>
+</section>
+<section id="mixed-usage-internals">
+<h2>Mixed Usage &amp; Internals<a class="headerlink" href="#mixed-usage-internals" title="Link to this heading">#</a></h2>
+<p>Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:</p>
+<ol class="arabic simple">
+<li><p>Checks are resolved via a central registry</p></li>
+<li><p>Parameters are validated using Pydantic models</p></li>
+<li><p>Each config is turned into a concrete check</p></li>
+<li><p>Checks are executed by the validation engine</p></li>
+</ol>
+<p>This means you can pick the approach that fits your use case — without sacrificing flexibility or consistency.</p>
+<hr><p>🚀 <strong>Next Step</strong>: Learn how to execute checks and understand results in the next section.</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="validation_lifecycle.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">The Validation Lifecycle</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="validation_dataframes.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Validating DataFrames</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-checks">Types of Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration-yaml-json">Declarative Configuration (YAML / JSON)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-usage-internals">Mixed Usage &amp; Internals</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Marcel Kennert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Marcel Kennert.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
