@@ -46,13 +46,13 @@ jobs:
         run: uv sync --group test
 
       - name: Run unit tests
-        run: uv run pytest --cov=sparkdq -v --cov-report=xml --cov-report=term
+        run: uv run pytest --cov=sparkdq -v --cov-report=term --junitxml=junit.xml -o junit_family=legacy
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
-          name: coverage-report
-          path: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy-pages:
     name: "🚀 Deploy Documentation to GitHub Pages"
@@ -68,7 +68,7 @@ jobs:
         run: uv sync --group docs
 
       - name: Build documentation
-        run: uv run sphinx-build -b html docs/ public
+        run: uv run sphinx-build -b html docs/source public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
