@@ -11,6 +11,10 @@ section is designed to give you the full picture first — so you know what to e
 Core Concepts
 -------------
 
+.. raw:: html
+
+   <hr>
+
 SparkDQ is built around four modular components that together form a clean, scalable, and Spark-native validation pipeline:
 
 * **CheckConfig** — A declarative, type-safe definition of a single validation rule. Each check (e.g., null check, row count constraint) has its own configuration class. These can be created directly in Python or loaded from structured formats like YAML or JSON.
@@ -26,6 +30,10 @@ This modular architecture ensures that you can plug SparkDQ into pipelines of an
 Typical Workflow
 ----------------
 
+.. raw:: html
+
+   <hr>
+
 1. Define validation rules using CheckConfig classes (either in Python code or by loading from config files)
 
 2. Add checks to a CheckSet, which acts as the single source of truth for all checks to be run
@@ -38,6 +46,10 @@ Typical Workflow
 
 Workflow Example
 ----------------
+
+.. raw:: html
+
+   <hr>
 
 .. code-block:: python
 

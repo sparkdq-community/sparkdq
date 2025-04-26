@@ -10,6 +10,10 @@ This section explains how to execute validations and interpret the results.
 Running a Validation
 --------------------
 
+.. raw:: html
+
+   <hr>
+
 SparkQ makes it easy to validate your data by combining all configured rules into a single validation pass —
 one that is scalable, Spark-native, and ready to integrate into any production pipeline.
 
@@ -43,6 +47,10 @@ Here’s how it works:
 What Happens Under the Hood?
 ----------------------------
 
+.. raw:: html
+
+   <hr>
+
 When you call **run_batch()**, the engine will:
 
 * ✅ Apply row-level checks (e.g. null checks, value constraints) and mark failures at the row level
@@ -59,6 +67,10 @@ keeping the execution logic clean, reusable, and fully Spark-native.
 Exploring the Result
 --------------------
 
+.. raw:: html
+
+   <hr>
+
 The BatchValidationResult provides multiple interfaces to work with the output:
 
 .. csv-table::
@@ -74,6 +86,10 @@ pipeline.
 
 🧬 What's Inside the Result DataFrame?
 --------------------------------------
+
+.. raw:: html
+
+   <hr>
 
 sparkdq automatically annotates your DataFrame with additional columns:
 
