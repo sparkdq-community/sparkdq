@@ -60,7 +60,7 @@ jobs:
     needs: tests
     # if: github.ref == 'refs/heads/main'
     container:
-      image: ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-${BASE_LAYER_SLIM}
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm-slim
     steps:
       - uses: actions/checkout@v4
 
