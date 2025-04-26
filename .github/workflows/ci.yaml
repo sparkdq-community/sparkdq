@@ -39,7 +39,12 @@ jobs:
     needs: lint
     container:
       image: jupyter/pyspark-notebook
+      options: --user root
     steps:
+      - name: Install git (needed for checkout)
+        run: |
+          apt-get update && apt-get install -y git
+
       - uses: actions/checkout@v4
 
       - name: Install uv
