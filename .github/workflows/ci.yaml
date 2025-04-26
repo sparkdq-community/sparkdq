@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     container:
-      image: godatadriven/pyspark
+      image: jupyter/pyspark-notebook
     steps:
       - uses: actions/checkout@v4
 
@@ -50,9 +50,6 @@ jobs:
 
       - name: Run unit tests
         run: uv run pytest --cov=sparkdq -v --cov-report=term --cov-branch --cov-report=xml
-
-      - name: Install git
-        run: apt-get install git -y
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
