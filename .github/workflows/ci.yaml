@@ -1,0 +1,80 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  UV_LINK_MODE: "copy"
+  UV_FROZEN: "1"
+
+jobs:
+  lint:
+    name: "🔍 Code Linting"
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm-slim
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install lint dependencies
+        run: uv sync --group lint
+
+      - name: Check code style with Ruff
+        run: uv run ruff check .
+
+      - name: Check code formatting with Ruff
+        run: uv run ruff format --check .
+
+      - name: Check type hints with mypy
+        run: uv run mypy .
+
+  tests:
+    name: "✅ Run Tests"
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: godatadriven/pyspark 
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install test dependencies
+        run: uv sync --group test
+
+      - name: Run unit tests
+        run: uv run pytest --cov=sparkdq -v --cov-report=term --junitxml=junit.xml -o junit_family=legacy
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  deploy-pages:
+    name: "🚀 Deploy Documentation to GitHub Pages"
+    runs-on: ubuntu-latest
+    needs: tests
+    # if: github.ref == 'refs/heads/main'
+    container:
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install docs dependencies
+        run: uv sync --group docs
+
+      - name: Build documentation
+        run: uv run sphinx-build -b html docs/source public
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
