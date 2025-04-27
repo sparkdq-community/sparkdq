@@ -1,0 +1,85 @@
+name: Publish Stage
+
+on:
+  workflow_run:
+    workflows: ["Test Stage"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: "🚀 Publish Package"
+    # if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm
+
+    permissions:
+      id-token: write
+      contents: write
+
+    env:
+      UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+
+    steps:
+      - name: Setup | Checkout Repository on Release Branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup | Force release branch to be at workflow sha
+        run: |
+          git reset --hard ${{ github.sha }}
+
+      - name: Install release dependencies
+        run: |
+          uv sync --group release --frozen
+          source .venv/bin/activate
+
+      - name: Action | Semantic Version Release
+        uses: python-semantic-release/python-semantic-release@v9.21.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+
+      - name: Publish | Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.21.0
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
+
+      - name: Publish | Upload package to PyPI
+        if: steps.release.outputs.released == 'true'
+        run: |
+          uv build
+          uv publish
+
+  pages:
+    name: "🚀 Publish Documentation to GitHub Pages"
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:0.6-python3.11-bookworm
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install docs dependencies
+        run: uv sync --group docs --frozen
+
+      - name: Build documentation
+        run: uv run sphinx-build -b html docs/source public
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
