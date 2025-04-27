@@ -12,6 +12,10 @@ Here are two practical approaches that you can implement with just a few lines o
 Fail-Fast Validation (Strict Enforcement)
 -----------------------------------------
 
+.. raw:: html
+
+   <hr>
+
 Use this pattern when data quality is a strict requirement and no compromise can be made.
 This strategy ensures that even a single violation of a critical rule is enough to halt
 the pipeline execution entirely. In this mode, no data will be written downstream,
@@ -44,6 +48,10 @@ systems, data lake, or reporting layers.
 
 Pass/Fail Routing (Quarantine Strategy)
 ---------------------------------------
+
+.. raw:: html
+
+   <hr>
 
 This strategy separates validated data into two distinct paths:
 

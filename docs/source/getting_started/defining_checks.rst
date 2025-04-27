@@ -10,6 +10,10 @@ SparkDQ is built to support both Python-native definitions and declarative confi
 Types of Checks
 ---------------
 
+.. raw:: html
+
+   <hr>
+
 SparkDQ offers two types of checks, each suited to a different level of data validation.
 
 **Row-Level Checks**
@@ -41,6 +45,10 @@ reflects scenarios like: "if the dataset has too few records, treat the whole ba
 Check Severity
 --------------
 
+.. raw:: html
+
+   <hr>
+
 Each check can be assigned a severity level to control how violations should be interpreted:
 
 * 🚨 **critical** (default): indicates a strict failure condition
@@ -52,6 +60,10 @@ used to enforce quality gates, while warnings are useful for logging soft constr
 
 Python-native Configuration
 ---------------------------
+
+.. raw:: html
+
+   <hr>
 
 For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
 using type-safe config classes:
@@ -76,6 +88,10 @@ using type-safe config classes:
 
 Declarative Configuration (YAML / JSON)
 ---------------------------------------
+
+.. raw:: html
+
+   <hr>
 
 If you use a metadata-driven or config-as-code approach, SparkDQ also supports declarative check
 definitions via dictionaries — for example loaded from YAML or JSON files.
@@ -114,6 +130,10 @@ existing system or pipeline.
 
 Mixed Usage & Internals
 -----------------------
+
+.. raw:: html
+
+   <hr>
 
 Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:
 

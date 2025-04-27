@@ -1,10 +1,16 @@
-# SparkDQ — Declarative Data Quality Validation for Apache Spark
+[![CI Pipeline](https://github.com/sparkdq-community/sparkdq/actions/workflows/ci.yaml/badge.svg)](https://github.com/sparkdq-community/sparkdq/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/sparkdq-community/sparkdq/branch/main/graph/badge.svg?token=3TVZE8J2DN)](https://codecov.io/gh/sparkdq-community/sparkdq)
+[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://sparkdq-community.github.io/sparkdq/)
+[![Python Versions](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue.svg)](https://github.com/sparkdq-community/sparkdq)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-Most data quality frameworks weren’t built for PySpark.
+# SparkDQ — Data Quality Validation for Apache Spark
 
-They aren’t Spark-native — often relying on `toPandas()` under the hood, which breaks on large datasets. They don’t support declarative pipelines, forcing you to write fragile wrappers just to use them in production. And they only validate after the fact, so you can’t react dynamically or fail early.
+Most data quality frameworks weren’t designed with PySpark in mind. They aren’t Spark-native and often lack proper support for declarative pipelines. Instead of integrating seamlessly, they require you to build custom wrappers around them just to fit into production workflows. This adds complexity and makes your pipelines harder to maintain. On top of that, many frameworks only validate data after processing — so you can’t react dynamically or fail early when data issues occur.
 
 **SparkDQ** takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you're validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
+
+🚀  See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
 
 ## Quickstart Examples
 
@@ -127,4 +133,4 @@ Common Scenarios:
 
 📣 Questions, feedback, or ideas? Open an issue or discussion — we’d love to hear from you.
 
-🤝 Want to contribute? Check out [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+🤝 Want to contribute? Check out [CONTRIBUTING.md](https://github.com/sparkdq-community/sparkdq/blob/main/CONTRIBUTING.md) to get started.
