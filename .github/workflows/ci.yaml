@@ -2,8 +2,8 @@ name: Test Stage
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches: [main, ci/add-release-workflow-job]
+  # pull_request:
 
 permissions:
   contents: write
