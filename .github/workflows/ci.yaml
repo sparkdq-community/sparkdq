@@ -86,6 +86,7 @@ jobs:
           fetch-depth: 0
 
       - name: Action | Semantic Version Release
+        id: release
         uses: python-semantic-release/python-semantic-release@v9.21.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
