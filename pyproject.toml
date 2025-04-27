@@ -61,9 +61,6 @@ docs = [
     "sphinx-book-theme>=1.1.0,<2.0.0",
     "myst-parser>=2.0.0,<3.0.0"
 ]
-release = [
-    "python-semantic-release>=9.8.6,<9.9.0"
-]
 jupyter = [
     "notebook>=7.3.3,<8.0.0",
     "ipykernel>=6.20.0,<7.0.0"
@@ -106,6 +103,7 @@ commit_parser = "conventional"
 major_on_zero = false
 allow_zero_version = true
 version_toml = ["pyproject.toml:project.version"]
+version_variable = ["sparkdq/__init__.py:__version__"]
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = ["Merge branch*", "chore(release)*"]
