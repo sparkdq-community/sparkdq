@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, ci/add-release-workflow-job]
+    branches: [main]
   pull_request:
 
 env:
