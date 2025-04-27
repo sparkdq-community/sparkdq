@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.1.1 (2025-04-27)
+
+### Bug Fixes
+
+- **dependencies**: Added pydantic dependency
+  ([#6](https://github.com/sparkdq-community/sparkdq/pull/6),
+  [`958a9ee`](https://github.com/sparkdq-community/sparkdq/commit/958a9ee96c83b93b84c8b8acd77de7681d689c37))
+
+
 ## v0.1.0 (2025-04-27)
 
 ### Continuous Integration
