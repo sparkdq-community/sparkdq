@@ -5,6 +5,10 @@ on:
     branches: [main, ci/add-release-workflow-job]
   # pull_request:
 
+env:
+  UV_LINK_MODE: "copy"
+  UV_FROZEN: "1"
+
 permissions:
   contents: write
 
@@ -19,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install lint dependencies
-        run: uv sync --group lint --frozen
+        run: uv sync --group lint
 
       - name: Check code style with Ruff
         run: uv run ruff check .
@@ -50,7 +54,7 @@ jobs:
         run: pip install uv
 
       - name: Install test dependencies
-        run: uv sync --group test --frozen
+        run: uv sync --group test
 
       - name: Run unit tests
         run: uv run pytest --cov=sparkdq -v --cov-report=term --cov-branch --cov-report=xml
@@ -83,7 +87,7 @@ jobs:
 
       - name: Install release dependencies
         run: |
-          uv sync --group release --frozen
+          uv sync --group release
           source .venv/bin/activate
 
       - name: Action | Semantic Version Release
@@ -120,7 +124,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install docs dependencies
-        run: uv sync --group docs --frozen
+        run: uv sync --group docs
 
       - name: Build documentation
         run: uv run sphinx-build -b html docs/source public
