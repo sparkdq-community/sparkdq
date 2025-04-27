@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="../" data-theme="dark">
 
   <head>
     <meta charset="utf-8" />
@@ -13,8 +13,8 @@
   
   
   <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
@@ -53,7 +53,7 @@
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
   
   
@@ -136,11 +136,9 @@
   
     
     
-      
     
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -212,6 +210,21 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
 
 
 
@@ -342,7 +355,7 @@ different destinations.</p>
 <p>Here are two practical approaches that you can implement with just a few lines of code.</p>
 <section id="fail-fast-validation-strict-enforcement">
 <h2>Fail-Fast Validation (Strict Enforcement)<a class="headerlink" href="#fail-fast-validation-strict-enforcement" title="Link to this heading">#</a></h2>
-<p>Use this pattern when data quality is a strict requirement and no compromise can be made.
+<hr><p>Use this pattern when data quality is a strict requirement and no compromise can be made.
 This strategy ensures that even a single violation of a critical rule is enough to halt
 the pipeline execution entirely. In this mode, no data will be written downstream,
 which prevents the propagation of incorrect or incomplete data into your production
@@ -367,7 +380,7 @@ systems, data lake, or reporting layers.</p>
 </section>
 <section id="pass-fail-routing-quarantine-strategy">
 <h2>Pass/Fail Routing (Quarantine Strategy)<a class="headerlink" href="#pass-fail-routing-quarantine-strategy" title="Link to this heading">#</a></h2>
-<p>This strategy separates validated data into two distinct paths:</p>
+<hr><p>This strategy separates validated data into two distinct paths:</p>
 <ul class="simple">
 <li><p>✅ <strong>Passing records</strong> are forwarded to a trusted destination (e.g., a data lake or curated table).</p></li>
 <li><p>❌ <strong>Failing records</strong> are redirected to a quarantine zone for inspection, remediation, or alerting.</p></li>

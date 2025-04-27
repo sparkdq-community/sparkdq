@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="../" data-theme="dark">
 
   <head>
     <meta charset="utf-8" />
@@ -13,8 +13,8 @@
   
   
   <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
@@ -47,13 +47,13 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Defining Checks" href="defining_checks.html" />
-    <link rel="prev" title="SparkDQ — Declarative Data Quality Validation for Apache Spark" href="../index.html" />
+    <link rel="prev" title="SparkDQ — Data Quality Validation" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
   
   
@@ -136,11 +136,9 @@
   
     
     
-      
     
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -212,6 +210,21 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
 
 
 
@@ -342,7 +355,7 @@ and how they interact in a typical validation flow.</p>
 section is designed to give you the full picture first — so you know what to expect and how everything fits together.</p>
 <section id="core-concepts">
 <h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading">#</a></h2>
-<p>SparkDQ is built around four modular components that together form a clean, scalable, and Spark-native validation pipeline:</p>
+<hr><p>SparkDQ is built around four modular components that together form a clean, scalable, and Spark-native validation pipeline:</p>
 <ul class="simple">
 <li><p><strong>CheckConfig</strong> — A declarative, type-safe definition of a single validation rule. Each check (e.g., null check, row count constraint) has its own configuration class. These can be created directly in Python or loaded from structured formats like YAML or JSON.</p></li>
 <li><p><strong>CheckSet</strong> — A container that groups multiple checks into a reusable set. Whether you define one rule or a hundred, they are all managed and executed as part of a CheckSet.</p></li>
@@ -353,7 +366,7 @@ section is designed to give you the full picture first — so you know what to e
 </section>
 <section id="typical-workflow">
 <h2>Typical Workflow<a class="headerlink" href="#typical-workflow" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
+<hr><ol class="arabic simple">
 <li><p>Define validation rules using CheckConfig classes (either in Python code or by loading from config files)</p></li>
 <li><p>Add checks to a CheckSet, which acts as the single source of truth for all checks to be run</p></li>
 <li><p>Run the CheckSet against a Spark DataFrame using a validation engine like BatchDQEngine</p></li>
@@ -363,7 +376,7 @@ section is designed to give you the full picture first — so you know what to e
 </section>
 <section id="workflow-example">
 <h2>Workflow Example<a class="headerlink" href="#workflow-example" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span>
+<hr><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchDQEngine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
 
@@ -404,7 +417,7 @@ quality control into your PySpark pipelines without introducing unnecessary comp
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">SparkDQ — Declarative Data Quality Validation for Apache Spark</p>
+        <p class="prev-next-title">SparkDQ — Data Quality Validation</p>
       </div>
     </a>
     <a class="right-next"

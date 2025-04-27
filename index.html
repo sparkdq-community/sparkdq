@@ -2,19 +2,19 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="./" >
+<html lang="en" data-content_root="./" data-theme="dark">
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SparkDQ — Declarative Data Quality Validation for Apache Spark &#8212; SparkDQ Documentation</title>
+    <title>SparkDQ — Data Quality Validation &#8212; SparkDQ Documentation</title>
   
   
   
   <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
@@ -52,7 +52,7 @@
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
   
   
@@ -137,11 +137,9 @@
   
     
     
-      
     
-    
-    <img src="_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>`);</script>
+    <img src="_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -213,6 +211,21 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
 
 
 
@@ -310,7 +323,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>SparkDQ — Declarative Data Quality Validation for Apache Spark</h1>
+    <h1>SparkDQ — Data Quality Validation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -340,11 +353,11 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="sparkdq-declarative-data-quality-validation-for-apache-spark">
-<h1>SparkDQ — Declarative Data Quality Validation for Apache Spark<a class="headerlink" href="#sparkdq-declarative-data-quality-validation-for-apache-spark" title="Link to this heading">#</a></h1>
-<p>Most data quality frameworks weren’t built for PySpark.</p>
-<p>They aren’t Spark-native — often relying on <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> under the hood, which breaks on large datasets. They don’t support declarative pipelines, forcing you to write fragile wrappers just to use them in production. And they only validate after the fact, so you can’t react dynamically or fail early.</p>
+  <section id="sparkdq-data-quality-validation">
+<h1>SparkDQ — Data Quality Validation<a class="headerlink" href="#sparkdq-data-quality-validation" title="Link to this heading">#</a></h1>
+<p>Most data quality frameworks weren’t designed with PySpark in mind. They aren’t Spark-native and often lack proper support for declarative pipelines. Instead of integrating seamlessly, they require you to build custom wrappers around them just to fit into production workflows. This adds complexity and makes your pipelines harder to maintain. On top of that, many frameworks only validate data after processing — so you can’t react dynamically or fail early when data issues occur.</p>
 <p><strong>SparkDQ</strong> takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you’re validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.</p>
+<p>🚀  See the <a class="reference external" href="https://sparkdq-community.github.io/sparkdq/">official documentation</a> to learn more.</p>
 <section id="quickstart-examples">
 <h2>Quickstart Examples<a class="headerlink" href="#quickstart-examples" title="Link to this heading">#</a></h2>
 <p>SparkDQ lets you define checks either using a <strong>Python-native</strong> interface or via <strong>declarative configuration</strong> (e.g. YAML, JSON, or database-driven). Regardless of how you define them, all checks are added to a <code class="docutils literal notranslate"><span class="pre">CheckSet</span></code> — which you pass to the validation engine. That’s it! Choose the style that fits your use case, and SparkDQ takes care of the rest.</p>
@@ -451,7 +464,7 @@ SparkDQ lets you define and execute checks that are precise, scalable, and easy 
 <h2>Let’s Build Better Data Together<a class="headerlink" href="#lets-build-better-data-together" title="Link to this heading">#</a></h2>
 <p>⭐️ Found this useful? Give it a star and help spread the word!</p>
 <p>📣 Questions, feedback, or ideas? Open an issue or discussion — we’d love to hear from you.</p>
-<p>🤝 Want to contribute? Check out <a class="reference internal" href="#CONTRIBUTING.md"><span class="xref myst">CONTRIBUTING.md</span></a> to get started.</p>
+<p>🤝 Want to contribute? Check out <a class="reference external" href="https://github.com/sparkdq-community/sparkdq/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> to get started.</p>
 </section>
 <div class="toctree-wrapper compound">
 </div>

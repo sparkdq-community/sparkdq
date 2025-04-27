@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="../" data-theme="dark">
 
   <head>
     <meta charset="utf-8" />
@@ -13,8 +13,8 @@
   
   
   <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
@@ -53,7 +53,7 @@
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
 
   
   
@@ -136,11 +136,9 @@
   
     
     
-      
     
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -212,6 +210,21 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
 
 
 
@@ -343,7 +356,7 @@ looks like. These rules are called checks, and they can operate on either indivi
 (like YAML, JSON, databases) — depending on your team’s preferences and workflow setup.</p>
 <section id="types-of-checks">
 <h2>Types of Checks<a class="headerlink" href="#types-of-checks" title="Link to this heading">#</a></h2>
-<p>SparkDQ offers two types of checks, each suited to a different level of data validation.</p>
+<hr><p>SparkDQ offers two types of checks, each suited to a different level of data validation.</p>
 <p><strong>Row-Level Checks</strong></p>
 <p>These validate each record individually. For example:</p>
 <ul class="simple">
@@ -365,7 +378,7 @@ reflects scenarios like: “if the dataset has too few records, treat the whole 
 </section>
 <section id="check-severity">
 <h2>Check Severity<a class="headerlink" href="#check-severity" title="Link to this heading">#</a></h2>
-<p>Each check can be assigned a severity level to control how violations should be interpreted:</p>
+<hr><p>Each check can be assigned a severity level to control how violations should be interpreted:</p>
 <ul class="simple">
 <li><p>🚨 <strong>critical</strong> (default): indicates a strict failure condition</p></li>
 <li><p>⚠️ <strong>warning</strong>: indicates a non-blocking issue that should be recorded but not treated as invalid</p></li>
@@ -375,7 +388,7 @@ used to enforce quality gates, while warnings are useful for logging soft constr
 </section>
 <section id="python-native-configuration">
 <h2>Python-native Configuration<a class="headerlink" href="#python-native-configuration" title="Link to this heading">#</a></h2>
-<p>For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
+<hr><p>For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
 using type-safe config classes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span><span class="p">,</span> <span class="n">RowCountBetweenCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
@@ -397,7 +410,7 @@ using type-safe config classes:</p>
 </section>
 <section id="declarative-configuration-yaml-json">
 <h2>Declarative Configuration (YAML / JSON)<a class="headerlink" href="#declarative-configuration-yaml-json" title="Link to this heading">#</a></h2>
-<p>If you use a metadata-driven or config-as-code approach, SparkDQ also supports declarative check
+<hr><p>If you use a metadata-driven or config-as-code approach, SparkDQ also supports declarative check
 definitions via dictionaries — for example loaded from YAML or JSON files.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># dq_checks.yaml</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null-check</span>
@@ -430,7 +443,7 @@ existing system or pipeline.</p>
 </section>
 <section id="mixed-usage-internals">
 <h2>Mixed Usage &amp; Internals<a class="headerlink" href="#mixed-usage-internals" title="Link to this heading">#</a></h2>
-<p>Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:</p>
+<hr><p>Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:</p>
 <ol class="arabic simple">
 <li><p>Checks are resolved via a central registry</p></li>
 <li><p>Parameters are validated using Pydantic models</p></li>

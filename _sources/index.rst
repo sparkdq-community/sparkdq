@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-SparkDQ — Declarative Data Quality Validation for Apache Spark
-==============================================================
+SparkDQ — Data Quality Validation
+=================================
 
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
