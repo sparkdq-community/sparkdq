@@ -3,7 +3,7 @@ name: Test Stage
 on:
   push:
     branches: [main, ci/add-release-workflow-job]
-  # pull_request:
+  pull_request:
 
 env:
   UV_LINK_MODE: "copy"
