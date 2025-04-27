@@ -1,4 +1,4 @@
-name: Test Stage
+name: CI/CD Pipeline
 
 on:
   push:
