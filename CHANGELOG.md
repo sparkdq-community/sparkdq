@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.1.2 (2025-04-27)
+
+### Bug Fixes
+
+- **ci**: Add step-id to release step ([#7](https://github.com/sparkdq-community/sparkdq/pull/7),
+  [`ba7af39`](https://github.com/sparkdq-community/sparkdq/commit/ba7af3902c5da65c480989d7b0ff83c8d876c9dd))
+
+
 ## v0.1.1 (2025-04-27)
 
 ### Bug Fixes
