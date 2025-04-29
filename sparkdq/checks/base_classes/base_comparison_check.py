@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from pyspark.sql import Column, DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseRowCheck
 from sparkdq.core.severity import Severity
@@ -77,13 +77,11 @@ class BaseComparisonCheck(BaseRowCheck, ABC):
             if column not in df.columns:
                 raise MissingColumnError(column, df.columns)
 
-        # Build the condition across all columns (OR logic)
-        first_col_expr = self._apply_cast(col(self.columns[0]))
-        result_expr = self.comparison_condition(first_col_expr)
+        # For each specified column, cast the column if needed and apply the comparison condition.
+        column_exprs = F.array(*[self.comparison_condition(self._apply_cast(F.col(c))) for c in self.columns])
 
-        for column in self.columns[1:]:
-            current_expr = self.comparison_condition(self._apply_cast(col(column)))
-            result_expr = result_expr | current_expr
+        # Reduce (aggregate) the array of boolean expressions into a single boolean expression
+        result_expr = F.reduce(column_exprs, F.lit(False), lambda acc, x: acc | x)
 
         return df.withColumn(self.check_id, result_expr)
 
