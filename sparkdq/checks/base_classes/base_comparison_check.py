@@ -83,7 +83,7 @@ class BaseComparisonCheck(BaseRowCheck, ABC):
         # Reduce (aggregate) the array of boolean expressions into a single boolean expression
         result_expr = F.reduce(column_exprs, F.lit(False), lambda acc, x: acc | x)
 
-        return df.withColumn(self.check_id, result_expr)
+        return self.with_check_result_column(df, result_expr)
 
     def _apply_cast(self, column: Column) -> Column:
         """
