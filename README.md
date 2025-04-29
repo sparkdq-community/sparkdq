@@ -10,7 +10,9 @@ Most data quality frameworks weren’t designed with PySpark in mind. They aren�
 
 **SparkDQ** takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you're validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
 
+<!-- doc-link-start -->
 🚀  See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
+<!-- doc-link-end -->
 
 ## Quickstart Examples
 
@@ -115,7 +117,7 @@ It helps teams enforce quality standards early and consistently — across inges
 Whether you're building a real-time ingestion pipeline or curating a data product for thousands of downstream users,
 SparkDQ lets you define and execute checks that are precise, scalable, and easy to maintain.
 
-Common Scenarios:
+**Common Scenarios**:
 
 * ✅ Validating raw ingestion data
 
