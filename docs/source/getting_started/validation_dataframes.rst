@@ -10,10 +10,6 @@ This section explains how to execute validations and interpret the results.
 Running a Validation
 --------------------
 
-.. raw:: html
-
-   <hr>
-
 SparkQ makes it easy to validate your data by combining all configured rules into a single validation pass —
 one that is scalable, Spark-native, and ready to integrate into any production pipeline.
 
@@ -47,29 +43,21 @@ Here’s how it works:
 What Happens Under the Hood?
 ----------------------------
 
-.. raw:: html
-
-   <hr>
-
 When you call **run_batch()**, the engine will:
 
-* ✅ Apply row-level checks (e.g. null checks, value constraints) and mark failures at the row level
+* Apply row-level checks (e.g. null checks, value constraints) and mark failures at the row level
 
-* 📊 Evaluate aggregate checks (e.g. row count, min/max rules) against the full DataFrame
+* Evaluate aggregate checks (e.g. row count, min/max rules) against the full DataFrame
 
-* 🧾 Annotate the dataset with helper columns like **_dq_passed**, **_dq_errors**, **_dq_validation_ts**
+* Annotate the dataset with helper columns like **_dq_passed**, **_dq_errors**, **_dq_validation_ts**
 
-* 📦 Return a result object that you can query, summarize, and route as needed
+* Return a result object that you can query, summarize, and route as needed
 
 This design allows you to embed validation logic directly into your ETL or data contract workflows, while
 keeping the execution logic clean, reusable, and fully Spark-native.
 
 Exploring the Result
 --------------------
-
-.. raw:: html
-
-   <hr>
 
 The BatchValidationResult provides multiple interfaces to work with the output:
 
@@ -84,12 +72,8 @@ The BatchValidationResult provides multiple interfaces to work with the output:
 These methods make it easy to separate valid and invalid data or build dynamic branching logic within your
 pipeline.
 
-🧬 What's Inside the Result DataFrame?
---------------------------------------
-
-.. raw:: html
-
-   <hr>
+What's Inside the Result DataFrame?
+-----------------------------------
 
 sparkdq automatically annotates your DataFrame with additional columns:
 

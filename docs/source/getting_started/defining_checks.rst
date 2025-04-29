@@ -1,69 +1,48 @@
 Defining Checks
 ===============
 
-To validate data with SparkDQ, you first define a set of data quality rules that describe what "good data"
-looks like. These rules are called checks, and they can operate on either individual records or entire datasets.
-
-SparkDQ is built to support both Python-native definitions and declarative configurations
-(like YAML, JSON, databases) — depending on your team’s preferences and workflow setup.
+With SparkDQ, data validation starts by defining **checks** that describe what “good data” looks like.
+These checks can target either individual records or entire datasets. SparkDQ
+supports both Python-native definitions and declarative configurations (such as YAML, JSON, or
+database-based setups), allowing you to choose the approach that best fits your team’s workflow.
 
 Types of Checks
 ---------------
 
-.. raw:: html
-
-   <hr>
-
 SparkDQ offers two types of checks, each suited to a different level of data validation.
 
-**Row-Level Checks**
+Row-Level Checks
+^^^^^^^^^^^^^^^^
 
-These validate each record individually. For example:
+These checks validate each record individually — for example, by detecting missing or null values,
+matching patterns with regular expressions, or enforcing numeric boundaries such as minimum or
+maximum values. If a row fails one of these checks, it is marked as invalid and annotated with
+detailed failure context. This makes it easy to isolate problematic records for filtering,
+remediation, or quarantine.
 
-* Missing or null values (`NullCheck`)
+Aggregate Checks
+^^^^^^^^^^^^^^^^
 
-* Invalid formats using regex (`RegexCheck`)
-
-* Numeric bounds (`MinValueCheck`, `MaxValueCheck`)
-
-If a row fails one of these checks, it is marked as invalid and annotated with failure context. This allows
-you to isolate problematic rows for filtering, remediation, or quarantine.
-
-**Aggregate Checks**
-
-These evaluate the dataset as a whole (or grouped subsets), including:
-
-* Record count constraints (`RowCountBetweenCheck`)
-
-* Uniqueness across one or more columns (`DistinctCountCheck`)
-
-* Distributional metrics (e.g. min/max/avg/ratio checks)
-
-If an aggregate check fails, all rows are marked as failed — even if they appear valid individually. This
-reflects scenarios like: "if the dataset has too few records, treat the whole batch as suspicious."
+These checks evaluate the dataset as a whole — or within grouped subsets — by applying rules such
+as record count constraints, uniqueness checks across one or more columns, or distributional
+metrics like minimum, maximum, average, or ratio validations. If an aggregate check fails, all
+rows are marked as invalid, even if they would pass individual checks. This reflects scenarios
+where, for example, a dataset with too few records should cause the entire batch to be treated as suspicious.
 
 Check Severity
 --------------
 
-.. raw:: html
-
-   <hr>
-
 Each check can be assigned a severity level to control how violations should be interpreted:
 
-* 🚨 **critical** (default): indicates a strict failure condition
+* **critical** (default): indicates a strict failure condition
 
-* ⚠️ **warning**: indicates a non-blocking issue that should be recorded but not treated as invalid
+* **warning**: indicates a non-blocking issue that should be recorded but not treated as invalid
 
 The severity determines how the validation engine classifies results later on. Critical checks are typically
 used to enforce quality gates, while warnings are useful for logging soft constraints or monitoring potential issues.
 
 Python-native Configuration
 ---------------------------
-
-.. raw:: html
-
-   <hr>
 
 For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
 using type-safe config classes:
@@ -86,12 +65,8 @@ using type-safe config classes:
         )
     )
 
-Declarative Configuration (YAML / JSON)
----------------------------------------
-
-.. raw:: html
-
-   <hr>
+Declarative Configuration
+-------------------------
 
 If you use a metadata-driven or config-as-code approach, SparkDQ also supports declarative check
 definitions via dictionaries — for example loaded from YAML or JSON files.
@@ -128,12 +103,8 @@ dependencies on YAML, JSON, or database connectors. This lightweight, integratio
 that you stay in full control of how configurations are loaded, making it easy to plug SparkDQ into any
 existing system or pipeline.
 
-Mixed Usage & Internals
------------------------
-
-.. raw:: html
-
-   <hr>
+Internals
+---------
 
 Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:
 
