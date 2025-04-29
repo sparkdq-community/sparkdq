@@ -1,8 +1,8 @@
 from typing import List
 
 from pydantic import Field
-from pyspark.sql import Column, DataFrame
-from pyspark.sql.functions import col, lit
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseRowCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
@@ -56,10 +56,11 @@ class NullCheck(BaseRowCheck):
             if column not in df.columns:
                 raise MissingColumnError(column, df.columns)
 
-        any_null_expr: Column = lit(False)
-        for column in self.columns:
-            current_expr = col(column).isNull()
-            any_null_expr = current_expr if any_null_expr is None else (any_null_expr | current_expr)
+        # Build a Spark array column where each element checks if the corresponding column is NULL
+        null_checks = F.array(*[F.col(c).isNull() for c in self.columns])
+
+        # Reduce the array by OR-ing all null checks
+        any_null_expr = F.reduce(null_checks, F.lit(False), lambda acc, x: acc | x)
 
         return df.withColumn(self.check_id, any_null_expr)
 
