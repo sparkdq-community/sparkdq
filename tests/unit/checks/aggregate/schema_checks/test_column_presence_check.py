@@ -5,7 +5,6 @@ from sparkdq.checks.aggregate.schema_checks.column_presence_check import (
     ColumnPresenceCheck,
     ColumnPresenceCheckConfig,
 )
-from sparkdq.exceptions import InvalidCheckConfigurationError
 
 
 def test_column_presence_check_passes_when_all_required_columns_exist(spark: SparkSession) -> None:
@@ -64,7 +63,9 @@ def test_column_presence_check_with_multiple_missing_columns(spark: SparkSession
         (["id", "name"], False),
     ],
 )
-def test_column_presence_check_various_cases(spark: SparkSession, required_columns: list[str], expected_passed: bool) -> None:
+def test_column_presence_check_various_cases(
+    spark: SparkSession, required_columns: list[str], expected_passed: bool
+) -> None:
     """
     Validates that ColumnPresenceCheck behaves correctly for various required column configurations.
     """
