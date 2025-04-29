@@ -14,6 +14,7 @@ configuration is provided as a Python dictionary at runtime.
    :caption: Built-in Checks
    :hidden:
 
+   checks/schema/column_presence_check
    checks/count/count_between_check
    checks/count/count_exact_check
    checks/count/count_min_check
@@ -81,4 +82,5 @@ Schema Checks
     :header: "Check", "Description"
     :widths: 20, 80
 
+    ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
     ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."
