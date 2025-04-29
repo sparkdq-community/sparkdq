@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.2.1 (2025-04-29)
+
+### Bug Fixes
+
+- **pyproject.toml**: Remov invalid classifier
+  ([#9](https://github.com/sparkdq-community/sparkdq/pull/9),
+  [`05f89ee`](https://github.com/sparkdq-community/sparkdq/commit/05f89eedba22cbf346f6a6781abbaab431f8e753))
+
+
 ## v0.2.0 (2025-04-29)
 
 ### Continuous Integration
