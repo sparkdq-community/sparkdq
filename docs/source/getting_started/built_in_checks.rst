@@ -25,6 +25,7 @@ configuration is provided as a Python dictionary at runtime.
    checks/date/date_max_check
 
    checks/contained_in/is_contained_in_check
+   checks/contained_in/is_not_contained_in_check
 
    checks/null/not_null_check
    checks/null/null_check
@@ -37,6 +38,16 @@ configuration is provided as a Python dictionary at runtime.
    checks/timestamp/timestamp_min_check
    checks/timestamp/timestamp_max_check
    checks/timestamp/timestamp_between_check
+
+Contained-In Checks
+----------------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`is-contained-in-check` ", "Ensures that column values are contained within a predefined set of allowed values."
+    ":ref:`is-not-contained-in-check` ", "Ensures that column values are not contained within a set of forbidden values."
 
 Count Checks
 ------------
@@ -86,12 +97,3 @@ Schema Checks
 
     ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
     ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."
-
-Is-Contained-In Checks
-----------------------
-
-.. csv-table::
-    :header: "Check", "Description"
-    :widths: 20, 80
-
-    ":ref:`is-contained-in-check` ", "Ensures that column values are contained within a predefined set of allowed values."
