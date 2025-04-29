@@ -136,9 +136,9 @@ class SchemaCheckConfig(BaseAggregateCheckConfig):
     _decimal_pattern: ClassVar[re.Pattern[str]] = re.compile(r"^decimal\(\d+,\s*\d+\)$")
 
     @classmethod
-    def is_valid_type(cls, typ: str) -> bool:
-        return typ in cls._valid_spark_types or (
-            typ.startswith("decimal") and bool(cls._decimal_pattern.match(typ))
+    def is_valid_type(cls, _type: str) -> bool:
+        return _type in cls._valid_spark_types or (
+            _type.startswith("decimal") and bool(cls._decimal_pattern.match(_type))
         )
 
     @model_validator(mode="after")
