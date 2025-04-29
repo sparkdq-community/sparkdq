@@ -119,16 +119,26 @@ class SchemaCheckConfig(BaseAggregateCheckConfig):
     )
 
     _valid_spark_types: ClassVar[set[str]] = {
-        "string", "boolean", "int", "bigint", "float", "double",
-        "date", "timestamp", "binary", "array", "map", "struct", "decimal"
+        "string",
+        "boolean",
+        "int",
+        "bigint",
+        "float",
+        "double",
+        "date",
+        "timestamp",
+        "binary",
+        "array",
+        "map",
+        "struct",
+        "decimal",
     }
-    _decimal_pattern: ClassVar[re.Pattern] = re.compile(r"^decimal\(\d+,\s*\d+\)$")
+    _decimal_pattern: ClassVar[re.Pattern[str]] = re.compile(r"^decimal\(\d+,\s*\d+\)$")
 
     @classmethod
     def is_valid_type(cls, typ: str) -> bool:
-        return (
-            typ in cls._valid_spark_types
-            or (typ.startswith("decimal") and cls._decimal_pattern.match(typ))
+        return typ in cls._valid_spark_types or (
+            typ.startswith("decimal") and bool(cls._decimal_pattern.match(typ))
         )
 
     @model_validator(mode="after")
@@ -143,8 +153,7 @@ class SchemaCheckConfig(BaseAggregateCheckConfig):
             raise InvalidCheckConfigurationError("expected_schema must not be empty.")
 
         invalid_types = [
-            (col, typ) for col, typ in self.expected_schema.items()
-            if not self.is_valid_type(typ)
+            (col, typ) for col, typ in self.expected_schema.items() if not self.is_valid_type(typ)
         ]
         if invalid_types:
             raise InvalidCheckConfigurationError(
