@@ -67,7 +67,7 @@ class NotNullCheck(BaseRowCheck):
         # Reduce the array by OR-ing all not-null checks
         any_not_null_expr = F.reduce(not_null_checks, F.lit(False), lambda acc, x: acc | x)
 
-        return df.withColumn(self.check_id, any_not_null_expr)
+        return self.with_check_result_column(df, any_not_null_expr)
 
 
 @register_check_config(check_name="not-null-check")

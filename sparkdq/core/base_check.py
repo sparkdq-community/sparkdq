@@ -15,7 +15,7 @@ import inspect
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
 
 from .check_results import AggregateCheckResult, AggregateEvaluationResult
 from .severity import Severity
@@ -112,6 +112,22 @@ class BaseRowCheck(BaseCheck):
             DataFrame: DataFrame with additional markers or columns indicating validation failures.
         """
         ...
+
+    def with_check_result_column(self, df: DataFrame, condition: Column) -> DataFrame:
+        """
+        Adds the check result as a new column to the DataFrame.
+
+        The result column will be named according to the check ID and contain the boolean evaluation
+        for each row.
+
+        Args:
+            df (DataFrame): The input Spark DataFrame.
+            condition (Column): The boolean Spark expression representing pass/fail per row.
+
+        Returns:
+            DataFrame: The original DataFrame extended with the check result column.
+        """
+        return df.withColumn(self.check_id, condition)
 
 
 class BaseAggregateCheck(BaseCheck):

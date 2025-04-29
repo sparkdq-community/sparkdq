@@ -62,7 +62,7 @@ class NullCheck(BaseRowCheck):
         # Reduce the array by OR-ing all null checks
         any_null_expr = F.reduce(null_checks, F.lit(False), lambda acc, x: acc | x)
 
-        return df.withColumn(self.check_id, any_null_expr)
+        return self.with_check_result_column(df, any_null_expr)
 
 
 @register_check_config(check_name="null-check")
