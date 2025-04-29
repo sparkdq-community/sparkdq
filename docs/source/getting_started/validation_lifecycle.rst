@@ -1,38 +1,40 @@
-The Validation Lifecycle
-========================
+Validation Workflow
+===================
 
 To get the most out of **SparkDQ**, it's helpful to understand how its core components fit together. This section
 gives you a high-level overview of how data validation works in SparkDQ, what the main building blocks are,
 and how they interact in a typical validation flow.
 
-Even though the following sections will go into detail about defining checks and interpreting results, this
-section is designed to give you the full picture first — so you know what to expect and how everything fits together.
-
 Core Concepts
 -------------
 
-.. raw:: html
+SparkDQ is built around four modular components that together provide a clean, scalable, and Spark-native validation pipeline.
+This flexible architecture makes it easy to integrate SparkDQ into pipelines of any size, reuse validation logic across projects,
+and consistently enforce data quality standards.
 
-   <hr>
+CheckConfig
+^^^^^^^^^^^
 
-SparkDQ is built around four modular components that together form a clean, scalable, and Spark-native validation pipeline:
+A declarative, type-safe definition of a single validation rule. Each check (e.g., null check, row count constraint)
+has its own configuration class. These can be created directly in Python or loaded from structured formats like YAML or JSON.
 
-* **CheckConfig** — A declarative, type-safe definition of a single validation rule. Each check (e.g., null check, row count constraint) has its own configuration class. These can be created directly in Python or loaded from structured formats like YAML or JSON.
+CheckSet
+^^^^^^^^
 
-* **CheckSet** — A container that groups multiple checks into a reusable set. Whether you define one rule or a hundred, they are all managed and executed as part of a CheckSet.
+A container that groups multiple checks into a reusable set. Whether you define one rule or a hundred, they are all managed and executed as part of a CheckSet.
 
-* **ValidationEngine** — The engine (e.g. BatchDQEngine) takes a CheckSet and a Spark DataFrame, applies all rules to the data, and returns structured results. It handles both row-level and dataset-level validations in a single run.
+ValidationEngine
+^^^^^^^^^^^^^^^^
 
-* **ValidationResult** — The output of the validation process. It contains filtered views of passed, failed, and warning-level records, as well as summary statistics and metadata (e.g., pass rate, check counts, timestamps).
+The engine (e.g. BatchDQEngine) takes a CheckSet and a Spark DataFrame, applies all rules to the data, and returns structured results. It handles both row-level and dataset-level validations in a single run.
 
-This modular architecture ensures that you can plug SparkDQ into pipelines of any size, reuse validation logic across projects, and consistently enforce quality standards.
+ValidationResult
+^^^^^^^^^^^^^^^^
+
+The output of the validation process. It contains filtered views of passed, failed, and warning-level records, as well as summary statistics and metadata (e.g., pass rate, check counts, timestamps).
 
 Typical Workflow
 ----------------
-
-.. raw:: html
-
-   <hr>
 
 1. Define validation rules using CheckConfig classes (either in Python code or by loading from config files)
 
@@ -42,14 +44,10 @@ Typical Workflow
 
 4. Inspect the result via methods like **.pass_df()**, **.fail_df()**, **.warn_df()**, or **.summary()**
 
-5. Take action based on the result — filter invalid rows, block pipeline execution, raise alerts, or persist the results
+5. Act on the result — filter rows, block execution, raise alerts, or save outcomes
 
 Workflow Example
 ----------------
-
-.. raw:: html
-
-   <hr>
 
 .. code-block:: python
 

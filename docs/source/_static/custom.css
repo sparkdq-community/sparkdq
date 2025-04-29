@@ -1,0 +1,14 @@
+h2 {
+    border-bottom: 1px solid darkgray;
+}
+
+h3 {
+    font-size: 1.3rem;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: rgb(158, 158, 158) !important;
+}
+
+:root {
+    --pst-color-table-row-hover-bg: #3ea5ff71 !important;
+}
