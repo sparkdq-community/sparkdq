@@ -9,12 +9,8 @@ different destinations.
 
 Here are two practical approaches that you can implement with just a few lines of code.
 
-Fail-Fast Validation (Strict Enforcement)
------------------------------------------
-
-.. raw:: html
-
-   <hr>
+Fail-Fast Validation
+--------------------
 
 Use this pattern when data quality is a strict requirement and no compromise can be made.
 This strategy ensures that even a single violation of a critical rule is enough to halt
@@ -22,7 +18,8 @@ the pipeline execution entirely. In this mode, no data will be written downstrea
 which prevents the propagation of incorrect or incomplete data into your production
 systems, data lake, or reporting layers.
 
-**This is ideal when**:
+This is ideal when
+^^^^^^^^^^^^^^^^^^
 
 * Your downstream consumers demand complete trust in the data
 
@@ -30,7 +27,8 @@ systems, data lake, or reporting layers.
 
 * You want to stop problems early instead of fixing them late
 
-**Benefits**:
+Benefits
+^^^^^^^^
 
 * ✅ Guarantees only clean data reaches production tables
 
@@ -38,20 +36,16 @@ systems, data lake, or reporting layers.
 
 * ✅ Encourages a culture of data ownership
 
-
-**Implementation Tip**:
+Implementation Tip
+^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
     if result.summary().failed_records > 0:
         raise RuntimeError("Critical checks failed — stopping pipeline.")
 
-Pass/Fail Routing (Quarantine Strategy)
----------------------------------------
-
-.. raw:: html
-
-   <hr>
+Quarantine Strategy
+-------------------
 
 This strategy separates validated data into two distinct paths:
 
@@ -64,7 +58,8 @@ metadata — including validation errors (_dq_errors), failure severity levels, 
 timestamp. This enables targeted analysis, quality monitoring, and the ability to track recurring
 issues over time.
 
-**This rich context makes it easy to**:
+This rich context makes it easy to
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Analyze the most frequent failure reasons
 
@@ -74,7 +69,8 @@ issues over time.
 
 * Build dashboards or alerts around specific validation failures
 
-**Benefits**:
+Benefits
+^^^^^^^^
 
 * ✅ Clean data flows forward uninterrupted
 
@@ -82,13 +78,32 @@ issues over time.
 
 * ✅ Enables smarter debugging and long-term quality improvement
 
-**Implementation Tip**:
+Implementation Tip
+^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
     result.pass_df().write.format("delta").save("/trusted-zone")
     result.fail_df().write.format("delta").save("/quarantine-zone")
 
-These patterns give you full control over the flow of validated data — and turn your quality checks into real
-operational safeguards. No matter how simple or complex your pipeline is, SparkDQ gives you a clean and
-composable way to act on the truth in your data.
+Choose Your Pattern
+-------------------
+
+These patterns give you full control over the flow of validated data — and turn your quality checks
+into real operational safeguards. Whether you need strict enforcement through fail-fast validation
+or prefer a more flexible quarantine approach that allows for inspection and remediation, SparkDQ
+helps you enforce data quality exactly where it matters most.
+
+Choosing the right strategy depends on your use case, your data consumers, and your tolerance for risk.
+You can stop bad data at the gate, safely isolate problematic records for further analysis, or even
+combine both approaches for different stages of your pipeline.
+
+No matter how simple or complex your setup is, SparkDQ provides a clean and composable way to act on the
+truth in your data — so that quality becomes an integral part of your data workflows, not an afterthought.
+
+.. raw:: html
+
+   <hr>
+
+🚀 **Next Step**: After explaining how data validation works with the framework,
+the next section provides an overview of all available built-in checks.

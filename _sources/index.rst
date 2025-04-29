@@ -9,6 +9,11 @@ SparkDQ — Data Quality Validation
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
    :start-after: Apache Spark
+   :end-before: <!-- doc-link-start -->
+
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
+   :start-after: <!-- doc-link-end -->
 
 .. toctree::
    :maxdepth: 2
@@ -19,14 +24,4 @@ SparkDQ — Data Quality Validation
    getting_started/defining_checks
    getting_started/validation_dataframes
    getting_started/applying_validation
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Built-in Checks
-   :hidden:
-
-   built-in-checks/count-checks
-   built-in-checks/numeric-checks
-   built-in-checks/date-checks
-   built-in-checks/timestamp-checks
-   built-in-checks/null-checks
+   getting_started/built_in_checks

@@ -1,0 +1,624 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Built-In Checks &#8212; SparkDQ Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c0dadd6b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/built_in_checks';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Column Presence" href="checks/schema/column_presence_check.html" />
+    <link rel="prev" title="Integration Patterns" href="applying_validation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">Validation Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defining_checks.html">Defining Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Built-In Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks/schema/column_presence_check.html">Column Presence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_between_check.html">Count Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_min_check.html">Count Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_between_check.html">Date Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_min_check.html">Date Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/not_null_check.html">Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/null_check.html">Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_min_check.html">Numeric Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_max_check.html">Numeric Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_between_check.html">Numeric Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/getting_started/built_in_checks.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Built-In Checks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contained-in-checks">Contained-In Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-checks">Count Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-checks">Null Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#range-checks">Range Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-checks">Schema Checks</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="built-in-checks">
+<h1>Built-In Checks<a class="headerlink" href="#built-in-checks" title="Link to this heading">#</a></h1>
+<p>SparkDQ includes various built-in checks for validating the integrity and quality of your data.
+The following table lists all available checks with their identifiers and a brief
+description — click on a check name to see details and examples.</p>
+<p>All configuration examples are shown in YAML format for better readability.
+You can still define checks via JSON, or external sources — as long as the
+configuration is provided as a Python dictionary at runtime.</p>
+<div class="toctree-wrapper compound">
+</div>
+<section id="contained-in-checks">
+<h2>Contained-In Checks<a class="headerlink" href="#contained-in-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/contained_in/is_contained_in_check.html#is-contained-in-check"><span class="std std-ref">Is Contained In</span></a></p></td>
+<td><p>Ensures that column values are contained within a predefined set of allowed values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/contained_in/is_not_contained_in_check.html#is-not-contained-in-check"><span class="std std-ref">Is Not Contained In</span></a></p></td>
+<td><p>Ensures that column values are not contained within a set of forbidden values.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="count-checks">
+<h2>Count Checks<a class="headerlink" href="#count-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/count/count_min_check.html#count-min-check"><span class="std std-ref">Count Min</span></a></p></td>
+<td><p>Ensures that the DataFrame contains at least a defined minimum number of rows.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/count/count_max_check.html#count-max-check"><span class="std std-ref">Count Max</span></a></p></td>
+<td><p>Ensures that the DataFrame does not exceed a defined maximum number of rows.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/count/count_between_check.html#count-between-check"><span class="std std-ref">Count Between</span></a></p></td>
+<td><p>Ensures that the number of rows in the dataset falls within a defined inclusive range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/count/count_exact_check.html#count-exact-check"><span class="std std-ref">Count Exact</span></a></p></td>
+<td><p>Ensures that the dataset contains exactly the specified number of rows.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="null-checks">
+<h2>Null Checks<a class="headerlink" href="#null-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/null/null_check.html#null-check"><span class="std std-ref">Null Check</span></a></p></td>
+<td><p>Verifies whether a given column contains any null values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/null/not_null_check.html#not-null-check"><span class="std std-ref">Not Null Check</span></a></p></td>
+<td><p>Checks whether the specified column contains at least one non-null value.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="range-checks">
+<h2>Range Checks<a class="headerlink" href="#range-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/numeric/numeric_min_check.html#numeric-min-check"><span class="std std-ref">Numeric Min</span></a></p></td>
+<td><p>Ensures that numeric column values are greater than a defined minimum.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/numeric/numeric_max_check.html#numeric-max-check"><span class="std std-ref">Numeric Max</span></a></p></td>
+<td><p>Ensures that numeric column values are less than a defined maximum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/numeric/numeric_between_check.html#numeric-between-check"><span class="std std-ref">Numeric Between</span></a></p></td>
+<td><p>Ensures that numeric column values are within a defined inclusive range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/date/date_min_check.html#date-min-check"><span class="std std-ref">Date Min</span></a></p></td>
+<td><p>Ensures that date column values are greater than a defined minimum date.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/date/date_max_check.html#date-max-check"><span class="std std-ref">Date Max</span></a></p></td>
+<td><p>Ensures that date column values are less than a defined maximum date.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/date/date_between_check.html#date-between-check"><span class="std std-ref">Date Between</span></a></p></td>
+<td><p>Ensures that date column values are within a defined range.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/timestamp/timestamp_min_check.html#timestamp-min-check"><span class="std std-ref">Timestamp Min</span></a></p></td>
+<td><p>Ensures that timestamp column values are greater than a defined timestamp.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/timestamp/timestamp_max_check.html#timestamp-max-check"><span class="std std-ref">Timestamp Max</span></a></p></td>
+<td><p>Ensures that timestamp column values are less than a defined maximum timestamp.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/timestamp/timestamp_between_check.html#timestamp-between-check"><span class="std std-ref">Timestamp Between</span></a></p></td>
+<td><p>Ensures that timestamp column values are within a defined inclusive range between a minimum and maximum timestamp.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="schema-checks">
+<h2>Schema Checks<a class="headerlink" href="#schema-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/schema/column_presence_check.html#column-presence-check"><span class="std std-ref">Column Presence</span></a></p></td>
+<td><p>Verifies the existence of required columns in the DataFrame, independent of their data types.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/schema/schema_check.html#schema-check"><span class="std std-ref">Schema Check</span></a></p></td>
+<td><p>Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="applying_validation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Integration Patterns</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="checks/schema/column_presence_check.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Column Presence</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contained-in-checks">Contained-In Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-checks">Count Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-checks">Null Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#range-checks">Range Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-checks">Schema Checks</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Marcel Kennert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Marcel Kennert.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c0dadd6b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -46,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Validation Lifecycle" href="getting_started/validation_lifecycle.html" />
+    <link rel="next" title="Validation Workflow" href="getting_started/validation_lifecycle.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -158,18 +159,32 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="getting_started/validation_lifecycle.html">The Validation Lifecycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/validation_lifecycle.html">Validation Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/defining_checks.html">Defining Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/applying_validation.html">Integration Patterns</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="getting_started/built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/schema/column_presence_check.html">Column Presence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/count/count_between_check.html">Count Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/count/count_exact_check.html">Count Exact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/count/count_min_check.html">Count Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/date/date_between_check.html">Date Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/date/date_min_check.html">Date Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/null/not_null_check.html">Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/null/null_check.html">Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/numeric/numeric_min_check.html">Numeric Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/numeric/numeric_max_check.html">Numeric Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/numeric/numeric_between_check.html">Numeric Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-in Checks</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="built-in-checks/count-checks.html">Count Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="built-in-checks/numeric-checks.html">Numeric Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="built-in-checks/date-checks.html">Date Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="built-in-checks/timestamp-checks.html">Timestamp Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="built-in-checks/null-checks.html">Null Checks</a></li>
+</details></li>
 </ul>
 
     </div>
@@ -357,7 +372,6 @@ document.write(`
 <h1>SparkDQ — Data Quality Validation<a class="headerlink" href="#sparkdq-data-quality-validation" title="Link to this heading">#</a></h1>
 <p>Most data quality frameworks weren’t designed with PySpark in mind. They aren’t Spark-native and often lack proper support for declarative pipelines. Instead of integrating seamlessly, they require you to build custom wrappers around them just to fit into production workflows. This adds complexity and makes your pipelines harder to maintain. On top of that, many frameworks only validate data after processing — so you can’t react dynamically or fail early when data issues occur.</p>
 <p><strong>SparkDQ</strong> takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you’re validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.</p>
-<p>🚀  See the <a class="reference external" href="https://sparkdq-community.github.io/sparkdq/">official documentation</a> to learn more.</p>
 <section id="quickstart-examples">
 <h2>Quickstart Examples<a class="headerlink" href="#quickstart-examples" title="Link to this heading">#</a></h2>
 <p>SparkDQ lets you define checks either using a <strong>Python-native</strong> interface or via <strong>declarative configuration</strong> (e.g. YAML, JSON, or database-driven). Regardless of how you define them, all checks are added to a <code class="docutils literal notranslate"><span class="pre">CheckSet</span></code> — which you pass to the validation engine. That’s it! Choose the style that fits your use case, and SparkDQ takes care of the rest.</p>
@@ -451,7 +465,7 @@ is required when running inside environments like Databricks, AWS Glue, or EMR.<
 It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.</p>
 <p>Whether you’re building a real-time ingestion pipeline or curating a data product for thousands of downstream users,
 SparkDQ lets you define and execute checks that are precise, scalable, and easy to maintain.</p>
-<p>Common Scenarios:</p>
+<p><strong>Common Scenarios</strong>:</p>
 <ul class="simple">
 <li><p>✅ Validating raw ingestion data</p></li>
 <li><p>✅ Enforcing schema and content rules before persisting to a lakehouse (Delta, Iceberg, Hudi)</p></li>
@@ -466,8 +480,6 @@ SparkDQ lets you define and execute checks that are precise, scalable, and easy 
 <p>📣 Questions, feedback, or ideas? Open an issue or discussion — we’d love to hear from you.</p>
 <p>🤝 Want to contribute? Check out <a class="reference external" href="https://github.com/sparkdq-community/sparkdq/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> to get started.</p>
 </section>
-<div class="toctree-wrapper compound">
-</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -488,7 +500,7 @@ SparkDQ lets you define and execute checks that are precise, scalable, and easy 
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The Validation Lifecycle</p>
+        <p class="prev-next-title">Validation Workflow</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

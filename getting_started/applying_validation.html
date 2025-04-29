@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c0dadd6b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -46,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/applying_validation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Count Checks" href="../built-in-checks/count-checks.html" />
+    <link rel="next" title="Built-In Checks" href="built_in_checks.html" />
     <link rel="prev" title="Validating DataFrames" href="validation_dataframes.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -157,18 +158,32 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">The Validation Lifecycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">Validation Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defining_checks.html">Defining Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Integration Patterns</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks/schema/column_presence_check.html">Column Presence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_between_check.html">Count Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_min_check.html">Count Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_between_check.html">Date Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_min_check.html">Date Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/not_null_check.html">Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/null_check.html">Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_min_check.html">Numeric Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_max_check.html">Numeric Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_between_check.html">Numeric Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-in Checks</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/count-checks.html">Count Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/numeric-checks.html">Numeric Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/date-checks.html">Date Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/timestamp-checks.html">Timestamp Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built-in-checks/null-checks.html">Null Checks</a></li>
+</details></li>
 </ul>
 
     </div>
@@ -332,8 +347,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fail-fast-validation-strict-enforcement">Fail-Fast Validation (Strict Enforcement)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-fail-routing-quarantine-strategy">Pass/Fail Routing (Quarantine Strategy)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fail-fast-validation">Fail-Fast Validation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-ideal-when">This is ideal when</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benefits">Benefits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-tip">Implementation Tip</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quarantine-strategy">Quarantine Strategy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-rich-context-makes-it-easy-to">This rich context makes it easy to</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Benefits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Implementation Tip</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-your-pattern">Choose Your Pattern</a></li>
 </ul>
             </nav>
         </div>
@@ -353,34 +379,40 @@ to turn validation into actionable logic within your Spark pipeline. Depending o
 you can either stop execution on critical errors or flexibly route valid and invalid data to
 different destinations.</p>
 <p>Here are two practical approaches that you can implement with just a few lines of code.</p>
-<section id="fail-fast-validation-strict-enforcement">
-<h2>Fail-Fast Validation (Strict Enforcement)<a class="headerlink" href="#fail-fast-validation-strict-enforcement" title="Link to this heading">#</a></h2>
-<hr><p>Use this pattern when data quality is a strict requirement and no compromise can be made.
+<section id="fail-fast-validation">
+<h2>Fail-Fast Validation<a class="headerlink" href="#fail-fast-validation" title="Link to this heading">#</a></h2>
+<p>Use this pattern when data quality is a strict requirement and no compromise can be made.
 This strategy ensures that even a single violation of a critical rule is enough to halt
 the pipeline execution entirely. In this mode, no data will be written downstream,
 which prevents the propagation of incorrect or incomplete data into your production
 systems, data lake, or reporting layers.</p>
-<p><strong>This is ideal when</strong>:</p>
+<section id="this-is-ideal-when">
+<h3>This is ideal when<a class="headerlink" href="#this-is-ideal-when" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Your downstream consumers demand complete trust in the data</p></li>
 <li><p>You operate in regulated domains or support finance-grade analytics</p></li>
 <li><p>You want to stop problems early instead of fixing them late</p></li>
 </ul>
-<p><strong>Benefits</strong>:</p>
+</section>
+<section id="benefits">
+<h3>Benefits<a class="headerlink" href="#benefits" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>✅ Guarantees only clean data reaches production tables</p></li>
 <li><p>✅ Instant visibility into broken pipelines or upstream regressions</p></li>
 <li><p>✅ Encourages a culture of data ownership</p></li>
 </ul>
-<p><strong>Implementation Tip</strong>:</p>
+</section>
+<section id="implementation-tip">
+<h3>Implementation Tip<a class="headerlink" href="#implementation-tip" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">failed_records</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Critical checks failed — stopping pipeline.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="pass-fail-routing-quarantine-strategy">
-<h2>Pass/Fail Routing (Quarantine Strategy)<a class="headerlink" href="#pass-fail-routing-quarantine-strategy" title="Link to this heading">#</a></h2>
-<hr><p>This strategy separates validated data into two distinct paths:</p>
+</section>
+<section id="quarantine-strategy">
+<h2>Quarantine Strategy<a class="headerlink" href="#quarantine-strategy" title="Link to this heading">#</a></h2>
+<p>This strategy separates validated data into two distinct paths:</p>
 <ul class="simple">
 <li><p>✅ <strong>Passing records</strong> are forwarded to a trusted destination (e.g., a data lake or curated table).</p></li>
 <li><p>❌ <strong>Failing records</strong> are redirected to a quarantine zone for inspection, remediation, or alerting.</p></li>
@@ -389,27 +421,44 @@ systems, data lake, or reporting layers.</p>
 metadata — including validation errors (_dq_errors), failure severity levels, and the validation
 timestamp. This enables targeted analysis, quality monitoring, and the ability to track recurring
 issues over time.</p>
-<p><strong>This rich context makes it easy to</strong>:</p>
+<section id="this-rich-context-makes-it-easy-to">
+<h3>This rich context makes it easy to<a class="headerlink" href="#this-rich-context-makes-it-easy-to" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Analyze the most frequent failure reasons</p></li>
 <li><p>Associate validation errors with a specific validation timestamp (shared with the summary)</p></li>
 <li><p>Correlate issues with specific columns or severity levels</p></li>
 <li><p>Build dashboards or alerts around specific validation failures</p></li>
 </ul>
-<p><strong>Benefits</strong>:</p>
+</section>
+<section id="id1">
+<h3>Benefits<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>✅ Clean data flows forward uninterrupted</p></li>
 <li><p>✅ Invalid records are saved with full context (_dq_errors, _dq_passed)</p></li>
 <li><p>✅ Enables smarter debugging and long-term quality improvement</p></li>
 </ul>
-<p><strong>Implementation Tip</strong>:</p>
+</section>
+<section id="id2">
+<h3>Implementation Tip<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">pass_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/trusted-zone&quot;</span><span class="p">)</span>
 <span class="n">result</span><span class="o">.</span><span class="n">fail_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/quarantine-zone&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>These patterns give you full control over the flow of validated data — and turn your quality checks into real
-operational safeguards. No matter how simple or complex your pipeline is, SparkDQ gives you a clean and
-composable way to act on the truth in your data.</p>
+</section>
+</section>
+<section id="choose-your-pattern">
+<h2>Choose Your Pattern<a class="headerlink" href="#choose-your-pattern" title="Link to this heading">#</a></h2>
+<p>These patterns give you full control over the flow of validated data — and turn your quality checks
+into real operational safeguards. Whether you need strict enforcement through fail-fast validation
+or prefer a more flexible quarantine approach that allows for inspection and remediation, SparkDQ
+helps you enforce data quality exactly where it matters most.</p>
+<p>Choosing the right strategy depends on your use case, your data consumers, and your tolerance for risk.
+You can stop bad data at the gate, safely isolate problematic records for further analysis, or even
+combine both approaches for different stages of your pipeline.</p>
+<p>No matter how simple or complex your setup is, SparkDQ provides a clean and composable way to act on the
+truth in your data — so that quality becomes an integral part of your data workflows, not an afterthought.</p>
+<hr><p>🚀 <strong>Next Step</strong>: After explaining how data validation works with the framework,
+the next section provides an overview of all available built-in checks.</p>
 </section>
 </section>
 
@@ -434,11 +483,11 @@ composable way to act on the truth in your data.</p>
       </div>
     </a>
     <a class="right-next"
-       href="../built-in-checks/count-checks.html"
+       href="built_in_checks.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Count Checks</p>
+        <p class="prev-next-title">Built-In Checks</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -458,8 +507,19 @@ composable way to act on the truth in your data.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fail-fast-validation-strict-enforcement">Fail-Fast Validation (Strict Enforcement)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-fail-routing-quarantine-strategy">Pass/Fail Routing (Quarantine Strategy)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fail-fast-validation">Fail-Fast Validation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-ideal-when">This is ideal when</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benefits">Benefits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-tip">Implementation Tip</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quarantine-strategy">Quarantine Strategy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-rich-context-makes-it-easy-to">This rich context makes it easy to</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Benefits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Implementation Tip</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-your-pattern">Choose Your Pattern</a></li>
 </ul>
   </nav></div>
 
