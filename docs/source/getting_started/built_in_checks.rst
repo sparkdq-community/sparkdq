@@ -29,6 +29,8 @@ configuration is provided as a Python dictionary at runtime.
    checks/numeric/numeric_max_check
    checks/numeric/numeric_between_check
 
+   checks/schema/schema_check
+
    checks/timestamp/timestamp_min_check
    checks/timestamp/timestamp_max_check
    checks/timestamp/timestamp_between_check
@@ -71,3 +73,12 @@ Range Checks
     ":ref:`timestamp-min-check` ", "Ensures that timestamp column values are greater than a defined timestamp."
     ":ref:`timestamp-max-check` ", "Ensures that timestamp column values are less than a defined maximum timestamp."
     ":ref:`timestamp-between-check` ", "Ensures that timestamp column values are within a defined inclusive range between a minimum and maximum timestamp."
+
+Schema Checks
+-------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."

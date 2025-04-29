@@ -2,6 +2,7 @@ from .aggregate.count_checks.count_between_check import RowCountBetweenCheckConf
 from .aggregate.count_checks.count_exact_check import RowCountExactCheckConfig
 from .aggregate.count_checks.count_max_check import RowCountMaxCheckConfig
 from .aggregate.count_checks.count_min_check import RowCountMinCheckConfig
+from .aggregate.schema_checks.schema_check import SchemaCheckConfig
 from .row_level.date_checks.date_between_check import DateBetweenCheckConfig
 from .row_level.date_checks.date_max_check import DateMaxCheckConfig
 from .row_level.date_checks.date_min_check import DateMinCheckConfig
@@ -30,4 +31,5 @@ __all__ = [
     "TimestampMinCheckConfig",
     "TimestampMaxCheckConfig",
     "TimestampBetweenCheck",
+    "SchemaCheckConfig"
 ]
