@@ -10,9 +10,11 @@ Checks whether values in the specified numeric columns are within a defined rang
 A row fails the check if any of the selected columns contains a value below `min_value` or above `max_value`, based on the configured inclusivity.
 
 You can control inclusivity for each boundary using the `inclusive` parameter:
-- `inclusive=(False, False)` (default): `min_value < value < max_value`
-- `inclusive=(True, True)`: `min_value <= value <= max_value`
-- Mixed combinations (e.g., `(True, False)`) are also supported
+
+- inclusive: **[False, False]** (default): strictly between ``min < value < max``
+- inclusive: **[True, False]**: include only the lower bound ``min <= value < max``
+- inclusive: **[False, True]**: include only the upper bound ``min < value <= max``
+- inclusive: **[True, True]**: include both bounds ``min <= value <= max``
 
 Python Configuration
 --------------------

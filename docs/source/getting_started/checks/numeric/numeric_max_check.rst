@@ -10,8 +10,9 @@ Checks whether values in the specified numeric columns are **less than** a defin
 A row fails the check if any of the selected columns contains a value **greater than** the maximum, or **equal to it** if `inclusive=False`.
 
 You can control inclusivity with the `inclusive` parameter:
-- `inclusive=False` (default): `value < max_value` required
-- `inclusive=True`: `value <= max_value` allowed
+
+- inclusive = **False** (default): ``value < max_value``
+- inclusive = **True**: ``value <= max_value``
 
 Python Configuration
 --------------------

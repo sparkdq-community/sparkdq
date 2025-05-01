@@ -10,8 +10,10 @@ Checks whether values in the specified timestamp columns are greater than a defi
 A row fails the check if any of the selected columns contains a timestamp before the configured `min_value`.
 
 Use the `inclusive` parameter to control boundary behavior:
-- `inclusive=False` (default): the check fails if `value <= min_value`
-- `inclusive=True`: the check only fails if `value < min_value`
+
+- inclusive = **False** (default): ``value > min_value``
+- inclusive = **True**: ``value >= min_value``
+
 
 Python Configuration
 --------------------
