@@ -8,7 +8,7 @@ from sparkdq.core.base_check import BaseRowCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import MissingColumnError
-from sparkdq.factory.check_config_registry import register_check_config
+from sparkdq.plugin.check_config_registry import register_check_config
 
 
 class NotNullCheck(BaseRowCheck):

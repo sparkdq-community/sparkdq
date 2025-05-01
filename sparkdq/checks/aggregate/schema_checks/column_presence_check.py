@@ -5,7 +5,7 @@ from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
 from sparkdq.core.severity import Severity
-from sparkdq.factory.check_config_registry import register_check_config
+from sparkdq.plugin.check_config_registry import register_check_config
 
 
 class ColumnPresenceCheck(BaseAggregateCheck):

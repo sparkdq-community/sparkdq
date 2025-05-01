@@ -18,8 +18,8 @@ from sparkdq.core.base_check import BaseRowCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import MissingCheckTypeError
-from sparkdq.factory.check_config_registry import CheckConfigRegistry
-from sparkdq.factory.check_factory import CheckFactory
+from sparkdq.plugin.check_config_registry import CheckConfigRegistry
+from sparkdq.plugin.check_factory import CheckFactory
 
 
 class DummyRowCheck(BaseRowCheck):

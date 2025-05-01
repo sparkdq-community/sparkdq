@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 
 from sparkdq.core.base_check import BaseAggregateCheck, BaseCheck, BaseRowCheck
 from sparkdq.core.base_config import BaseCheckConfig
-from sparkdq.factory.check_factory import CheckFactory
+from sparkdq.plugin.check_factory import CheckFactory
 
 
 class CheckSet:
