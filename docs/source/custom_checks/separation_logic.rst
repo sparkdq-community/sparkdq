@@ -56,24 +56,27 @@ Minimal Example
 
 .. code-block:: python
 
-   class PositiveValueCheck(RowLevelCheck):
-       
-       def __init__(self, check_id: str, column: str, severity: Severity = Severity.CRITICAL):
-           super().__init__(check_id=check_id, severity=severity)
-           self.column = column
+    from pyspark.sql import DataFrame
+    from pyspark.sql import functions as F
 
-       def validate(self, df: DataFrame) -> DataFrame:
-           condition = F.col(self.column) > 0
-           return self.with_check_result_column(df, condition)
+    from sparkdq.core import BaseRowCheck, BaseRowCheckConfig, Severity
+    from sparkdq.plugin import register_check_config
 
-   @register_check_config(check_name="positive-value")
-   class PositiveValueCheckConfig(BaseRowCheckConfig):
-       column: str
-       check_class = PositiveValueCheck
 
-   # Usage
-   config = PositiveValueCheckConfig(check_id="check-1", column="salary")
-   check = config.to_check()
+    class PositiveValueCheck(BaseRowCheck):
+
+        def __init__(self, check_id: str, column: str, severity: Severity = Severity.CRITICAL):
+            super().__init__(check_id=check_id, severity=severity)
+            self.column = column
+
+        def validate(self, df: DataFrame) -> DataFrame:
+            condition = F.col(self.column) > 0
+            return self.with_check_result_column(df, condition)
+
+    @register_check_config(check_name="positive-value")
+    class PositiveValueCheckConfig(BaseRowCheckConfig):
+        column: str
+        check_class = PositiveValueCheck
 
 .. raw:: html
 

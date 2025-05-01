@@ -10,7 +10,7 @@ To implement a custom row-level check, you need two components:
 Implementing the Check Class
 ----------------------------
 
-Your custom check must inherit from **RowLevelCheck** and implement the ``validate(df: DataFrame)`` method.
+Your custom check must inherit from **BaseRowCheck** and implement the ``validate(df: DataFrame)`` method.
 This method returns the input DataFrame with an added boolean column indicating whether each row passes.
 The base class provides ``with_check_result_column(...)`` to append this result automatically.
 
@@ -35,9 +35,9 @@ In this example, the check passes if the given column contains a positive value.
    from pyspark.sql import DataFrame
    from pyspark.sql import functions as F
 
-   from sparkdq.core import RowLevelCheck, Severity
+   from sparkdq.core import BaseRowCheck, Severity
 
-   class PositiveValueCheck(RowLevelCheck):
+   class PositiveValueCheck(BaseRowCheck):
        
        def __init__(self, check_id: str, column: str, severity: Severity = Severity.CRITICAL):
            super().__init__(check_id=check_id, severity=severity)
@@ -61,7 +61,10 @@ You must also register the config class using the ``@register_check_config(...)`
 
 .. code-block:: python
 
-   @register_check_config(check_name="positive-value")
+   from sparkdq.core import BaseRowCheckConfig
+   from sparkdq.plugin import register_check_config
+
+   @register_check_config(check_name="my-positive-value-check")
    class PositiveValueCheckConfig(BaseRowCheckConfig):
        column: str
        check_class = PositiveValueCheck
