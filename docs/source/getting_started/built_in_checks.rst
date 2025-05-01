@@ -24,6 +24,8 @@ configuration is provided as a Python dictionary at runtime.
    checks/date/date_min_check
    checks/date/date_max_check
 
+   checks/null/exactly_one_not_null_check
+
    checks/contained_in/is_contained_in_check
    checks/contained_in/is_not_contained_in_check
 
@@ -70,6 +72,7 @@ Null Checks
 
     ":ref:`null_check` ", "Verifies whether a given column contains any null values."
     ":ref:`not_null_check` ", "Checks whether the specified column contains at least one non-null value."
+    ":ref:`exactly_one_not_null_check` ", "Validates that exactly one of the specified columns is non-null per row."
 
 Range Checks
 ------------

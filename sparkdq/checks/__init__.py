@@ -9,6 +9,7 @@ from .row_level.contained_checks.is_not_contained_in_check import IsNotContained
 from .row_level.date_checks.date_between_check import DateBetweenCheckConfig
 from .row_level.date_checks.date_max_check import DateMaxCheckConfig
 from .row_level.date_checks.date_min_check import DateMinCheckConfig
+from .row_level.null_checks.exactly_one_not_null_check import ExactlyOneNotNullCheckConfig
 from .row_level.null_checks.not_null_check import NotNullCheckConfig
 from .row_level.null_checks.null_check import NullCheckConfig
 from .row_level.numeric_checks.numeric_between_check import NumericBetweenCheckConfig
@@ -21,6 +22,7 @@ from .row_level.timestamp_checks.timestamp_min_check import TimestampMinCheckCon
 __all__ = [
     "NullCheckConfig",
     "NotNullCheckConfig",
+    "ExactlyOneNotNullCheckConfig",
     "RowCountMinCheckConfig",
     "RowCountMaxCheckConfig",
     "RowCountExactCheckConfig",
