@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 from sparkdq.core.base_check import BaseCheck
 from sparkdq.core.severity import normalize_severity
 from sparkdq.exceptions import MissingCheckTypeError
-from sparkdq.factory.check_config_registry import CheckConfigRegistry
+from sparkdq.factory.check_config_registry import CheckConfigRegistry, load_config_module
 
 
 class CheckFactory:
@@ -20,7 +20,7 @@ class CheckFactory:
     """
 
     @staticmethod
-    def from_dict(config_data: Dict[str, Any]) -> BaseCheck:
+    def _from_dict(config_data: Dict[str, Any]) -> BaseCheck:
         """
         Creates a check instance from a configuration dictionary.
 
@@ -64,4 +64,6 @@ class CheckFactory:
         Returns:
             List[BaseCheck]: A list of instantiated and validated check objects.
         """
-        return [CheckFactory.from_dict(cfg) for cfg in config_list]
+        # Ensure that all check classes are registered in the CheckFactory
+        load_config_module("sparkdq.checks")
+        return [CheckFactory._from_dict(cfg) for cfg in config_list]

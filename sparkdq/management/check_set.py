@@ -41,9 +41,6 @@ class CheckSet:
         Args:
             configs (List[Dict[str, Any]]): A list of configuration dictionaries defining the checks.
         """
-        # Ensure that all check classes are registered in the CheckFactory
-        import sparkdq.checks  # noqa: F401
-
         self._checks.extend(CheckFactory.from_list(configs))
 
     def get_all(self) -> List[BaseCheck]:
