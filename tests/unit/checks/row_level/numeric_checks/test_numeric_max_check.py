@@ -69,23 +69,21 @@ def test_numeric_max_check_inclusive(spark: SparkSession) -> None:
     data = [Row(value=1), Row(value=5), Row(value=10)]
     df = spark.createDataFrame(data)
 
-    config = NumericMaxCheckConfig(
-        check_id="max_inclusive",
-        columns=["value"],
-        max_value=5,
-        inclusive=True
-    )
+    config = NumericMaxCheckConfig(check_id="max_inclusive", columns=["value"], max_value=5, inclusive=True)
     check = config.to_check()
 
     # Act
     result_df = check.validate(df)
 
     # Assert
-    expected_df = spark.createDataFrame([
-        (1, False),
-        (5, False),
-        (10, True),
-    ], ["value", "max_inclusive"])
+    expected_df = spark.createDataFrame(
+        [
+            (1, False),
+            (5, False),
+            (10, True),
+        ],
+        ["value", "max_inclusive"],
+    )
     assertDataFrameEqual(result_df, expected_df)
 
 

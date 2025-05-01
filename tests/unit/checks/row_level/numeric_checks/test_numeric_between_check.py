@@ -76,22 +76,23 @@ def test_numeric_between_check_validate_inclusive_bounds(spark: SparkSession) ->
 
     A row fails if the value is < min_value or > max_value.
     """
-    df = spark.createDataFrame([
-        Row(value=0.0), Row(value=50.0), Row(value=100.0), Row(value=150.0), Row(value=-1.0)
-    ])
+    df = spark.createDataFrame(
+        [Row(value=0.0), Row(value=50.0), Row(value=100.0), Row(value=150.0), Row(value=-1.0)]
+    )
 
     config = NumericBetweenCheckConfig(
         check_id="inclusive_between",
         columns=["value"],
         min_value=0.0,
         max_value=100.0,
-        inclusive=(True, True)
+        inclusive=(True, True),
     )
     result_df = config.to_check().validate(df)
 
-    expected_df = spark.createDataFrame([
-        (0.0, False), (50.0, False), (100.0, False), (150.0, True), (-1.0, True)
-    ], ["value", "inclusive_between"])
+    expected_df = spark.createDataFrame(
+        [(0.0, False), (50.0, False), (100.0, False), (150.0, True), (-1.0, True)],
+        ["value", "inclusive_between"],
+    )
 
     assertDataFrameEqual(result_df, expected_df)
 

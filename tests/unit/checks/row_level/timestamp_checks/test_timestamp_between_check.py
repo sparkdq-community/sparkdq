@@ -49,9 +49,11 @@ def test_timestamp_between_check_config_invalid_range() -> None:
 
 def test_timestamp_between_check_validate_correctly_flags_rows(spark: SparkSession) -> None:
     """
-    Verifies that TimestampBetweenCheck flags rows where the timestamp column value is outside the allowed range.
+    Verifies that TimestampBetweenCheck flags rows where the timestamp column value is outside the
+    allowed range.
 
-    A row is marked as failed if the 'event_time' is before '2020-01-01 00:00:00' or after '2023-12-31 23:59:59'.
+    A row is marked as failed if the 'event_time' is before '2020-01-01 00:00:00' or
+    after '2023-12-31 23:59:59'.
     """
     data = [
         Row(event_time="2019-12-31 23:59:59"),

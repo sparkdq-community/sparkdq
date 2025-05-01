@@ -40,7 +40,7 @@ class NumericBetweenCheckConfig(BaseRowCheckConfig):
     columns: List[str] = Field(..., description="The list of numeric columns to check for value range")
     inclusive: Tuple[bool, bool] = Field(
         default=(False, False),
-        description="Whether min and max values are inclusive (min_inclusive, max_inclusive)"
+        description="Whether min and max values are inclusive (min_inclusive, max_inclusive)",
     )
     min_value: float | int | Decimal = Field(
         ..., description="The minimum allowed value (inclusive) for the specified columns"

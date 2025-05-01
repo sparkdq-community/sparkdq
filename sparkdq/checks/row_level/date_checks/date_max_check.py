@@ -12,7 +12,8 @@ class DateMaxCheck(BaseMaxCheck):
     """
     Row-level data quality check that verifies date values are below a defined maximum date.
 
-    A row fails if any of the target columns contains a date after (or equal to, depending on `inclusive`) `max_value`.
+    A row fails if any of the target columns contains a date after (or equal to, depending on `inclusive`)
+    `max_value`.
 
     Example use cases:
         - Ensure that no future dates are recorded.

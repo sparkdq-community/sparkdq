@@ -85,10 +85,7 @@ def test_date_min_check_validate_inclusive_true(spark: SparkSession) -> None:
     df = df_raw.withColumn("record_date", to_date("record_date"))
 
     config = DateMinCheckConfig(
-        check_id="date_min_inclusive_check",
-        columns=["record_date"],
-        min_value="2020-01-01",
-        inclusive=True
+        check_id="date_min_inclusive_check", columns=["record_date"], min_value="2020-01-01", inclusive=True
     )
     check = config.to_check()
 
