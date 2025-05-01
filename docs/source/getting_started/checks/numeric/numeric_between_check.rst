@@ -5,9 +5,14 @@ Numeric Between
 
 **Check**: ``numeric-between-check``
 
-**Purpose**:
-Checks whether values in the specified numeric columns are within a defined inclusive range between `min_value` and `max_value`.  
-A row fails the check if any of the selected columns contains a value below `min_value` or above `max_value`.
+**Purpose**:  
+Checks whether values in the specified numeric columns are within a defined range between `min_value` and `max_value`.  
+A row fails the check if any of the selected columns contains a value below `min_value` or above `max_value`, based on the configured inclusivity.
+
+You can control inclusivity for each boundary using the `inclusive` parameter:
+- `inclusive=(False, False)` (default): `min_value < value < max_value`
+- `inclusive=(True, True)`: `min_value <= value <= max_value`
+- Mixed combinations (e.g., `(True, False)`) are also supported
 
 Python Configuration
 --------------------
@@ -22,6 +27,7 @@ Python Configuration
        columns=["discount"],
        min_value=0.0,
        max_value=100.0,
+       inclusive=(True, True),
        severity=Severity.CRITICAL
    )
 
@@ -36,13 +42,12 @@ Declarative Configuration
         - discount
       min_value: 0.0
       max_value: 100.0
+      inclusive: [true, true]
       severity: critical
 
 Typical Use Cases
 -----------------
 
 * ✅ Ensure that numeric values fall within expected physical or business-defined ranges.
-
 * ✅ Validate that percentages, ratios, or scores stay between 0 and 100.
-
 * ✅ Detect outliers or incorrect data entries outside of acceptable thresholds.

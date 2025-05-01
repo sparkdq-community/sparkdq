@@ -1,29 +1,20 @@
 from typing import List
 
 from pydantic import Field, model_validator
-from pyspark.sql import Column
 
-from sparkdq.checks.base_classes.base_comparison_check import BaseComparisonCheck
+from sparkdq.checks.utils.base_comparison_check import BaseBetweenCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class DateBetweenCheck(BaseComparisonCheck):
+class DateBetweenCheck(BaseBetweenCheck):
     """
-    Row-level data quality check that verifies that date values in the specified columns
-    lie between a defined minimum (`min_value`) and maximum (`max_value`) threshold.
+    Row-level data quality check that verifies that date values fall within a specified date range.
 
-    A row fails the check if **any** of the target columns contain a date before `min_value`
-    or after `max_value`.
-
-    Attributes:
-        check_id (str): Unique identifier for the check instance.
-        columns (List[str]): Names of the columns to validate.
-        min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.
-        max_value (str): The maximum allowed date (inclusive), in 'YYYY-MM-DD' format.
-        severity (Severity): Severity level assigned if the check fails.
+    A row fails the check if any of the target columns contain a date before `min_value` or after `max_value`,
+    depending on the configured inclusivity.
     """
 
     def __init__(
@@ -32,6 +23,7 @@ class DateBetweenCheck(BaseComparisonCheck):
         columns: List[str],
         min_value: str,
         max_value: str,
+        inclusive: tuple[bool, bool] = (False, False),
         severity: Severity = Severity.CRITICAL,
     ):
         """
@@ -40,49 +32,42 @@ class DateBetweenCheck(BaseComparisonCheck):
         Args:
             check_id (str): Unique identifier for the check instance.
             columns (List[str]): List of date columns to check.
-            min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.
-            max_value (str): The maximum allowed date (inclusive), in 'YYYY-MM-DD' format.
-            severity (Severity, optional): Severity level of the check result.
-                Defaults to Severity.CRITICAL.
+            min_value (str): Minimum allowed date in 'YYYY-MM-DD' format.
+            max_value (str): Maximum allowed date in 'YYYY-MM-DD' format.
+            inclusive (tuple[bool, bool], optional): Inclusion flags for (min_value, max_value).
+            severity (Severity, optional): Severity level of the check result. Defaults to Severity.CRITICAL.
         """
-        super().__init__(check_id=check_id, columns=columns, severity=severity, cast_type="date")
-        self.min_value = min_value
-        self.max_value = max_value
-
-    def comparison_condition(self, column: Column) -> Column:
-        """
-        Defines the boolean condition that determines check failure for a single column.
-
-        Args:
-            column (Column): The Spark column expression to validate.
-
-        Returns:
-            Column: A boolean expression where `True` indicates a failed check
-                    (value outside the [min_value, max_value] range).
-        """
-        return (column < self.min_value) | (column > self.max_value)
+        super().__init__(
+            check_id=check_id,
+            columns=columns,
+            severity=severity,
+            min_value=min_value,
+            max_value=max_value,
+            inclusive=inclusive,
+            cast_type="date",
+        )
 
 
 @register_check_config(check_name="date-between-check")
 class DateBetweenCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the DateBetweenCheck.
-
-    This configuration defines both a lower and upper date bound constraint
-    on one or more date columns. It ensures that all specified columns contain
-    only dates between the configured `min_value` and `max_value`.
-    Violations are flagged per row.
+    Declarative configuration model for DateBetweenCheck.
 
     Attributes:
-        columns (List[str]): The list of date columns to validate.
-        min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.
-        max_value (str): The maximum allowed date (inclusive), in 'YYYY-MM-DD' format.
+        columns (List[str]): Date columns to validate.
+        min_value (str): Minimum allowed date in 'YYYY-MM-DD' format.
+        max_value (str): Maximum allowed date in 'YYYY-MM-DD' format.
+        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.
     """
 
     check_class = DateBetweenCheck
-    columns: List[str] = Field(..., description="The list of date columns to check for date range")
-    min_value: str = Field(..., description="The minimum allowed date (inclusive) in 'YYYY-MM-DD' format")
-    max_value: str = Field(..., description="The maximum allowed date (inclusive) in 'YYYY-MM-DD' format")
+
+    columns: List[str] = Field(..., description="Date columns to validate")
+    min_value: str = Field(..., description="Minimum allowed date in YYYY-MM-DD format")
+    max_value: str = Field(..., description="Maximum allowed date in YYYY-MM-DD format")
+    inclusive: tuple[bool, bool] = Field(
+        (False, False), description="Tuple of two booleans controlling boundary inclusivity"
+    )
 
     @model_validator(mode="after")
     def validate_between_values(self) -> "DateBetweenCheckConfig":

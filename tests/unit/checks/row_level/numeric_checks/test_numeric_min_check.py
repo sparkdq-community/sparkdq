@@ -60,6 +60,35 @@ def test_numeric_min_check_validate_correctly_flags_rows(spark: SparkSession) ->
     assertDataFrameEqual(result_df, expected_df)
 
 
+def test_numeric_min_check_inclusive(spark: SparkSession) -> None:
+    """
+    Verifies that NumericMinCheck flags rows where the numeric value is strictly less than min_value,
+    when inclusive is set to True.
+    """
+    # Arrange
+    data = [Row(value=10), Row(value=5), Row(value=1)]
+    df = spark.createDataFrame(data)
+
+    config = NumericMinCheckConfig(
+        check_id="min_inclusive",
+        columns=["value"],
+        min_value=5,
+        inclusive=True
+    )
+    check = config.to_check()
+
+    # Act
+    result_df = check.validate(df)
+
+    # Assert
+    expected_df = spark.createDataFrame([
+        (10, False),
+        (5, False),
+        (1, True),
+    ], ["value", "min_inclusive"])
+    assertDataFrameEqual(result_df, expected_df)
+
+
 def test_numeric_min_check_missing_column(spark: SparkSession) -> None:
     """
     Validates that NumericMinCheck raises MissingColumnError if a specified column does not exist.

@@ -54,9 +54,38 @@ def test_numeric_max_check_validate_correctly_flags_rows(spark: SparkSession) ->
 
     # Assert: Expect True where 'price' exceeds 100.0, otherwise False
     expected_df = spark.createDataFrame(
-        [(80.0, False), (100.0, False), (150.0, True)],
+        [(80.0, False), (100.0, True), (150.0, True)],
         ["price", "max_check"],
     )
+    assertDataFrameEqual(result_df, expected_df)
+
+
+def test_numeric_max_check_inclusive(spark: SparkSession) -> None:
+    """
+    Verifies that NumericMaxCheck flags rows where the numeric value is strictly greater than max_value,
+    when inclusive is set to True.
+    """
+    # Arrange
+    data = [Row(value=1), Row(value=5), Row(value=10)]
+    df = spark.createDataFrame(data)
+
+    config = NumericMaxCheckConfig(
+        check_id="max_inclusive",
+        columns=["value"],
+        max_value=5,
+        inclusive=True
+    )
+    check = config.to_check()
+
+    # Act
+    result_df = check.validate(df)
+
+    # Assert
+    expected_df = spark.createDataFrame([
+        (1, False),
+        (5, False),
+        (10, True),
+    ], ["value", "max_inclusive"])
     assertDataFrameEqual(result_df, expected_df)
 
 

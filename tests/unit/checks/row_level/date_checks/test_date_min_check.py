@@ -41,7 +41,7 @@ def test_date_min_check_validate_correctly_flags_rows(spark: SparkSession) -> No
     # Arrange: Create a DataFrame with true DateType column
     data = [
         Row(record_date="2019-12-31"),  # should fail
-        Row(record_date="2020-01-01"),  # should pass
+        Row(record_date="2020-01-01"),  # should fail
         Row(record_date="2021-06-15"),  # should pass
     ]
     schema = StructType([StructField("record_date", StringType(), True)])
@@ -61,10 +61,47 @@ def test_date_min_check_validate_correctly_flags_rows(spark: SparkSession) -> No
     # Assert: Expect True where 'record_date' is before '2020-01-01', otherwise False
     expected_data = [
         ("2019-12-31", True),
-        ("2020-01-01", False),
+        ("2020-01-01", True),
         ("2021-06-15", False),
     ]
     expected_raw = spark.createDataFrame(expected_data, ["record_date", "date_min_check"])
+    expected_df = expected_raw.withColumn("record_date", to_date("record_date"))
+
+    assertDataFrameEqual(result_df, expected_df)
+
+
+def test_date_min_check_validate_inclusive_true(spark: SparkSession) -> None:
+    """
+    Verifies that DateMinCheck with inclusive=True treats the boundary value as valid.
+    """
+    # Arrange: Create a DataFrame with values around the boundary
+    data = [
+        Row(record_date="2019-12-31"),
+        Row(record_date="2020-01-01"),
+        Row(record_date="2021-06-15"),
+    ]
+    schema = StructType([StructField("record_date", StringType(), True)])
+    df_raw = spark.createDataFrame(data, schema)
+    df = df_raw.withColumn("record_date", to_date("record_date"))
+
+    config = DateMinCheckConfig(
+        check_id="date_min_inclusive_check",
+        columns=["record_date"],
+        min_value="2020-01-01",
+        inclusive=True
+    )
+    check = config.to_check()
+
+    # Act: Apply the DateMinCheck
+    result_df = check.validate(df)
+
+    # Assert: Expect only date below threshold to fail
+    expected_data = [
+        ("2019-12-31", True),
+        ("2020-01-01", False),
+        ("2021-06-15", False),
+    ]
+    expected_raw = spark.createDataFrame(expected_data, ["record_date", "date_min_inclusive_check"])
     expected_df = expected_raw.withColumn("record_date", to_date("record_date"))
 
     assertDataFrameEqual(result_df, expected_df)
