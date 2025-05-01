@@ -6,7 +6,7 @@ from pyspark.sql import Column
 from sparkdq.checks.base_classes.base_comparison_check import BaseComparisonCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
 from sparkdq.core.severity import Severity
-from sparkdq.factory.check_config_registry import register_check_config
+from sparkdq.plugin.check_config_registry import register_check_config
 
 
 class DateMinCheck(BaseComparisonCheck):

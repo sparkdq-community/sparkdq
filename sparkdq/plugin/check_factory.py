@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 from sparkdq.core.base_check import BaseCheck
 from sparkdq.core.severity import normalize_severity
 from sparkdq.exceptions import MissingCheckTypeError
-from sparkdq.factory.check_config_registry import CheckConfigRegistry, load_config_module
+from sparkdq.plugin.check_config_registry import CheckConfigRegistry, load_config_module
 
 
 class CheckFactory:

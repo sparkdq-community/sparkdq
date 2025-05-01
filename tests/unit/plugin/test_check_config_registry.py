@@ -16,7 +16,7 @@ import pytest
 
 from sparkdq.core.base_check import BaseRowCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
-from sparkdq.factory.check_config_registry import CheckConfigRegistry, register_check_config
+from sparkdq.plugin.check_config_registry import CheckConfigRegistry, register_check_config
 
 
 class DummyRowCheck(BaseRowCheck):
