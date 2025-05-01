@@ -5,10 +5,13 @@ Date Min
 
 **Check**: ``date-min-check``
 
-**Purpose**:
-Checks whether values in the specified date columns are greater than a defined
-minimum date. A row fails the check if any of the selected columns contains a
-date before the configured `min_value`.
+**Purpose**:  
+Checks whether values in the specified date columns are **greater than** a defined minimum date.  
+A row fails the check if any of the selected columns contains a date before the configured `min_value`.
+
+You can control inclusivity using the `inclusive` parameter:
+- `inclusive=False` (default): `value > min_value` is required
+- `inclusive=True`: `value >= min_value` is allowed
 
 Python Configuration
 --------------------
@@ -22,6 +25,7 @@ Python Configuration
        check_id="minimum_allowed_record_date",
        columns=["record_date"],
        min_value="2020-01-01",
+       inclusive=True,
        severity=Severity.CRITICAL
    )
 
@@ -35,15 +39,12 @@ Declarative Configuration
       columns:
         - record_date
       min_value: "2020-01-01"
+      inclusive: true
       severity: critical
 
 Typical Use Cases
 -----------------
 
 * ✅ Ensure that event or transaction dates are not earlier than a defined start date.
-
-* ✅ Validate that timestamps for measurements or logs do not lie before a system go-live or rollout date.
-
 * ✅ Check that data entries only contain dates within the valid business period.
-
 * ✅ Prevent processing of outdated or legacy data outside of the expected time range.

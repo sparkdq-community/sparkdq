@@ -1,26 +1,19 @@
 from typing import List
 
 from pydantic import Field
-from pyspark.sql import Column
 
-from sparkdq.checks.base_classes.base_comparison_check import BaseComparisonCheck
+from sparkdq.checks.utils.base_comparison_check import BaseMinCheck
 from sparkdq.core.base_config import BaseRowCheckConfig
 from sparkdq.core.severity import Severity
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class TimestampMinCheck(BaseComparisonCheck):
+class TimestampMinCheck(BaseMinCheck):
     """
     Row-level data quality check that verifies that timestamp values in the specified columns
-    are greater than or equal to a defined minimum timestamp.
+    are greater than a defined minimum timestamp.
 
-    A row fails the check if **any** of the target columns contain a timestamp before `min_value`.
-
-    Attributes:
-        check_id (str): Unique identifier for the check instance.
-        columns (List[str]): Names of the columns to validate.
-        min_value (str): The minimum allowed timestamp (inclusive), in 'YYYY-MM-DD HH:MM:SS' format.
-        severity (Severity): Severity level assigned if the check fails.
+    A row fails the check if **any** of the target columns contain a timestamp less than `min_value`.
     """
 
     def __init__(
@@ -28,6 +21,7 @@ class TimestampMinCheck(BaseComparisonCheck):
         check_id: str,
         columns: List[str],
         min_value: str,
+        inclusive: bool,
         severity: Severity = Severity.CRITICAL,
     ):
         """
@@ -36,25 +30,19 @@ class TimestampMinCheck(BaseComparisonCheck):
         Args:
             check_id (str): Unique identifier for the check instance.
             columns (List[str]): List of timestamp columns to check.
-            min_value (str): The minimum allowed timestamp (inclusive), in 'YYYY-MM-DD HH:MM:SS' format.
+            min_value (str): The minimum allowed timestamp in ISO format (e.g. '2023-01-01T00:00:00').
+            inclusive (bool): Whether the minimum timestamp is inclusive.
             severity (Severity, optional): Severity level of the check result.
                 Defaults to Severity.CRITICAL.
         """
-        super().__init__(check_id=check_id, columns=columns, severity=severity, cast_type="timestamp")
-        self.min_value = min_value
-
-    def comparison_condition(self, column: Column) -> Column:
-        """
-        Defines the boolean condition that determines check failure for a single column.
-
-        Args:
-            column (Column): The Spark column expression to validate.
-
-        Returns:
-            Column: A boolean expression where `True` indicates a failed check
-                    (value before `min_value`).
-        """
-        return column < self.min_value
+        super().__init__(
+            check_id=check_id,
+            columns=columns,
+            severity=severity,
+            inclusive=inclusive,
+            min_value=min_value,
+            cast_type="timestamp",
+        )
 
 
 @register_check_config(check_name="timestamp-min-check")
@@ -63,18 +51,17 @@ class TimestampMinCheckConfig(BaseRowCheckConfig):
     Declarative configuration model for the TimestampMinCheck.
 
     This configuration defines a minimum timestamp constraint on one or more timestamp columns.
-    It ensures that all specified columns contain only timestamps on or after the configured `min_value`.
-    Violations are flagged per row.
+    It ensures that all specified columns contain only values greater than (or equal to, depending on
+    `inclusive`) the configured `min_value`. Violations are flagged per row.
 
     Attributes:
         columns (List[str]): The list of timestamp columns to validate.
-        min_value (str): The minimum allowed timestamp (inclusive), in 'YYYY-MM-DD HH:MM:SS' format.
+        min_value (str): The minimum allowed timestamp in ISO 8601 format (e.g. '2023-01-01T00:00:00').
+        inclusive (bool): Whether the minimum value is inclusive.
     """
 
     check_class = TimestampMinCheck
-    columns: List[str] = Field(
-        ..., description="The list of timestamp columns to check for minimum timestamp"
-    )
-    min_value: str = Field(
-        ..., description="The minimum allowed timestamp (inclusive) in 'YYYY-MM-DD HH:MM:SS' format"
-    )
+
+    columns: List[str] = Field(..., description="The list of timestamp columns to check")
+    min_value: str = Field(..., description="The minimum allowed timestamp (ISO 8601 format)")
+    inclusive: bool = Field(False, description="Whether the minimum timestamp is inclusive")

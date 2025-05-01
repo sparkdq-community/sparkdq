@@ -15,17 +15,13 @@ def test_date_max_check_config_valid() -> None:
 
     The created check should match the configured check_id, columns, and max_value.
     """
-    # Arrange: Create a config with valid parameters
     config = DateMaxCheckConfig(
         check_id="check_max_date",
         columns=["record_date"],
         max_value="2023-12-31",
     )
-
-    # Act: Convert config to check instance
     check = config.to_check()
 
-    # Assert: Check instance has correct attributes
     assert isinstance(check, DateMaxCheck)
     assert check.check_id == "check_max_date"
     assert check.columns == ["record_date"]
@@ -38,11 +34,10 @@ def test_date_max_check_validate_correctly_flags_rows(spark: SparkSession) -> No
 
     A row is marked as failed if the 'record_date' is after '2023-12-31'.
     """
-    # Arrange: Create a DataFrame with true DateType column
     data = [
-        Row(record_date="2023-12-30"),  # should pass
-        Row(record_date="2023-12-31"),  # should pass
-        Row(record_date="2024-01-01"),  # should fail
+        Row(record_date="2023-12-30"),
+        Row(record_date="2023-12-31"),
+        Row(record_date="2024-01-01"),
     ]
     schema = StructType([StructField("record_date", StringType(), True)])
     df_raw = spark.createDataFrame(data, schema)
@@ -54,17 +49,49 @@ def test_date_max_check_validate_correctly_flags_rows(spark: SparkSession) -> No
         max_value="2023-12-31",
     )
     check = config.to_check()
-
-    # Act: Apply the DateMaxCheck
     result_df = check.validate(df)
 
-    # Assert: Expect True where 'record_date' is after '2023-12-31', otherwise False
+    expected_data = [
+        ("2023-12-30", False),
+        ("2023-12-31", True),
+        ("2024-01-01", True),
+    ]
+    expected_raw = spark.createDataFrame(expected_data, ["record_date", "date_max_check"])
+    expected_df = expected_raw.withColumn("record_date", to_date("record_date"))
+
+    assertDataFrameEqual(result_df, expected_df)
+
+
+def test_date_max_check_validate_inclusive_true(spark: SparkSession) -> None:
+    """
+    Verifies that DateMaxCheck with inclusive=True includes the boundary date as valid.
+
+    A row is marked as failed only if the 'record_date' is after '2023-12-31'.
+    """
+    data = [
+        Row(record_date="2023-12-30"),
+        Row(record_date="2023-12-31"),
+        Row(record_date="2024-01-01"),
+    ]
+    schema = StructType([StructField("record_date", StringType(), True)])
+    df_raw = spark.createDataFrame(data, schema)
+    df = df_raw.withColumn("record_date", to_date("record_date"))
+
+    config = DateMaxCheckConfig(
+        check_id="date_max_inclusive_check",
+        columns=["record_date"],
+        max_value="2023-12-31",
+        inclusive=True,
+    )
+    check = config.to_check()
+    result_df = check.validate(df)
+
     expected_data = [
         ("2023-12-30", False),
         ("2023-12-31", False),
         ("2024-01-01", True),
     ]
-    expected_raw = spark.createDataFrame(expected_data, ["record_date", "date_max_check"])
+    expected_raw = spark.createDataFrame(expected_data, ["record_date", "date_max_inclusive_check"])
     expected_df = expected_raw.withColumn("record_date", to_date("record_date"))
 
     assertDataFrameEqual(result_df, expected_df)
@@ -76,7 +103,6 @@ def test_date_max_check_missing_column(spark: SparkSession) -> None:
 
     The check should immediately fail at runtime when accessing a missing column.
     """
-    # Arrange: DataFrame does not contain the required 'missing' column
     df = spark.createDataFrame([(1, "Alice")], ["id", "name"])
 
     config = DateMaxCheckConfig(
@@ -86,6 +112,5 @@ def test_date_max_check_missing_column(spark: SparkSession) -> None:
     )
     check = config.to_check()
 
-    # Act & Assert: Expect MissingColumnError when the column is not present
     with pytest.raises(MissingColumnError):
         check.validate(df)
