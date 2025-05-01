@@ -54,7 +54,7 @@ With this structure in place, you can load and register all your custom checks w
 
 .. code-block:: python
 
-   from sparkdq.registry import load_config_module
+   from sparkdq.plugin import load_config_module
 
    load_config_module("myproject.custom_checks")
 

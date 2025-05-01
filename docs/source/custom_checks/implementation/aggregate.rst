@@ -68,6 +68,10 @@ Minimal Example
 
 .. code-block:: python
 
+   from sparkdq.core import BaseAggregateCheckConfig
+   from sparkdq.exceptions import InvalidCheckConfigurationError
+   from sparkdq.plugin import register_check_config
+
    @register_check_config(check_name="my-custom-count-check")
    class RowCountMinCheckConfig(BaseAggregateCheckConfig):
        check_class = RowCountMinCheck

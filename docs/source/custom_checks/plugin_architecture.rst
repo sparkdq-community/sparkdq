@@ -84,7 +84,7 @@ This is done explicitly using the utility function ``load_config_module(...)``:
 
 .. code-block:: python
 
-   from sparkdq.registry import load_config_module
+   from sparkdq.plugin import load_config_module
 
    load_config_module("your_custom_checks")
 
