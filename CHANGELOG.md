@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-05-01)
+
+### Features
+
+- **checks**: Add inclusive parameter to range checks
+  ([#11](https://github.com/sparkdq-community/sparkdq/pull/11),
+  [`38c9415`](https://github.com/sparkdq-community/sparkdq/commit/38c94151c5fae031332ed036ae1f14ae8d9d7b26))
+
+
 ## v0.3.0 (2025-05-01)
 
 ### Documentation
