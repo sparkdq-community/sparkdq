@@ -1,3 +1,4 @@
+import importlib
 from typing import Callable, Dict, Type
 
 from sparkdq.core.base_config import BaseCheckConfig
@@ -77,3 +78,14 @@ def register_check_config(check_name: str) -> Callable[[Type[BaseCheckConfig]], 
         return cls
 
     return decorator
+
+
+def load_config_module(module: str) -> None:
+    """
+    Dynamically imports a module by name to trigger config registration
+    via @register_check_config decorators.
+
+    Args:
+        module (str): Fully qualified module path to import.
+    """
+    importlib.import_module(module)

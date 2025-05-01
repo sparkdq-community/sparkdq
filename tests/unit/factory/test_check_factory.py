@@ -49,7 +49,7 @@ def test_from_dict_creates_check_instance() -> None:
     config_data = {"check-id": "test", "check": "dummy-check", "column": "foo", "severity": "warning"}
 
     # Act
-    check = CheckFactory.from_dict(config_data)
+    check = CheckFactory._from_dict(config_data)
 
     # Assert
     assert isinstance(check, DummyRowCheck)
@@ -63,7 +63,7 @@ def test_from_dict_raises_on_missing_check_field() -> None:
     when the 'check' field is missing from the dictionary.
     """
     with pytest.raises(MissingCheckTypeError):
-        CheckFactory.from_dict({"column": "foo"})
+        CheckFactory._from_dict({"column": "foo"})
 
 
 def test_from_list_creates_multiple_checks() -> None:
