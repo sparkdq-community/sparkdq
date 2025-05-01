@@ -158,7 +158,7 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">Validation Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defining_checks.html">Defining Checks</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
@@ -171,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_min_check.html">Date Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/null/not_null_check.html">Not Null Check</a></li>
@@ -182,6 +183,17 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Custom Checks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/separation_logic.html">Configuration and Check</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/plugin_architecture.html">Plugin Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../custom_checks/implementation/structure.html">Implementation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../custom_checks/implementation/row_level.html">Row-Level Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_checks/implementation/aggregate.html">Aggregate Checks</a></li>
 </ul>
 </details></li>
 </ul>
@@ -364,7 +376,7 @@ document.write(`
                   
   <section id="validating-dataframes">
 <h1>Validating DataFrames<a class="headerlink" href="#validating-dataframes" title="Link to this heading">#</a></h1>
-<p>Once you have defined your checks and grouped them into a CheckSet, the next step is to validate your data.
+<p>Once you have defined your checks and grouped them into a <code class="docutils literal notranslate"><span class="pre">CheckSet</span></code>, the next step is to validate your data.
 SparkDQ provides a Spark-native, extensible engine that evaluates your rules, annotates your DataFrame, and
 delivers a structured result that supports both strict enforcement and flexible data routing.</p>
 <p>This section explains how to execute validations and interpret the results.</p>
@@ -398,11 +410,11 @@ receive a rich, structured result in return.</p>
 </section>
 <section id="what-happens-under-the-hood">
 <h2>What Happens Under the Hood?<a class="headerlink" href="#what-happens-under-the-hood" title="Link to this heading">#</a></h2>
-<p>When you call <strong>run_batch()</strong>, the engine will:</p>
+<p>When you call <code class="docutils literal notranslate"><span class="pre">run_batch()</span></code>, the engine will:</p>
 <ul class="simple">
 <li><p>Apply row-level checks (e.g. null checks, value constraints) and mark failures at the row level</p></li>
 <li><p>Evaluate aggregate checks (e.g. row count, min/max rules) against the full DataFrame</p></li>
-<li><p>Annotate the dataset with helper columns like <strong>_dq_passed</strong>, <strong>_dq_errors</strong>, <strong>_dq_validation_ts</strong></p></li>
+<li><p>Annotate the dataset with helper columns like <code class="docutils literal notranslate"><span class="pre">_dq_passed</span></code>, <code class="docutils literal notranslate"><span class="pre">_dq_errors</span></code>, <code class="docutils literal notranslate"><span class="pre">_dq_validation_ts</span></code></p></li>
 <li><p>Return a result object that you can query, summarize, and route as needed</p></li>
 </ul>
 <p>This design allows you to embed validation logic directly into your ETL or data contract workflows, while
@@ -440,10 +452,10 @@ pipeline.</p>
 <h2>What’s Inside the Result DataFrame?<a class="headerlink" href="#what-s-inside-the-result-dataframe" title="Link to this heading">#</a></h2>
 <p>sparkdq automatically annotates your DataFrame with additional columns:</p>
 <ul class="simple">
-<li><p><strong>_dq_passed</strong>: Boolean flag indicating whether the row passed all critical checks</p></li>
-<li><p><strong>_dq_errors</strong>: Array of structured errors for each failed check (name, check-id, severity)</p></li>
-<li><p><strong>_dq_aggregate_errors</strong>: Optional column for dataset-wide violations</p></li>
-<li><p><strong>_dq_validation_ts</strong>: Timestamp marking when the validation run was executed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_dq_passed</span></code>: Boolean flag indicating whether the row passed all critical checks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_dq_errors</span></code>: Array of structured errors for each failed check (name, check-id, severity)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_dq_aggregate_errors</span></code>: Optional column for dataset-wide violations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_dq_validation_ts</span></code>: Timestamp marking when the validation run was executed</p></li>
 </ul>
 <p>This enriched metadata allows you to:</p>
 <ul class="simple">

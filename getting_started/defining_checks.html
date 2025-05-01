@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Validating DataFrames" href="validation_dataframes.html" />
-    <link rel="prev" title="Validation Workflow" href="validation_lifecycle.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -158,7 +158,7 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="validation_lifecycle.html">Validation Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Defining Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
@@ -171,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_min_check.html">Date Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/null/exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/null/not_null_check.html">Not Null Check</a></li>
@@ -182,6 +183,17 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Custom Checks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/separation_logic.html">Configuration and Check</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_checks/plugin_architecture.html">Plugin Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../custom_checks/implementation/structure.html">Implementation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../custom_checks/implementation/row_level.html">Row-Level Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_checks/implementation/aggregate.html">Aggregate Checks</a></li>
 </ul>
 </details></li>
 </ul>
@@ -352,10 +364,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregate-checks">Aggregate Checks</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#critical-default">Critical (default)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#internals">Internals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unified-check-handling">Unified Check Handling</a></li>
 </ul>
             </nav>
         </div>
@@ -395,13 +411,19 @@ where, for example, a dataset with too few records should cause the entire batch
 </section>
 <section id="check-severity">
 <h2>Check Severity<a class="headerlink" href="#check-severity" title="Link to this heading">#</a></h2>
-<p>Each check can be assigned a severity level to control how violations should be interpreted:</p>
-<ul class="simple">
-<li><p><strong>critical</strong> (default): indicates a strict failure condition</p></li>
-<li><p><strong>warning</strong>: indicates a non-blocking issue that should be recorded but not treated as invalid</p></li>
-</ul>
-<p>The severity determines how the validation engine classifies results later on. Critical checks are typically
-used to enforce quality gates, while warnings are useful for logging soft constraints or monitoring potential issues.</p>
+<p>Each check can be assigned a severity level to control how violations should be interpreted.</p>
+<section id="critical-default">
+<h3>Critical (default)<a class="headerlink" href="#critical-default" title="Link to this heading">#</a></h3>
+<p>Critical checks represent hard failures. If a critical check fails, the affected data is considered invalid
+and will be excluded from the result. This level is typically used for mandatory rules — e.g., primary key
+constraints, schema integrity, or essential null checks.</p>
+</section>
+<section id="warning">
+<h3>Warning<a class="headerlink" href="#warning" title="Link to this heading">#</a></h3>
+<p>Warning-level checks indicate potential issues that should be logged or monitored, but they do not
+invalidate the data. Failed rows remain part of the valid output. This is useful for soft constraints,
+such as unexpected value distributions or optional completeness requirements.</p>
+</section>
 </section>
 <section id="python-native-configuration">
 <h2>Python-native Configuration<a class="headerlink" href="#python-native-configuration" title="Link to this heading">#</a></h2>
@@ -458,8 +480,8 @@ dependencies on YAML, JSON, or database connectors. This lightweight, integratio
 that you stay in full control of how configurations are loaded, making it easy to plug SparkDQ into any
 existing system or pipeline.</p>
 </section>
-<section id="internals">
-<h2>Internals<a class="headerlink" href="#internals" title="Link to this heading">#</a></h2>
+<section id="unified-check-handling">
+<h2>Unified Check Handling<a class="headerlink" href="#unified-check-handling" title="Link to this heading">#</a></h2>
 <p>Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:</p>
 <ol class="arabic simple">
 <li><p>Checks are resolved via a central registry</p></li>
@@ -484,12 +506,12 @@ existing system or pipeline.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="validation_lifecycle.html"
+       href="introduction.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Validation Workflow</p>
+        <p class="prev-next-title">Introduction</p>
       </div>
     </a>
     <a class="right-next"
@@ -522,10 +544,14 @@ existing system or pipeline.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregate-checks">Aggregate Checks</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-severity">Check Severity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#critical-default">Critical (default)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#internals">Internals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unified-check-handling">Unified Check Handling</a></li>
 </ul>
   </nav></div>
 

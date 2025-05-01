@@ -32,14 +32,21 @@ where, for example, a dataset with too few records should cause the entire batch
 Check Severity
 --------------
 
-Each check can be assigned a severity level to control how violations should be interpreted:
+Each check can be assigned a severity level to control how violations should be interpreted.
 
-* **critical** (default): indicates a strict failure condition
+Critical (default)
+^^^^^^^^^^^^^^^^^^
 
-* **warning**: indicates a non-blocking issue that should be recorded but not treated as invalid
+Critical checks represent hard failures. If a critical check fails, the affected data is considered invalid
+and will be excluded from the result. This level is typically used for mandatory rules — e.g., primary key
+constraints, schema integrity, or essential null checks.
 
-The severity determines how the validation engine classifies results later on. Critical checks are typically
-used to enforce quality gates, while warnings are useful for logging soft constraints or monitoring potential issues.
+Warning
+^^^^^^^
+
+Warning-level checks indicate potential issues that should be logged or monitored, but they do not
+invalidate the data. Failed rows remain part of the valid output. This is useful for soft constraints,
+such as unexpected value distributions or optional completeness requirements.
 
 Python-native Configuration
 ---------------------------
@@ -103,8 +110,8 @@ dependencies on YAML, JSON, or database connectors. This lightweight, integratio
 that you stay in full control of how configurations are loaded, making it easy to plug SparkDQ into any
 existing system or pipeline.
 
-Internals
----------
+Unified Check Handling
+----------------------
 
 Both definition styles are fully compatible and can even be mixed in the same CheckSet. Internally, SparkDQ handles all checks the same way:
 
