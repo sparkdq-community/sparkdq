@@ -20,8 +20,18 @@ SparkDQ — Data Quality Validation
    :caption: Getting Started
    :hidden:
 
-   getting_started/validation_lifecycle
+   getting_started/introduction
    getting_started/defining_checks
    getting_started/validation_dataframes
    getting_started/applying_validation
    getting_started/built_in_checks
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Custom Checks
+   :hidden:
+
+   custom_checks/introduction
+   custom_checks/separation_logic
+   custom_checks/plugin_architecture
+   custom_checks/implementation/structure

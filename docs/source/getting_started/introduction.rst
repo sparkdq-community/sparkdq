@@ -1,5 +1,5 @@
-Validation Workflow
-===================
+Introduction
+============
 
 To get the most out of **SparkDQ**, it's helpful to understand how its core components fit together. This section
 gives you a high-level overview of how data validation works in SparkDQ, what the main building blocks are,
