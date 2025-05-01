@@ -18,11 +18,14 @@ def test_exactly_one_not_null_check_valid_rows(spark: SparkSession) -> None:
     Given multiple columns, only one of them should be non-null per row for the check to pass.
     """
     # Arrange
-    df = spark.createDataFrame([
-        (None, "user@example.com", None),
-        ("0151", None, None),
-        (None, None, 1234),
-    ], ["phone", "email", "user_id"])
+    df = spark.createDataFrame(
+        [
+            (None, "user@example.com", None),
+            ("0151", None, None),
+            (None, None, 1234),
+        ],
+        ["phone", "email", "user_id"],
+    )
     check = ExactlyOneNotNullCheck(check_id="exactly_one", columns=["phone", "email", "user_id"])
 
     # Act
@@ -40,11 +43,14 @@ def test_exactly_one_not_null_check_invalid_rows(spark: SparkSession) -> None:
     A row fails the check if none or more than one of the specified columns are non-null.
     """
     # Arrange
-    df = spark.createDataFrame([
-        (None, None, None),      # 0 non-null
-        ("0151", "user@example.com", None),  # 2 non-null
-        ("0151", "user@example.com", 1234),  # 3 non-null
-    ], ["phone", "email", "user_id"])
+    df = spark.createDataFrame(
+        [
+            (None, None, None),  # 0 non-null
+            ("0151", "user@example.com", None),  # 2 non-null
+            ("0151", "user@example.com", 1234),  # 3 non-null
+        ],
+        ["phone", "email", "user_id"],
+    )
     check = ExactlyOneNotNullCheck(check_id="exactly_one", columns=["phone", "email", "user_id"])
 
     # Act
@@ -77,9 +83,7 @@ def test_exactly_one_not_null_check_config_instantiation() -> None:
     """
     # Arrange
     config = ExactlyOneNotNullCheckConfig(
-        check_id="config_test",
-        columns=["email", "phone"],
-        severity=Severity.WARNING
+        check_id="config_test", columns=["email", "phone"], severity=Severity.WARNING
     )
 
     # Act
