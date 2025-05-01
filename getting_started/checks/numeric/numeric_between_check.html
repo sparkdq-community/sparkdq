@@ -377,8 +377,12 @@ document.write(`
 <span id="numeric-between-check"></span><h1>Numeric Between<a class="headerlink" href="#numeric-between" title="Link to this heading">#</a></h1>
 <p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">numeric-between-check</span></code></p>
 <p><strong>Purpose</strong>:
-Checks whether values in the specified numeric columns are within a defined inclusive range between <cite>min_value</cite> and <cite>max_value</cite>.
-A row fails the check if any of the selected columns contains a value below <cite>min_value</cite> or above <cite>max_value</cite>.</p>
+Checks whether values in the specified numeric columns are within a defined range between <cite>min_value</cite> and <cite>max_value</cite>.
+A row fails the check if any of the selected columns contains a value below <cite>min_value</cite> or above <cite>max_value</cite>, based on the configured inclusivity.</p>
+<p>You can control inclusivity for each boundary using the <cite>inclusive</cite> parameter:
+- <cite>inclusive=(False, False)</cite> (default): <cite>min_value &lt; value &lt; max_value</cite>
+- <cite>inclusive=(True, True)</cite>: <cite>min_value &lt;= value &lt;= max_value</cite>
+- Mixed combinations (e.g., <cite>(True, False)</cite>) are also supported</p>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericBetweenCheckConfig</span>
@@ -389,6 +393,7 @@ A row fails the check if any of the selected columns contains a value below <cit
     <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;discount&quot;</span><span class="p">],</span>
     <span class="n">min_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">max_value</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
     <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
@@ -402,6 +407,7 @@ A row fails the check if any of the selected columns contains a value below <cit
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">discount</span>
 <span class="w">  </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
 <span class="w">  </span><span class="nt">max_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100.0</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">true</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>

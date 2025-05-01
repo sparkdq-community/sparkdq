@@ -6,8 +6,12 @@ Numeric Min
 **Check**: ``numeric-min-check``
 
 **Purpose**:  
-Checks whether values in the specified numeric columns are strictly greater than a defined minimum value.  
-A row fails the check if any of the selected columns contains a value less than or equal to the configured `min_value`.
+Checks whether values in the specified numeric columns are **strictly greater than** a defined minimum value (`min_value`).  
+A row fails the check if any of the selected columns contains a value **less than** the minimum, or **equal to it** if `inclusive=False`.
+
+You can control inclusivity with the `inclusive` parameter:
+- `inclusive=False` (default): `value > min_value` required
+- `inclusive=True`: `value >= min_value` allowed
 
 Python Configuration
 --------------------
@@ -21,6 +25,7 @@ Python Configuration
        check_id="minimum_allowed_price",
        columns=["price", "discount"],
        min_value=0.0,
+       inclusive=True,
        severity=Severity.CRITICAL
    )
 
@@ -35,6 +40,7 @@ Declarative Configuration
         - price
         - discount
       min_value: 0.0
+      inclusive: true
       severity: critical
 
 Typical Use Cases

@@ -377,9 +377,11 @@ document.write(`
 <span id="date-min-check"></span><h1>Date Min<a class="headerlink" href="#date-min" title="Link to this heading">#</a></h1>
 <p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">date-min-check</span></code></p>
 <p><strong>Purpose</strong>:
-Checks whether values in the specified date columns are greater than a defined
-minimum date. A row fails the check if any of the selected columns contains a
-date before the configured <cite>min_value</cite>.</p>
+Checks whether values in the specified date columns are <strong>greater than</strong> a defined minimum date.
+A row fails the check if any of the selected columns contains a date before the configured <cite>min_value</cite>.</p>
+<p>You can control inclusivity using the <cite>inclusive</cite> parameter:
+- <cite>inclusive=False</cite> (default): <cite>value &gt; min_value</cite> is required
+- <cite>inclusive=True</cite>: <cite>value &gt;= min_value</cite> is allowed</p>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">DateMinCheckConfig</span>
@@ -389,6 +391,7 @@ date before the configured <cite>min_value</cite>.</p>
     <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;minimum_allowed_record_date&quot;</span><span class="p">,</span>
     <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;record_date&quot;</span><span class="p">],</span>
     <span class="n">min_value</span><span class="o">=</span><span class="s2">&quot;2020-01-01&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
@@ -401,6 +404,7 @@ date before the configured <cite>min_value</cite>.</p>
 <span class="w">  </span><span class="nt">columns</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">record_date</span>
 <span class="w">  </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2020-01-01&quot;</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>
@@ -409,7 +413,6 @@ date before the configured <cite>min_value</cite>.</p>
 <h2>Typical Use Cases<a class="headerlink" href="#typical-use-cases" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>✅ Ensure that event or transaction dates are not earlier than a defined start date.</p></li>
-<li><p>✅ Validate that timestamps for measurements or logs do not lie before a system go-live or rollout date.</p></li>
 <li><p>✅ Check that data entries only contain dates within the valid business period.</p></li>
 <li><p>✅ Prevent processing of outdated or legacy data outside of the expected time range.</p></li>
 </ul>

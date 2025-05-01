@@ -377,8 +377,11 @@ document.write(`
 <span id="numeric-min-check"></span><h1>Numeric Min<a class="headerlink" href="#numeric-min" title="Link to this heading">#</a></h1>
 <p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">numeric-min-check</span></code></p>
 <p><strong>Purpose</strong>:
-Checks whether values in the specified numeric columns are strictly greater than a defined minimum value.
-A row fails the check if any of the selected columns contains a value less than or equal to the configured <cite>min_value</cite>.</p>
+Checks whether values in the specified numeric columns are <strong>strictly greater than</strong> a defined minimum value (<cite>min_value</cite>).
+A row fails the check if any of the selected columns contains a value <strong>less than</strong> the minimum, or <strong>equal to it</strong> if <cite>inclusive=False</cite>.</p>
+<p>You can control inclusivity with the <cite>inclusive</cite> parameter:
+- <cite>inclusive=False</cite> (default): <cite>value &gt; min_value</cite> required
+- <cite>inclusive=True</cite>: <cite>value &gt;= min_value</cite> allowed</p>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericMinCheckConfig</span>
@@ -388,6 +391,7 @@ A row fails the check if any of the selected columns contains a value less than 
     <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;minimum_allowed_price&quot;</span><span class="p">,</span>
     <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="s2">&quot;discount&quot;</span><span class="p">],</span>
     <span class="n">min_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
@@ -401,6 +405,7 @@ A row fails the check if any of the selected columns contains a value less than 
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">price</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">discount</span>
 <span class="w">  </span><span class="nt">min_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>
