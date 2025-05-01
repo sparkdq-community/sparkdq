@@ -1,7 +1,7 @@
 Validating DataFrames
 =====================
 
-Once you have defined your checks and grouped them into a CheckSet, the next step is to validate your data.
+Once you have defined your checks and grouped them into a ``CheckSet``, the next step is to validate your data.
 SparkDQ provides a Spark-native, extensible engine that evaluates your rules, annotates your DataFrame, and
 delivers a structured result that supports both strict enforcement and flexible data routing.
 
@@ -43,13 +43,13 @@ Here’s how it works:
 What Happens Under the Hood?
 ----------------------------
 
-When you call **run_batch()**, the engine will:
+When you call ``run_batch()``, the engine will:
 
 * Apply row-level checks (e.g. null checks, value constraints) and mark failures at the row level
 
 * Evaluate aggregate checks (e.g. row count, min/max rules) against the full DataFrame
 
-* Annotate the dataset with helper columns like **_dq_passed**, **_dq_errors**, **_dq_validation_ts**
+* Annotate the dataset with helper columns like ``_dq_passed``, ``_dq_errors``, ``_dq_validation_ts``
 
 * Return a result object that you can query, summarize, and route as needed
 
@@ -77,13 +77,13 @@ What's Inside the Result DataFrame?
 
 sparkdq automatically annotates your DataFrame with additional columns:
 
-* **_dq_passed**: Boolean flag indicating whether the row passed all critical checks
+* ``_dq_passed``: Boolean flag indicating whether the row passed all critical checks
 
-* **_dq_errors**: Array of structured errors for each failed check (name, check-id, severity)
+* ``_dq_errors``: Array of structured errors for each failed check (name, check-id, severity)
 
-* **_dq_aggregate_errors**: Optional column for dataset-wide violations
+* ``_dq_aggregate_errors``: Optional column for dataset-wide violations
 
-* **_dq_validation_ts**: Timestamp marking when the validation run was executed
+* ``_dq_validation_ts``: Timestamp marking when the validation run was executed
 
 This enriched metadata allows you to:
 
