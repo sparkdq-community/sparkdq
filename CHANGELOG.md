@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-05-01)
+
+### Documentation
+
+- **custom-checks**: Add imports to examples
+  ([`21e6d90`](https://github.com/sparkdq-community/sparkdq/commit/21e6d90752a2b5fe31e13f0045d38458bfa7545d))
+
+- **custom-checks**: Add tutorial for custom checks
+  ([`00281ff`](https://github.com/sparkdq-community/sparkdq/commit/00281ff597157672caa179ac3011cc51749dbb47))
+
+### Features
+
+- **check**: Add exactly-one-not-null-check
+  ([`75cf32f`](https://github.com/sparkdq-community/sparkdq/commit/75cf32f7ce2980973a3d1d508000755eead2349f))
+
+- **registry**: Add load_config_module to load custom checks dynamically
+  ([`734474e`](https://github.com/sparkdq-community/sparkdq/commit/734474e5e47a0533a8492dadc7effc25e455b0b3))
+
+### Refactoring
+
+- Renamed subpackage factory to plugin
+  ([`a580d7b`](https://github.com/sparkdq-community/sparkdq/commit/a580d7b79ca17737a0770fd3ba2076a74f6694fb))
+
+
 ## v0.2.1 (2025-04-29)
 
 ### Bug Fixes
