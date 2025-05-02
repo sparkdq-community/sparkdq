@@ -21,12 +21,39 @@ from .severity import Severity
 @dataclass(frozen=True)
 class AggregateEvaluationResult:
     """
-    Represents the outcome of an aggregate-level check evaluation.
+    Encapsulates the outcome of an aggregate-level data quality check.
+
+    This class holds both the result (`passed`) and additional diagnostic `metrics`
+    that were computed as part of the check evaluation. These metrics provide context
+    for understanding why a check passed or failed, and are especially useful during
+    debugging or reporting.
+
+    For example, in a CountMinCheck, the metrics might include:
+
+    - ``actual_count``: the number of rows actually found
+    - ``expected_min_count``: the configured minimum count threshold
+
+    Such context allows users to understand the degree of deviation from expectations
+    when a check fails.
 
     Attributes:
         passed (bool): Indicates whether the check condition was satisfied.
-        metrics (Dict[str, Any]): Computed metrics or diagnostic data produced during the evaluation
-            (e.g., row counts, averages, thresholds).
+        metrics (Dict[str, Any]): Additional computed values or diagnostic information
+            relevant to the check (e.g., actual vs. expected counts, computed averages,
+            standard deviations, etc.).
+
+    Example:
+        >>> result = AggregateEvaluationResult(
+        ...     passed=False,
+        ...     metrics={
+        ...         "actual_count": 42,
+        ...         "expected_min_count": 100
+        ...     }
+        ... )
+        >>> result.passed
+        False
+        >>> result.metrics["actual_count"]
+        42
     """
 
     passed: bool

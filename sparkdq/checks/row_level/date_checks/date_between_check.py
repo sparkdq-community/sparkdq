@@ -73,7 +73,7 @@ class DateBetweenCheckConfig(BaseRowCheckConfig):
     def validate_between_values(self) -> "DateBetweenCheckConfig":
         """
         Validates that min_value and max_value are properly configured
-        and that min_value is not greater than max_value.
+        and that ``min_value`` is not greater than ``max_value``.
 
         Returns:
             DateBetweenCheckConfig: The validated configuration object.

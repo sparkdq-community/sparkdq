@@ -24,13 +24,10 @@ class NumericMinCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the NumericMinCheck.
 
-    This configuration defines a minimum value constraint on one or more numeric columns.
-    It ensures that all specified columns contain only values greater than or equal to
-    the configured `min_value`. Violations are flagged per row.
-
     Attributes:
         columns (List[str]): The list of numeric columns to validate.
         min_value (float): The minimum allowed value (inclusive).
+        inclusive (bool): Whether to include the minimum value.
     """
 
     check_class = NumericMinCheck

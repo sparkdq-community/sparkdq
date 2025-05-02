@@ -63,9 +63,8 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
     """
     Declarative configuration model for the RowCountMinCheck.
 
-    This config defines a minimum row count requirement for a dataset.
-    It ensures that:
-    - `min_count` is provided and non-negative.
+    This configuration defines a minimum row count requirement for a dataset. It ensures that the
+    ``min_count`` parameter is provided and is non-negative.
 
     Attributes:
         min_count (int): Minimum number of rows expected in the dataset.
@@ -77,13 +76,13 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_min(self) -> "RowCountMinCheckConfig":
         """
-        Validate that the configured min_count is logically valid.
+        Validate that the configured ``min_count`` is greater than 0.
 
         Returns:
             RowCountMinCheckConfig: The validated configuration object.
 
         Raises:
-            InvalidCheckConfigurationError: If `min_count` is negative.
+            InvalidCheckConfigurationError: If ``min_count`` is negative.
         """
         if self.min_count <= 0:
             raise InvalidCheckConfigurationError(f"min_count ({self.min_count}) must be greater than 0")

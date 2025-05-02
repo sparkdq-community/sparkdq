@@ -70,9 +70,6 @@ class NullCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the NullCheck.
 
-    This configuration model is used to define and validate parameters for the
-    NullCheck when instantiated via dictionary or structured config input.
-
     Attributes:
         columns (List[str]): The names of the columns to check for null values.
             This is a required field and must match existing columns in the DataFrame.

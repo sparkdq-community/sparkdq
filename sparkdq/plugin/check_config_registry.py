@@ -82,10 +82,22 @@ def register_check_config(check_name: str) -> Callable[[Type[BaseCheckConfig]], 
 
 def load_config_module(module: str) -> None:
     """
-    Dynamically imports a module by name to trigger config registration
-    via @register_check_config decorators.
+    Dynamically loads a module to trigger registration of custom check configurations.
+
+    This function is essential when integrating custom checks into the SparkDQ framework.
+    By importing the specified module, all ``@register_check_config`` decorators within
+    that module are executed, ensuring that the associated checks are registered
+    and discoverable by the framework.
+
+    This step is required for custom checks to be properly recognized during validation,
+    especially when they are defined outside the core package. If this function is not
+    called, any custom checks in the given module will not be available for execution.
+
+    Example:
+        load_config_module("my_project.custom_checks")
 
     Args:
-        module (str): Fully qualified module path to import.
+        module (str): Fully qualified module name (e.g., "my_project.custom_checks")
+                      that contains custom check classes decorated with `@register_check_config`.
     """
     importlib.import_module(module)

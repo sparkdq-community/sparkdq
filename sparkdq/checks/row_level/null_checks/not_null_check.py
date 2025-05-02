@@ -75,9 +75,6 @@ class NotNullCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the NotNullCheck.
 
-    This check fails rows where any of the given columns is not null.
-    It is typically used to enforce that fields remain empty (null) under certain business rules.
-
     Attributes:
         columns (List[str]): The names of the columns that should remain null.
     """

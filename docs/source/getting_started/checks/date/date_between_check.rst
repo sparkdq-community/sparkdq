@@ -10,10 +10,11 @@ Checks whether values in the specified date columns are within a defined range b
 A row fails the check if any of the selected columns contains a date before `min_value` or after `max_value`.
 
 You can control boundary inclusivity using the `inclusive` parameter:
-- `inclusive: [False, False]` (default): strictly between
-- `inclusive: [True, False]`: include only the lower bound
-- `inclusive: [False, True]`: include only the upper bound
-- `inclusive: [True, True]`: include both bounds
+
+- inclusive: **[False, False]** (default): strictly between ``min < value < max``
+- inclusive: **[True, False]**: include only the lower bound ``min <= value < max``
+- inclusive: **[False, True]**: include only the upper bound ``min < value <= max``
+- inclusive: **[True, True]**: include both bounds ``min <= value <= max``
 
 Python Configuration
 --------------------

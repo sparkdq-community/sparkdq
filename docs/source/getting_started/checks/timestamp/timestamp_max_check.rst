@@ -10,8 +10,9 @@ Checks whether values in the specified timestamp columns are less than a defined
 A row fails the check if any of the selected columns contains a timestamp after the configured `max_value`.
 
 Use the `inclusive` parameter to control boundary behavior:
-- `inclusive=False` (default): the check fails if `value >= max_value`
-- `inclusive=True`: the check only fails if `value > max_value`
+
+- inclusive = **False** (default): ``value < max_value``
+- inclusive = **True**: ``value <= max_value``
 
 Python Configuration
 --------------------

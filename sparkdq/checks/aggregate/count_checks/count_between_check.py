@@ -89,7 +89,7 @@ class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
         """
         Validate the logical consistency of the configured bounds.
 
-        This method ensures that `min_count` is not greater than `max_count`.
+        This method ensures that ``min_count`` is not greater than ``max_count``.
         If violated, a configuration-level exception is raised immediately
         to prevent runtime failures.
 
@@ -97,7 +97,7 @@ class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
             RowCountBetweenCheckConfig: The validated configuration object.
 
         Raises:
-            InvalidCheckConfigurationError: If `min_count > max_count`.
+            InvalidCheckConfigurationError: If ``min_count > max_count`` or ``min_count`` < 0.
         """
         if self.min_count < 0:
             raise InvalidCheckConfigurationError(
