@@ -78,9 +78,6 @@ class ExactlyOneNotNullCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the ExactlyOneNotNullCheck.
 
-    This configuration model defines and validates parameters for the ExactlyOneNotNullCheck
-    when instantiated via dictionary or structured config input.
-
     Attributes:
         columns (List[str]): The names of the columns where exactly one must be non-null per row.
     """

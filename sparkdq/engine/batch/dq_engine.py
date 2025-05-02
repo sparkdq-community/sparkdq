@@ -12,7 +12,7 @@ class BatchDQEngine(BaseDQEngine):
     Engine for executing data quality checks on Spark DataFrames in batch mode.
 
     This engine applies both row-level and aggregate-level checks using the
-    BatchCheckRunner, and annotates the DataFrame with error metadata.
+    ``BatchCheckRunner``, and annotates the DataFrame with error metadata.
     """
 
     def run_batch(self, df: DataFrame) -> BatchValidationResult:

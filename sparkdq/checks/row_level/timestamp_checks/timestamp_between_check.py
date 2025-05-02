@@ -53,9 +53,6 @@ class TimestampBetweenCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for TimestampBetweenCheck.
 
-    This configuration defines a timestamp range constraint on one or more timestamp columns.
-    It ensures that all specified columns contain values within the defined bounds.
-
     Attributes:
         columns (List[str]): The list of timestamp columns to validate.
         min_value (str): Minimum allowed timestamp.
@@ -73,8 +70,8 @@ class TimestampBetweenCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_between_values(self) -> "TimestampBetweenCheckConfig":
         """
-        Validates that min_value and max_value are properly configured
-        and that min_value is not greater than max_value.
+        Validates that ``min_value`` and ``max_value`` are properly configured
+        and that ``min_value`` is not greater than ``max_value``.
 
         Raises:
             InvalidCheckConfigurationError: If min_value or max_value are not set or if min_value > max_value.

@@ -24,13 +24,10 @@ class NumericMaxCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the NumericMaxCheck.
 
-    This configuration defines a maximum value constraint on one or more numeric columns.
-    It ensures that all specified columns contain only values less than or equal to
-    the configured `max_value`. Violations are flagged per row.
-
     Attributes:
         columns (List[str]): The list of numeric columns to validate.
         max_value (float | int | Decimal): The maximum allowed value (inclusive).
+        inclusive (bool): Whether to include the maximum value.
     """
 
     check_class = NumericMaxCheck

@@ -63,9 +63,8 @@ class RowCountExactCheckConfig(BaseAggregateCheckConfig):
     """
     Declarative configuration model for the RowCountExactCheck.
 
-    This config defines an exact row count requirement for a dataset.
-    It ensures that:
-    - `expected_count` is provided and non-negative.
+    This configuration defines an exact row count requirement for a dataset. It ensures that the
+    ``expected_count`` parameter is provided and is non-negative.
 
     Attributes:
         expected_count (int): The exact number of rows expected in the dataset.
@@ -77,13 +76,13 @@ class RowCountExactCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_expected(self) -> "RowCountExactCheckConfig":
         """
-        Validate that the configured expected_count is logically valid.
+        Validate that the configured expected_count is greater than 0.
 
         Returns:
             RowCountExactCheckConfig: The validated configuration object.
 
         Raises:
-            InvalidCheckConfigurationError: If `expected_count` is negative.
+            InvalidCheckConfigurationError: If ``expected_count`` is negative.
         """
         if self.expected_count < 0:
             raise InvalidCheckConfigurationError(

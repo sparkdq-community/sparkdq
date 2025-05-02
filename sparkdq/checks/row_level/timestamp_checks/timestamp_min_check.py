@@ -50,10 +50,6 @@ class TimestampMinCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the TimestampMinCheck.
 
-    This configuration defines a minimum timestamp constraint on one or more timestamp columns.
-    It ensures that all specified columns contain only values greater than (or equal to, depending on
-    `inclusive`) the configured `min_value`. Violations are flagged per row.
-
     Attributes:
         columns (List[str]): The list of timestamp columns to validate.
         min_value (str): The minimum allowed timestamp in ISO 8601 format (e.g. '2023-01-01T00:00:00').

@@ -50,10 +50,6 @@ class DateMinCheckConfig(BaseRowCheckConfig):
     """
     Declarative configuration model for the DateMinCheck.
 
-    This configuration defines a minimum date constraint on one or more date columns.
-    It ensures that all specified columns contain only dates on or after the configured `min_value`.
-    Violations are flagged per row.
-
     Attributes:
         columns (List[str]): The list of date columns to validate.
         min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.

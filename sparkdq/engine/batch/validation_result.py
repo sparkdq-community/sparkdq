@@ -26,9 +26,11 @@ class BatchValidationResult:
 
     Attributes:
         df (DataFrame): The DataFrame after validation, including:
+
             - _dq_passed (bool): Row-level pass/fail status.
             - _dq_errors (array): Structured errors from failed checks.
             - _dq_aggregate_errors (array, optional): Errors from failed aggregates.
+
         aggregate_results (List[AggregateCheckResult]): Results of all aggregate checks.
         input_columns (List[str]): Names of the original input columns.
         timestamp (datetime): Timestamp of when the validation result was created.
@@ -55,8 +57,8 @@ class BatchValidationResult:
         """
         Return only the rows that failed one or more critical checks.
 
-        This includes validation metadata such as `_dq_errors`, `_dq_passed`, and,
-        if present, `_dq_aggregate_errors`. Additionally, a `_dq_validation_ts` column
+        This includes validation metadata such as ``_dq_errors``, ``_dq_passed``, and,
+        if present, ``_dq_aggregate_errors``. Additionally, a ``_dq_validation_ts`` column
         is added for downstream auditing or tracking.
 
         Returns:
@@ -73,8 +75,8 @@ class BatchValidationResult:
         """
         Returns rows that passed all critical checks but contain warning-level violations.
 
-        These are rows where `_dq_passed` is True, but the `_dq_errors` array contains
-        at least one entry with severity == "WARNING".
+        These are rows where ``_dq_passed`` is True, but the ``_dq_errors`` array contains
+        at least one entry with severity == **WARNING**.
 
         Returns:
             DataFrame: Filtered DataFrame of rows with warnings.

@@ -34,6 +34,7 @@ class NumericBetweenCheckConfig(BaseRowCheckConfig):
         columns (List[str]): The list of numeric columns to validate.
         min_value (float | int | Decimal): The minimum allowed value (inclusive).
         max_value (float | int | Decimal): The maximum allowed value (inclusive).
+        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.
     """
 
     check_class = NumericBetweenCheck
@@ -52,8 +53,8 @@ class NumericBetweenCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_between_values(self) -> "NumericBetweenCheckConfig":
         """
-        Validates that min_value and max_value are properly configured
-        and that min_value is not greater than max_value.
+        Validates that ``min_value`` and ``max_value`` are properly configured
+        and that ``min_value`` is not greater than ``max_value``.
 
         Returns:
             NumericBetweenCheckConfig: The validated configuration object.

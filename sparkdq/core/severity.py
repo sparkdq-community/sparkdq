@@ -19,9 +19,10 @@ class Severity(Enum):
     The severity level determines how a failed check should be treated,
     particularly in automated data pipelines (e.g., fail the pipeline or log a warning).
 
-    Levels:
-        CRITICAL: The check is considered blocking if it fails.
-        WARNING: The check is non-blocking but may trigger alerts or monitoring actions.
+    **Levels**:
+
+        - CRITICAL: The check is considered blocking if it fails.
+        - WARNING: The check is non-blocking but may trigger alerts or monitoring actions.
     """
 
     CRITICAL = "critical"

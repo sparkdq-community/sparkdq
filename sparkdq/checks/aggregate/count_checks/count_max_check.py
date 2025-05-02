@@ -63,9 +63,8 @@ class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
     """
     Declarative configuration model for the RowCountMaxCheck.
 
-    This config defines a maximum row count requirement for a dataset.
-    It ensures that:
-    - `max_count` is provided and positive.
+    This configuration defines a maximum row count requirement for a dataset. It ensures that the
+    ``max_count`` parameter is provided and has a positive value.
 
     Attributes:
         max_count (int): Maximum number of rows allowed in the dataset.
@@ -77,13 +76,13 @@ class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_max(self) -> "RowCountMaxCheckConfig":
         """
-        Validate that the configured max_count is logically valid.
+        Validate that the configured ``max_count`` is greater than 0.
 
         Returns:
             RowCountMaxCheckConfig: The validated configuration object.
 
         Raises:
-            InvalidCheckConfigurationError: If `max_count` is not greater than 0.
+            InvalidCheckConfigurationError: If ``max_count`` is not greater than 0.
         """
         if self.max_count <= 0:
             raise InvalidCheckConfigurationError(f"max_count ({self.max_count}) must be greater than 0")
