@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sparkdq.exceptions &#8212; SparkDQ Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c0dadd6b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sparkdq/exceptions';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="SparkDQ Documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-light" alt="SparkDQ Documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/defining_checks.html">Defining Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/validation_dataframes.html">Validating DataFrames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/applying_validation.html">Integration Patterns</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting_started/built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/schema/column_presence_check.html">Column Presence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/count/count_between_check.html">Count Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/count/count_exact_check.html">Count Exact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/count/count_min_check.html">Count Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/date/date_between_check.html">Date Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/date/date_min_check.html">Date Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/date/date_max_check.html">Date Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/null/exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/contained_in/is_contained_in_check.html">Is Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/null/not_null_check.html">Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/null/null_check.html">Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/numeric/numeric_min_check.html">Numeric Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/numeric/numeric_max_check.html">Numeric Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/numeric/numeric_between_check.html">Numeric Between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Custom Checks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../custom_checks/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_checks/separation_logic.html">Configuration and Check</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_checks/plugin_architecture.html">Plugin Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../custom_checks/implementation/structure.html">Implementation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../custom_checks/implementation/row_level.html">Row-Level Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../custom_checks/implementation/aggregate.html">Aggregate Checks</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api_docs.html">API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/checks.html">sparkdq.checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/core.html">sparkdq.core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/engine.html">sparkdq.engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/exceptions.html">sparkdq.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/management.html">sparkdq.management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plugin.html">sparkdq.plugin</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/sparkdq-community/sparkdq" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for sparkdq.exceptions</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="RuntimeCheckConfigurationError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.RuntimeCheckConfigurationError">[docs]</a>
+<span></span><span class="k">class</span><span class="w"> </span><span class="nc">RuntimeCheckConfigurationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for runtime configuration errors in data quality checks.</span>
+
+<span class="sd">    Raised when a check fails due to a configuration issue that can only</span>
+<span class="sd">    be detected when the check is executed against actual data, such as</span>
+<span class="sd">    referencing a non-existent column.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="CheckConfigurationError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.CheckConfigurationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CheckConfigurationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all configuration-related errors in data quality checks.</span>
+
+<span class="sd">    Raised when a check&#39;s definition or setup is invalid and cannot be used</span>
+<span class="sd">    to construct or apply the check logic, regardless of the actual dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="MissingColumnError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingColumnError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MissingColumnError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a required column is not present in the DataFrame at runtime.</span>
+
+<span class="sd">    This typically indicates a misconfiguration in the check setup, where a</span>
+<span class="sd">    column was referenced that does not exist in the current dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">available</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found. Available columns: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MissingCheckSetError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingCheckSetError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MissingCheckSetError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a data quality engine is executed without an assigned CheckSet.</span>
+
+<span class="sd">    This error indicates that the engine was not properly configured before use.</span>
+<span class="sd">    Users must assign a CheckSet instance via `engine.set_check_set(...)`</span>
+<span class="sd">    prior to calling any validation methods like `run_batch`.</span>
+
+<span class="sd">    This is typically a programming error and should be caught early in testing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;No CheckSet has been assigned to the engine. &quot;</span>
+            <span class="s2">&quot;Use `engine.set_check_set(check_set)` before running validation.&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidCheckConfigurationError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidCheckConfigurationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidCheckConfigurationError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a check&#39;s configuration is logically invalid.</span>
+
+<span class="sd">    Examples include setting a minimum value greater than the maximum, or</span>
+<span class="sd">    supplying conflicting or incomplete configuration parameters.</span>
+
+<span class="sd">    In most cases, this error is raised during static validation of a config object.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidSeverityLevelError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidSeverityLevelError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidSeverityLevelError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a provided severity level is not recognized by the framework.</span>
+
+<span class="sd">    This error typically occurs when parsing string-based severity inputs</span>
+<span class="sd">    (e.g. from JSON or YAML configuration files) that do not match the allowed</span>
+<span class="sd">    levels defined in the `Severity` enum.</span>
+
+<span class="sd">    Examples include:</span>
+<span class="sd">        - normalize_severity(&quot;fatal&quot;)</span>
+<span class="sd">        - loading a config with severity=&quot;urgent&quot;</span>
+
+<span class="sd">    This exception is used to ensure consistent error handling and reporting</span>
+<span class="sd">    for configuration-related issues.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the exception with the invalid severity value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): The unrecognized severity level that triggered the error.</span>
+
+<span class="sd">        The message will include the invalid value to aid debugging and error reporting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid severity level: &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="MissingCheckTypeError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingCheckTypeError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MissingCheckTypeError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a configuration dictionary is missing the required &#39;check&#39; field.</span>
+
+<span class="sd">    This field is mandatory for the framework to identify which check type</span>
+<span class="sd">    should be instantiated via the CheckFactory.</span>
+
+<span class="sd">    This exception is typically raised during early parsing or validation</span>
+<span class="sd">    of configuration sources (e.g. JSON, YAML).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Missing &#39;check&#39; field in check configuration. &quot;</span>
+            <span class="s2">&quot;Each check config must include a &#39;check&#39; key to identify the check type.&quot;</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Marcel Kennert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Marcel Kennert.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

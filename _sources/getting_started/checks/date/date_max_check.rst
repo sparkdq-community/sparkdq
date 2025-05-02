@@ -10,8 +10,9 @@ Checks whether values in the specified date columns are **less than** a defined 
 A row fails the check if any of the selected columns contains a date after the configured `max_value`.
 
 You can control inclusivity using the `inclusive` parameter:
-- `inclusive=False` (default): `value < max_value`
-- `inclusive=True`: `value <= max_value`
+
+- inclusive = **False** (default): ``value < max_value``
+- inclusive = **True**: ``value <= max_value``
 
 Python Configuration
 --------------------

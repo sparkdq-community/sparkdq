@@ -10,9 +10,11 @@ Checks whether values in the specified timestamp columns are within a defined ra
 A row fails the check if any of the selected columns contains a timestamp before `min_value` or after `max_value`.
 
 Use the `inclusive` parameter to control boundary behavior:
-- `inclusive=(False, False)` (default): exclude both bounds
-- `inclusive=(True, True)`: include both `min_value` and `max_value`
-- other combinations are supported for asymmetric boundary checks
+
+- inclusive: **[False, False]** (default): strictly between ``min < value < max``
+- inclusive: **[True, False]**: include only the lower bound ``min <= value < max``
+- inclusive: **[False, True]**: include only the upper bound ``min < value <= max``
+- inclusive: **[True, True]**: include both bounds ``min <= value <= max``
 
 Python Configuration
 --------------------

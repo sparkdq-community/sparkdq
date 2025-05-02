@@ -35,3 +35,10 @@ SparkDQ — Data Quality Validation
    custom_checks/separation_logic
    custom_checks/plugin_architecture
    custom_checks/implementation/structure
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+   :hidden:
+
+   api_docs

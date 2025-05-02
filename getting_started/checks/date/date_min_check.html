@@ -197,6 +197,18 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_docs.html">API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/checks.html">sparkdq.checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/core.html">sparkdq.core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/engine.html">sparkdq.engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/exceptions.html">sparkdq.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/management.html">sparkdq.management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plugin.html">sparkdq.plugin</a></li>
+</ul>
+</details></li>
+</ul>
 
     </div>
 </nav></div>
@@ -379,9 +391,11 @@ document.write(`
 <p><strong>Purpose</strong>:
 Checks whether values in the specified date columns are <strong>greater than</strong> a defined minimum date.
 A row fails the check if any of the selected columns contains a date before the configured <cite>min_value</cite>.</p>
-<p>You can control inclusivity using the <cite>inclusive</cite> parameter:
-- <cite>inclusive=False</cite> (default): <cite>value &gt; min_value</cite> is required
-- <cite>inclusive=True</cite>: <cite>value &gt;= min_value</cite> is allowed</p>
+<p>You can control inclusivity using the <cite>inclusive</cite> parameter:</p>
+<ul class="simple">
+<li><p>inclusive = <strong>False</strong> (default): <code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">&gt;</span> <span class="pre">min_value</span></code></p></li>
+<li><p>inclusive = <strong>True</strong>: <code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">&gt;=</span> <span class="pre">min_value</span></code></p></li>
+</ul>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">DateMinCheckConfig</span>
