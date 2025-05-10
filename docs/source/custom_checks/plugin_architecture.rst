@@ -50,8 +50,7 @@ These steps are executed **automatically in the background** when you call:
 
    from sparkdq.management import CheckSet
 
-   check_set = CheckSet()
-   check_set.add_checks_from_dicts(config)
+   check_set = CheckSet().add_checks_from_dicts(config)
 
 The registry is an essential part of this mechanism: it allows the factory to resolve config classes
 dynamically based on the `check` name. Once a config is validated, the factory delegates to ``.to_check()``
