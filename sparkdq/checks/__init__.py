@@ -4,6 +4,7 @@ from .aggregate.count_checks.count_max_check import RowCountMaxCheckConfig
 from .aggregate.count_checks.count_min_check import RowCountMinCheckConfig
 from .aggregate.schema_checks.column_presence_check import ColumnPresenceCheckConfig
 from .aggregate.schema_checks.schema_check import SchemaCheckConfig
+from .row_level.columns_comparison_checks.column_less_than import ColumnLessThanCheckConfig
 from .row_level.contained_checks.is_contained_in_check import IsContainedInCheckConfig
 from .row_level.contained_checks.is_not_contained_in_check import IsNotContainedInCheckConfig
 from .row_level.date_checks.date_between_check import DateBetweenCheckConfig
@@ -40,4 +41,5 @@ __all__ = [
     "ColumnPresenceCheckConfig",
     "IsContainedInCheckConfig",
     "IsNotContainedInCheckConfig",
+    "ColumnLessThanCheckConfig",
 ]
