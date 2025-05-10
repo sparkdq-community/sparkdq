@@ -103,6 +103,7 @@ commit_parser = "conventional"
 major_on_zero = false
 allow_zero_version = true
 version_toml = ["pyproject.toml:project.version"]
+version_variables = ["sparkdq/__init__.py:__version__"]
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = ["Merge branch*", "chore(release)*"]
