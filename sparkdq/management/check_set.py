@@ -21,14 +21,18 @@ class CheckSet:
         """Initializes an empty CheckSet."""
         self._checks: List[BaseCheck] = []
 
-    def add_check(self, config: BaseCheckConfig) -> None:
+    def add_check(self, config: BaseCheckConfig) -> "CheckSet":
         """
-        Adds a single check from a validated configuration object.
+        Adds a single check from a validated configuration object and returns self for fluent chaining.
 
         Args:
             config (BaseCheckConfig): The configuration object defining the check.
+
+        Returns:
+            CheckSet: The current instance with the added check.
         """
         self._checks.append(config.to_check())
+        return self
 
     def add_checks_from_dicts(self, configs: List[Dict[str, Any]]) -> None:
         """

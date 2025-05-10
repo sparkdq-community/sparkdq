@@ -52,7 +52,36 @@ Python-native Configuration
 ---------------------------
 
 For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
-using type-safe config classes:
+using type-safe config classes. The ``CheckSet`` supports both the classic and the fluent API style.
+
+Fluent API (recommended):
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    from sparkdq.checks import NullCheckConfig, RowCountBetweenCheckConfig
+    from sparkdq.core import Severity
+    from sparkdq.management import CheckSet
+
+    check_set = (
+        CheckSet()
+        .add_check(
+            NullCheckConfig(
+                check_id="my-null-check",
+                columns=["email"]
+            )
+        )
+        .add_check(
+            RowCountBetweenCheckConfig(
+                check_id="my-count-check",
+                min_count=100,
+                max_count=5000
+            )
+        )
+    )
+
+Classic API (equivalent but more verbose):
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -63,12 +92,15 @@ using type-safe config classes:
     check_set = CheckSet()
     check_set.add_check(
         NullCheckConfig(
-            check_id="my-null-check", columns=["email"]
+            check_id="my-null-check",
+            columns=["email"]
         )
     )
     check_set.add_check(
         RowCountBetweenCheckConfig(
-            check_id="my-count-check", min_count=100, max_count=5000
+            check_id="my-count-check",
+            min_count=100,
+            max_count=5000
         )
     )
 
