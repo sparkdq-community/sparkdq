@@ -37,6 +37,7 @@ configuration is provided as a Python dictionary at runtime.
    checks/numeric/numeric_between_check
 
    checks/schema/schema_check
+   checks/strings/string_min_length
 
    checks/timestamp/timestamp_min_check
    checks/timestamp/timestamp_max_check
@@ -110,3 +111,12 @@ Schema Checks
 
     ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
     ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."
+
+String Checks
+-------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`string_min_length_check`", "Validates that string values in a column meet a minimum length requirement."

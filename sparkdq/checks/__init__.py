@@ -16,6 +16,7 @@ from .row_level.null_checks.null_check import NullCheckConfig
 from .row_level.numeric_checks.numeric_between_check import NumericBetweenCheckConfig
 from .row_level.numeric_checks.numeric_max_check import NumericMaxCheckConfig
 from .row_level.numeric_checks.numeric_min_check import NumericMinCheckConfig
+from .row_level.string_checks.min_length_check import StringMinLengthCheckConfig
 from .row_level.timestamp_checks.timestamp_between_check import TimestampBetweenCheck
 from .row_level.timestamp_checks.timestamp_max_check import TimestampMaxCheckConfig
 from .row_level.timestamp_checks.timestamp_min_check import TimestampMinCheckConfig
@@ -42,4 +43,5 @@ __all__ = [
     "IsContainedInCheckConfig",
     "IsNotContainedInCheckConfig",
     "ColumnLessThanCheckConfig",
+    "StringMinLengthCheckConfig",
 ]
