@@ -14,6 +14,7 @@ configuration is provided as a Python dictionary at runtime.
    :caption: Built-in Checks
    :hidden:
 
+   checks/columns_comparison/column_less
    checks/schema/column_presence_check
    checks/count/count_between_check
    checks/count/count_exact_check
@@ -40,6 +41,15 @@ configuration is provided as a Python dictionary at runtime.
    checks/timestamp/timestamp_min_check
    checks/timestamp/timestamp_max_check
    checks/timestamp/timestamp_between_check
+
+Comparison Checks
+-----------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`column_less_than_check`", "Validates that values in one column are strictly less than (or less than or equal to) the values in another column."
 
 Contained-In Checks
 ----------------------
