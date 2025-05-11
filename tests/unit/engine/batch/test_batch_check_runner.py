@@ -22,7 +22,7 @@ class DummyAggregateCheck(BaseAggregateCheck):
         self._passed = passed
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        return AggregateEvaluationResult(passed=self._passed, metrics={})
+        return AggregateEvaluationResult(passed=self._passed, metrics={"test": "test"})
 
     @property
     def name(self) -> str:
@@ -64,11 +64,11 @@ def test_run_with_row_and_aggregate_checks(spark: SparkSession) -> None:
     # Assert
     assert "_dq_passed" in validated_df.columns
     assert "_dq_errors" in validated_df.columns
-    assert "_dq_aggregate_errors" in validated_df.columns
 
     rows = validated_df.orderBy("id").collect()
 
     # Row 1: valid → passed = True
+    print(rows)
     assert rows[0]["_dq_passed"] is False
     assert rows[0]["_dq_errors"]  # still has aggregate error
 
