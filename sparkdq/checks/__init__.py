@@ -19,6 +19,7 @@ from .row_level.numeric_checks.numeric_min_check import NumericMinCheckConfig
 from .row_level.string_checks.between_length_check import StringLengthBetweenCheckConfig
 from .row_level.string_checks.max_length_check import StringMaxLengthCheckConfig
 from .row_level.string_checks.min_length_check import StringMinLengthCheckConfig
+from .row_level.string_checks.regex_match_check import RegexMatchCheckConfig
 from .row_level.timestamp_checks.timestamp_between_check import TimestampBetweenCheck
 from .row_level.timestamp_checks.timestamp_max_check import TimestampMaxCheckConfig
 from .row_level.timestamp_checks.timestamp_min_check import TimestampMinCheckConfig
@@ -48,4 +49,5 @@ __all__ = [
     "StringMinLengthCheckConfig",
     "StringMaxLengthCheckConfig",
     "StringLengthBetweenCheckConfig",
+    "RegexMatchCheckConfig",
 ]
