@@ -31,8 +31,8 @@ Declarative Configuration
 
     - check: row-count-between-check
       check-id: expected_daily_batch_size
-      min_count: 1000
-      max_count: 5000
+      min-count: 1000
+      max-count: 5000
       severity: error
 
 Typical Use Cases

@@ -33,7 +33,7 @@ Declarative Configuration
 
     - check: is-not-contained-in-check
       check-id: block_test_status_and_invalid_countries
-      forbidden_values:
+      forbidden-values:
         status:
           - TEST
           - DUMMY

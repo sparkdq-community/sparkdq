@@ -50,7 +50,7 @@ Declarative Configuration
 
     - check: schema-check
       check-id: enforce_schema_contract
-      expected_schema:
+      expected-schema:
         id: int
         name: string
         amount: decimal(10,2)

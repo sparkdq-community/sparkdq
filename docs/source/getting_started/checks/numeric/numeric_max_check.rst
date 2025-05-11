@@ -39,7 +39,7 @@ Declarative Configuration
       check-id: maximum_allowed_discount
       columns:
         - discount
-      max_value: 100.0
+      max-value: 100.0
       inclusive: true
       severity: critical
 

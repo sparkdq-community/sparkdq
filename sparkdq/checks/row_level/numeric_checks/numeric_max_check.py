@@ -33,6 +33,6 @@ class NumericMaxCheckConfig(BaseRowCheckConfig):
     check_class = NumericMaxCheck
     columns: List[str] = Field(..., description="The list of numeric columns to check for maximum value")
     max_value: float | int | Decimal = Field(
-        ..., description="The maximum allowed value (inclusive) for the specified columns"
+        ..., description="The maximum allowed value (inclusive) for the specified columns", alias="max-value"
     )
     inclusive: bool = Field(False, description="Whether the maximum value is inclusive")

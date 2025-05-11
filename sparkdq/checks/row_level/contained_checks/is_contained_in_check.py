@@ -59,7 +59,7 @@ class IsContainedInCheckConfig(BaseRowCheckConfig):
     check_class = IsContainedInCheck
 
     allowed_values: dict[str, list[object]] = Field(
-        ..., description="Mapping of column names to lists of allowed values."
+        ..., description="Mapping of column names to lists of allowed values.", alias="allowed-values"
     )
 
     @model_validator(mode="after")

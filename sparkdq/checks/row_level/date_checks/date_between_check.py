@@ -63,8 +63,8 @@ class DateBetweenCheckConfig(BaseRowCheckConfig):
     check_class = DateBetweenCheck
 
     columns: List[str] = Field(..., description="Date columns to validate")
-    min_value: str = Field(..., description="Minimum allowed date in YYYY-MM-DD format")
-    max_value: str = Field(..., description="Maximum allowed date in YYYY-MM-DD format")
+    min_value: str = Field(..., description="Minimum allowed date in YYYY-MM-DD format", alias="min-value")
+    max_value: str = Field(..., description="Maximum allowed date in YYYY-MM-DD format", alias="max-value")
     inclusive: tuple[bool, bool] = Field(
         (False, False), description="Tuple of two booleans controlling boundary inclusivity"
     )

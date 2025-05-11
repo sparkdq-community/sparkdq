@@ -71,7 +71,7 @@ class RowCountExactCheckConfig(BaseAggregateCheckConfig):
     """
 
     check_class = RowCountExactCheck
-    expected_count: int = Field(..., description="Exact number of rows required")
+    expected_count: int = Field(..., description="Exact number of rows required", alias="expected-count")
 
     @model_validator(mode="after")
     def validate_expected(self) -> "RowCountExactCheckConfig":
@@ -86,6 +86,6 @@ class RowCountExactCheckConfig(BaseAggregateCheckConfig):
         """
         if self.expected_count < 0:
             raise InvalidCheckConfigurationError(
-                f"expected_count ({self.expected_count}) must be zero or positive"
+                f"expected-count ({self.expected_count}) must be zero or positive"
             )
         return self

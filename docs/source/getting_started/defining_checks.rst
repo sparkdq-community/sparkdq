@@ -121,8 +121,8 @@ definitions via dictionaries — for example loaded from YAML or JSON files.
 
     - check: row-count-between-check
       check-id: my-count-check
-      min_count: 100
-      max_count: 5000
+      min-count: 100
+      max-count: 5000
 
 To load the configuration into SparkDQ, use the following code:
 

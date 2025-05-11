@@ -57,7 +57,7 @@ class IsNotContainedInCheckConfig(BaseRowCheckConfig):
     check_class = IsNotContainedInCheck
 
     forbidden_values: dict[str, list[object]] = Field(
-        ..., description="Mapping of column names to lists of forbidden values."
+        ..., description="Mapping of column names to lists of forbidden values.", alias="forbidden-values"
     )
 
     @model_validator(mode="after")

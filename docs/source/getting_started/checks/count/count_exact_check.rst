@@ -30,7 +30,7 @@ Declarative Configuration
 
     - check: row-count-exact-check
       check-id: validate_snapshot_size
-      expected_count: 500
+      expected-count: 500
       severity: error
 
 Typical Use Cases

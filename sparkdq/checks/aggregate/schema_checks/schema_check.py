@@ -111,7 +111,9 @@ class SchemaCheckConfig(BaseAggregateCheckConfig):
     check_class = SchemaCheck
 
     expected_schema: dict[str, str] = Field(
-        ..., description="Expected schema mapping of column names to Spark data types"
+        ...,
+        description="Expected schema mapping of column names to Spark data types",
+        alias="expected-schema",
     )
     strict: bool = Field(
         default=True,

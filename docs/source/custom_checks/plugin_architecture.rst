@@ -33,8 +33,8 @@ Workflow
    .. code-block:: python
 
       config = [
-          {"check": "null-check", "check_id": "c1", "column": "age"},
-          {"check": "positive-value", "check_id": "c2", "column": "salary"}
+          {"check": "null-check", "check-id": "c1", "column": "age"},
+          {"check": "positive-value", "check-id": "c2", "column": "salary"}
       ]
 
 2. For each entry, it uses the ``check`` to look up the matching `CheckConfig` class via the central **registry**.

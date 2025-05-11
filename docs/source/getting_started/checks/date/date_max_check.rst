@@ -39,7 +39,7 @@ Declarative Configuration
       check-id: maximum_allowed_record_date
       columns:
         - record_date
-      max_value: "2023-12-31"
+      max-value: "2023-12-31"
       inclusive: true
       severity: critical
 

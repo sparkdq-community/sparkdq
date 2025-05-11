@@ -33,7 +33,7 @@ Declarative Configuration
 
     - check: is-contained-in-check
       check-id: validate_status_and_country
-      allowed_values:
+      allowed-values:
         status:
           - ACTIVE
           - INACTIVE

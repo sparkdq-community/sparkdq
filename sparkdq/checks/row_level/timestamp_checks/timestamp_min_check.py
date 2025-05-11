@@ -59,5 +59,5 @@ class TimestampMinCheckConfig(BaseRowCheckConfig):
     check_class = TimestampMinCheck
 
     columns: List[str] = Field(..., description="The list of timestamp columns to check")
-    min_value: str = Field(..., description="The minimum allowed timestamp (ISO 8601 format)")
+    min_value: str = Field(..., description="Minimum allowed timestamp (ISO format)", alias="min-value")
     inclusive: bool = Field(False, description="Whether the minimum timestamp is inclusive")

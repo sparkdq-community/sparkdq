@@ -42,8 +42,8 @@ Declarative Configuration
       check-id: allowed_record_date_range
       columns:
         - record_date
-      min_value: "2020-01-01"
-      max_value: "2023-12-31"
+      min-value: "2020-01-01"
+      max-value: "2023-12-31"
       inclusive: [true, true]
       severity: critical
 

@@ -40,7 +40,7 @@ Declarative Configuration
       check-id: minimum_allowed_event_time
       columns:
         - event_time
-      min_value: "2020-01-01 00:00:00"
+      min-value: "2020-01-01 00:00:00"
       inclusive: true
       severity: critical
 
