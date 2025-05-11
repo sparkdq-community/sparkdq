@@ -81,8 +81,6 @@ sparkdq automatically annotates your DataFrame with additional columns:
 
 * ``_dq_errors``: Array of structured errors for each failed check (name, check-id, severity)
 
-* ``_dq_aggregate_errors``: Optional column for dataset-wide violations
-
 * ``_dq_validation_ts``: Timestamp marking when the validation run was executed
 
 This enriched metadata allows you to:

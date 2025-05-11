@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from pyspark.sql import Column, DataFrame
-from pyspark.sql.functions import array, col, concat, lit, struct, when
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck, BaseCheck, BaseRowCheck
 from sparkdq.core.check_results import AggregateCheckResult
@@ -53,7 +53,8 @@ class BatchCheckRunner:
         df = self._combine_failure_flags(df, fail_flags)
 
         # Combine all row-level error structs into _dq_errors array
-        df = df.withColumn("_dq_errors", array(*[e for e in error_structs if e is not None]))
+        dq_errors_array = F.array(*error_structs)
+        df = df.withColumn("_dq_errors", F.filter(dq_errors_array, lambda x: x.isNotNull()))
 
         # Run aggregate checks and collect results
         aggregate_results = self._run_aggregate_checks(df, agg_checks)
@@ -65,7 +66,7 @@ class BatchCheckRunner:
 
             # If a failed aggregate has critical severity, mark all rows as failed
             if any(agg.severity in self.fail_levels for agg in failed_aggregates):
-                df = df.withColumn("_dq_passed", lit(False))
+                df = df.withColumn("_dq_passed", F.lit(False))
 
         return df, aggregate_results
 
@@ -93,19 +94,19 @@ class BatchCheckRunner:
             result_df = check.validate(result_df)
 
             # Construct a struct column if the check failed
-            error_expr = when(
-                col(check.check_id),
-                struct(
-                    lit(check.name).alias("check"),
-                    lit(check.check_id).alias("check-id"),
-                    lit(check.severity.value).alias("severity"),
+            error_expr = F.when(
+                F.col(check.check_id),
+                F.struct(
+                    F.lit(check.name).alias("check"),
+                    F.lit(check.check_id).alias("check-id"),
+                    F.lit(check.severity.value).alias("severity"),
                 ),
             )
             error_structs.append(error_expr)
 
             # Collect critical fail flags
             if check.severity in self.fail_levels:
-                fail_flags.append(col(check.check_id))
+                fail_flags.append(F.col(check.check_id))
 
         return result_df, error_structs, fail_flags
 
@@ -138,11 +139,9 @@ class BatchCheckRunner:
             DataFrame: The DataFrame with the _dq_passed column added.
         """
         if not fail_flags:
-            return df.withColumn("_dq_passed", lit(True))
+            return df.withColumn("_dq_passed", F.lit(True))
 
-        combined_flag = fail_flags[0]
-        for cond in fail_flags[1:]:
-            combined_flag = combined_flag | cond
+        combined_flag = F.reduce(F.array(*fail_flags), F.lit(False), lambda acc, x: acc | x)
 
         return df.withColumn("_dq_passed", ~combined_flag)
 
@@ -161,17 +160,17 @@ class BatchCheckRunner:
         Returns:
             DataFrame: The DataFrame with aggregate errors included.
         """
-        aggregate_error_array = array(
-            [
-                struct(
-                    lit(agg.check).alias("check"),
-                    lit(agg.check_id).alias("check-id"),
-                    lit(agg.severity.value).alias("severity"),
+        aggregates_error = F.array(
+            *[
+                F.struct(
+                    F.lit(agg.check).alias("check"),
+                    F.lit(agg.check_id).alias("check-id"),
+                    F.lit(agg.severity.value).alias("severity"),
                 )
                 for agg in failed_aggregates
             ]
         )
+        if failed_aggregates:
+            df = df.withColumn("_dq_errors", F.concat(F.col("_dq_errors"), aggregates_error))
 
-        df = df.withColumn("_dq_aggregate_errors", aggregate_error_array)
-        df = df.withColumn("_dq_errors", concat(col("_dq_errors"), col("_dq_aggregate_errors")))
         return df
