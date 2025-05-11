@@ -26,3 +26,14 @@ class ValidationSummary:
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+    def __str__(self) -> str:
+        ts = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        return (
+            f"Validation Summary ({ts})\n"
+            f"Total records:   {self.total_records:,}\n"
+            f"Passed records:  {self.passed_records:,}\n"
+            f"Failed records:  {self.failed_records:,}\n"
+            f"Warnings:        {self.warning_records:,}\n"
+            f"Pass rate:       {self.pass_rate:.2%}"
+        )
