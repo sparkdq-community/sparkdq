@@ -63,8 +63,8 @@ class TimestampBetweenCheckConfig(BaseRowCheckConfig):
     check_class = TimestampBetweenCheck
 
     columns: List[str] = Field(..., description="Timestamp columns to check")
-    min_value: str = Field(..., description="Minimum allowed timestamp (ISO format)")
-    max_value: str = Field(..., description="Maximum allowed timestamp (ISO format)")
+    min_value: str = Field(..., description="Minimum allowed timestamp (ISO format)", alias="min-value")
+    max_value: str = Field(..., description="Maximum allowed timestamp (ISO format)", alias="max-value")
     inclusive: tuple[bool, bool] = Field((False, False), description="Whether to include [min, max] bounds")
 
     @model_validator(mode="after")

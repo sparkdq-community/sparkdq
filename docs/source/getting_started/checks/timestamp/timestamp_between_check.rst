@@ -42,8 +42,8 @@ Declarative Configuration
       check-id: allowed_event_time_range
       columns:
         - event_time
-      min_value: "2020-01-01 00:00:00"
-      max_value: "2023-12-31 23:59:59"
+      min-value: "2020-01-01 00:00:00"
+      max-value: "2023-12-31 23:59:59"
       inclusive: [true, true]
       severity: critical
 

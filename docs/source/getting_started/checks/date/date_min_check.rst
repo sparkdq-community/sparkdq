@@ -39,7 +39,7 @@ Declarative Configuration
       check-id: minimum_allowed_record_date
       columns:
         - record_date
-      min_value: "2020-01-01"
+      min-value: "2020-01-01"
       inclusive: true
       severity: critical
 

@@ -30,7 +30,7 @@ Declarative Configuration
 
     - check: row-count-min-check
       check-id: minimum_required_records
-      min_count: 10000
+      min-count: 10000
       severity: warning
 
 Typical Use Cases

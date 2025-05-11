@@ -60,5 +60,5 @@ class TimestampMaxCheckConfig(BaseRowCheckConfig):
     check_class = TimestampMaxCheck
 
     columns: List[str] = Field(..., description="The list of timestamp columns to check")
-    max_value: str = Field(..., description="The maximum allowed timestamp (ISO 8601 format)")
+    max_value: str = Field(..., description="Maximum allowed timestamp (ISO format)", alias="max-value")
     inclusive: bool = Field(False, description="Whether the maximum timestamp is inclusive")

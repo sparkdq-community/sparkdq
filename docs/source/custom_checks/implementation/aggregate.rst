@@ -75,7 +75,7 @@ Minimal Example
    @register_check_config(check_name="my-custom-count-check")
    class RowCountMinCheckConfig(BaseAggregateCheckConfig):
        check_class = RowCountMinCheck
-       min_count: int = Field(..., description="Minimum number of rows expected")
+       min_count: int = Field(..., description="Minimum number of rows expected", alias="min-count")
 
        @model_validator(mode="after")
        def validate_min(self) -> "RowCountMinCheckConfig":

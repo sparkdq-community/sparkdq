@@ -44,10 +44,10 @@ class NumericBetweenCheckConfig(BaseRowCheckConfig):
         description="Whether min and max values are inclusive (min_inclusive, max_inclusive)",
     )
     min_value: float | int | Decimal = Field(
-        ..., description="The minimum allowed value (inclusive) for the specified columns"
+        ..., description="The minimum allowed value (inclusive) for the specified columns", alias="min-value"
     )
     max_value: float | int | Decimal = Field(
-        ..., description="The maximum allowed value (inclusive) for the specified columns"
+        ..., description="The maximum allowed value (inclusive) for the specified columns", alias="max-value"
     )
 
     @model_validator(mode="after")

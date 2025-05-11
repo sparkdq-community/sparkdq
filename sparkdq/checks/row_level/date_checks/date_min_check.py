@@ -58,5 +58,8 @@ class DateMinCheckConfig(BaseRowCheckConfig):
 
     check_class = DateMinCheck
     columns: List[str] = Field(..., description="The list of date columns to check for minimum date")
-    min_value: str = Field(..., description="The minimum allowed date (inclusive) in 'YYYY-MM-DD' format")
+    min_value: str = Field(..., description="Minimum allowed date in YYYY-MM-DD format", alias="min-value")
     inclusive: bool = Field(False, description="Whether the minimum date is inclusive")
+    model_config = {
+        "populate_by_name": True,
+    }

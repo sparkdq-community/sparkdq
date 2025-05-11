@@ -30,7 +30,7 @@ Declarative Configuration
 
     - check: row-count-max-check
       check-id: prevent_oversize_batch
-      max_count: 100000
+      max-count: 100000
       severity: error
 
 

@@ -33,6 +33,6 @@ class NumericMinCheckConfig(BaseRowCheckConfig):
     check_class = NumericMinCheck
     columns: List[str] = Field(..., description="The list of numeric columns to check for minimum value")
     min_value: float | int | Decimal = Field(
-        ..., description="The minimum allowed value (inclusive) for the specified columns"
+        ..., description="The minimum allowed value (inclusive) for the specified columns", alias="min-value"
     )
     inclusive: bool = Field(False, description="Whether the minimum value is inclusive")

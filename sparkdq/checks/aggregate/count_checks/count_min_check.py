@@ -71,7 +71,7 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
     """
 
     check_class = RowCountMinCheck
-    min_count: int = Field(..., description="Minimum number of rows expected")
+    min_count: int = Field(..., description="Minimum number of rows expected", alias="min-count")
 
     @model_validator(mode="after")
     def validate_min(self) -> "RowCountMinCheckConfig":
@@ -85,5 +85,5 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
             InvalidCheckConfigurationError: If ``min_count`` is negative.
         """
         if self.min_count <= 0:
-            raise InvalidCheckConfigurationError(f"min_count ({self.min_count}) must be greater than 0")
+            raise InvalidCheckConfigurationError(f"min-count ({self.min_count}) must be greater than 0")
         return self

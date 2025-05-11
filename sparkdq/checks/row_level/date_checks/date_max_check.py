@@ -63,5 +63,8 @@ class DateMaxCheckConfig(BaseRowCheckConfig):
     check_class = DateMaxCheck
 
     columns: List[str] = Field(..., description="Date columns to validate")
-    max_value: str = Field(..., description="Maximum allowed date in YYYY-MM-DD format")
+    max_value: str = Field(..., description="Maximum allowed date in YYYY-MM-DD format", alias="max-value")
     inclusive: bool = Field(False, description="Whether the maximum date is inclusive")
+    model_config = {
+        "populate_by_name": True,
+    }

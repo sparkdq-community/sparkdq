@@ -42,8 +42,8 @@ Declarative Configuration
       check-id: allowed_discount_range
       columns:
         - discount
-      min_value: 0.0
-      max_value: 100.0
+      min-value: 0.0
+      max-value: 100.0
       inclusive: [true, true]
       severity: critical
 

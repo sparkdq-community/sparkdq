@@ -71,7 +71,7 @@ class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
     """
 
     check_class = RowCountMaxCheck
-    max_count: int = Field(..., description="Maximum number of rows allowed")
+    max_count: int = Field(..., description="Maximum number of rows allowed", alias="max-count")
 
     @model_validator(mode="after")
     def validate_max(self) -> "RowCountMaxCheckConfig":
@@ -85,5 +85,5 @@ class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
             InvalidCheckConfigurationError: If ``max_count`` is not greater than 0.
         """
         if self.max_count <= 0:
-            raise InvalidCheckConfigurationError(f"max_count ({self.max_count}) must be greater than 0")
+            raise InvalidCheckConfigurationError(f"max-count ({self.max_count}) must be greater than 0")
         return self

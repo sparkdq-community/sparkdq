@@ -73,5 +73,7 @@ class ColumnPresenceCheckConfig(BaseAggregateCheckConfig):
     check_class = ColumnPresenceCheck
 
     required_columns: list[str] = Field(
-        ..., description="List of required column names that must be present in the DataFrame"
+        ...,
+        description="List of required column names that must be present in the DataFrame",
+        alias="required-columns",
     )

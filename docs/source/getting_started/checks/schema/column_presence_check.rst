@@ -30,7 +30,7 @@ Declarative Configuration
 
     - check: column-presence-check
       check-id: enforce_required_columns
-      required_columns:
+      required-columns:
         - id
         - event_timestamp
         - status

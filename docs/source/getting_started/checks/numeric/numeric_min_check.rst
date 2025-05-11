@@ -40,7 +40,7 @@ Declarative Configuration
       columns:
         - price
         - discount
-      min_value: 0.0
+      min-value: 0.0
       inclusive: true
       severity: critical
 

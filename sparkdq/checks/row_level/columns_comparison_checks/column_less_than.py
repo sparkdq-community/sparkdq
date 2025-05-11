@@ -109,8 +109,12 @@ class ColumnLessThanCheckConfig(BaseRowCheckConfig):
 
     check_class = ColumnLessThanCheck
 
-    smaller_column: str = Field(..., description="The column expected to contain smaller (or equal) values.")
-    greater_column: str = Field(..., description="The column expected to contain greater values.")
+    smaller_column: str = Field(
+        ..., description="The column expected to contain smaller (or equal) values.", alias="smaller-column"
+    )
+    greater_column: str = Field(
+        ..., description="The column expected to contain greater values.", alias="greater-column"
+    )
     inclusive: bool = Field(
         False, description="If True, allows equality (<=). Otherwise requires strict inequality (<)."
     )

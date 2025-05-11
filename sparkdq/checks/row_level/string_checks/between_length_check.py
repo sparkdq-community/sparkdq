@@ -98,8 +98,10 @@ class StringLengthBetweenCheckConfig(BaseRowCheckConfig):
     check_class = StringLengthBetweenCheck
 
     column: str = Field(..., description="The column to validate.")
-    min_length: int = Field(..., description="Minimum allowed string length (must be > 0).")
-    max_length: int = Field(..., description="Maximum allowed string length.")
+    min_length: int = Field(
+        ..., description="Minimum allowed string length (must be > 0).", alias="min-length"
+    )
+    max_length: int = Field(..., description="Maximum allowed string length.", alias="max-length")
     inclusive: tuple[bool, bool] = Field((True, True), description="Inclusiveness for (min, max) bounds.")
 
     @model_validator(mode="after")

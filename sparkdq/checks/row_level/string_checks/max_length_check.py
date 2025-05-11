@@ -92,7 +92,7 @@ class StringMaxLengthCheckConfig(BaseRowCheckConfig):
     check_class = StringMaxLengthCheck
 
     column: str = Field(..., description="The column to validate for maximum string length.")
-    max_length: int = Field(..., description="Maximum allowed length of the string values.")
+    max_length: int = Field(..., description="Maximum allowed string length.", alias="max-length")
     inclusive: bool = Field(
         True, description="If True, allows equality (<=). If False, requires strictly less (<)."
     )

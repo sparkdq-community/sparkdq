@@ -98,5 +98,9 @@ class RegexMatchCheckConfig(BaseRowCheckConfig):
 
     column: str = Field(..., description="The column to validate against the regex.")
     pattern: str = Field(..., description="The regex pattern to match.")
-    ignore_case: bool = Field(False, description="Perform case-insensitive matching if True.")
-    treat_null_as_failure: bool = Field(False, description="Mark nulls as failed if True.")
+    ignore_case: bool = Field(
+        False, description="Perform case-insensitive matching if True.", alias="ignore-case"
+    )
+    treat_null_as_failure: bool = Field(
+        False, description="Mark nulls as failed if True.", alias="treat-null-as-failure"
+    )

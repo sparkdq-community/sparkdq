@@ -92,7 +92,9 @@ class StringMinLengthCheckConfig(BaseRowCheckConfig):
     check_class = StringMinLengthCheck
 
     column: str = Field(..., description="The column to validate for minimum string length.")
-    min_length: int = Field(..., description="Minimum required length of string values (must be > 0).")
+    min_length: int = Field(
+        ..., description="Minimum allowed string length (must be > 0).", alias="min-length"
+    )
     inclusive: bool = Field(
         True, description="If True, enforces length >= min_length. If False, enforces > min_length."
     )

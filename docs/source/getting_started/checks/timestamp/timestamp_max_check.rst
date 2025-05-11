@@ -39,7 +39,7 @@ Declarative Configuration
       check-id: maximum_allowed_event_time
       columns:
         - event_time
-      max_value: "2023-12-31 23:59:59"
+      max-value: "2023-12-31 23:59:59"
       inclusive: true
       severity: critical
 

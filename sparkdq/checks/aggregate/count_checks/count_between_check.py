@@ -81,8 +81,8 @@ class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
     """
 
     check_class = RowCountBetweenCheck
-    min_count: int = Field(..., description="Minimum number of rows expected")
-    max_count: int = Field(..., description="Maximum number of rows allowed")
+    min_count: int = Field(..., description="Minimum number of rows expected", alias="min-count")
+    max_count: int = Field(..., description="Maximum number of rows allowed", alias="max-count")
 
     @model_validator(mode="after")
     def validate_range(self) -> "RowCountBetweenCheckConfig":
@@ -101,10 +101,10 @@ class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
         """
         if self.min_count < 0:
             raise InvalidCheckConfigurationError(
-                f"min_count ({self.min_count}) must be greater than or equal to 0"
+                f"min-count ({self.min_count}) must be greater than or equal to 0"
             )
         if self.min_count > self.max_count:
             raise InvalidCheckConfigurationError(
-                f"min_count ({self.min_count}) must not be greater than max_count ({self.max_count})"
+                f"min-count ({self.min_count}) must not be greater than max-count ({self.max_count})"
             )
         return self
