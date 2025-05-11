@@ -67,11 +67,11 @@ class StringMinLengthCheck(BaseRowCheck):
         if self.column not in df.columns:
             raise MissingColumnError(self.column, df.columns)
 
-        length_expr = F.length(F.col(self.column))
-        if self.inclusive:
-            fail_expr = F.col(self.column).isNotNull() & (length_expr < self.min_length)
-        else:
-            fail_expr = F.col(self.column).isNotNull() & (length_expr <= self.min_length)
+        not_null_col = F.col(self.column).isNotNull()
+        length_col = F.length(F.col(self.column))
+        length_condition = length_col < self.min_length if self.inclusive else length_col <= self.min_length
+
+        fail_expr = not_null_col & length_condition
 
         return self.with_check_result_column(df, fail_expr)
 
