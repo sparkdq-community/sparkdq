@@ -16,6 +16,7 @@ from .row_level.null_checks.null_check import NullCheckConfig
 from .row_level.numeric_checks.numeric_between_check import NumericBetweenCheckConfig
 from .row_level.numeric_checks.numeric_max_check import NumericMaxCheckConfig
 from .row_level.numeric_checks.numeric_min_check import NumericMinCheckConfig
+from .row_level.string_checks.between_length_check import StringLengthBetweenCheckConfig
 from .row_level.string_checks.max_length_check import StringMaxLengthCheckConfig
 from .row_level.string_checks.min_length_check import StringMinLengthCheckConfig
 from .row_level.timestamp_checks.timestamp_between_check import TimestampBetweenCheck
@@ -46,4 +47,5 @@ __all__ = [
     "ColumnLessThanCheckConfig",
     "StringMinLengthCheckConfig",
     "StringMaxLengthCheckConfig",
+    "StringLengthBetweenCheckConfig",
 ]

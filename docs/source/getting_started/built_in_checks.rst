@@ -37,6 +37,7 @@ configuration is provided as a Python dictionary at runtime.
    checks/numeric/numeric_between_check
 
    checks/schema/schema_check
+   checks/strings/string_between_length
    checks/strings/string_max_length
    checks/strings/string_min_length
 
@@ -122,3 +123,4 @@ String Checks
 
     ":ref:`string_min_length_check`", "Validates that string values in a column meet a minimum length requirement."
     ":ref:`string_max_length_check`", "Ensures that string values do not exceed a maximum length."
+    ":ref:`string_length_between_check`", "Checks that string lengths fall within a specified range."
