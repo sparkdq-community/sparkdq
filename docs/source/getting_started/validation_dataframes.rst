@@ -21,7 +21,7 @@ Here’s how it works:
 .. code-block:: python
 
     from sparkdq.checks import NullCheckConfig
-    from sparkdq.core import Severity
+    from sparkdq.engine import BatchDQEngine
     from sparkdq.management import CheckSet
 
     check_set = CheckSet()
