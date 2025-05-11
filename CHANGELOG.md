@@ -1,6 +1,50 @@
 # CHANGELOG
 
 
+## v0.5.0 (2025-05-11)
+
+### Documentation
+
+- Update documentation and docstrings ([#12](https://github.com/sparkdq-community/sparkdq/pull/12),
+  [`3decedc`](https://github.com/sparkdq-community/sparkdq/commit/3decedc4747d4c07a8c75b4aad480aa5eeed97da))
+
+* docs(README): add pypi badge
+
+* docs(checks): update explanation of inclusive parameter
+
+* docs(api): add api to documentation and update docstrings
+
+* chore(depenedencies): execute uv sync
+
+### Features
+
+- **check**: Add column-less-than-check
+  ([`272cc2e`](https://github.com/sparkdq-community/sparkdq/commit/272cc2e432bb913e37358b938c77646e7c8b49a6))
+
+- **check**: Add regex_match_check
+  ([`2ac9252`](https://github.com/sparkdq-community/sparkdq/commit/2ac9252b33e557b7128a3861a4554bbebdfd418f))
+
+- **check**: Add string-length-between-check
+  ([`c73763b`](https://github.com/sparkdq-community/sparkdq/commit/c73763b4e122884d7c8fb5ca93fc7a0a8b2cc481))
+
+- **check**: Add string-max-length-check
+  ([`705ec53`](https://github.com/sparkdq-community/sparkdq/commit/705ec53a955632c76ca383aecdfe6da08c8ccd9b))
+
+- **check**: Add string-min-length-check
+  ([`59257d3`](https://github.com/sparkdq-community/sparkdq/commit/59257d3a8b6c20434fcb3e4ca33fb347cd00df8f))
+
+- **checkset**: Add fluent api for check definition
+  ([`691cf42`](https://github.com/sparkdq-community/sparkdq/commit/691cf423e87b2e31fdfc1a291b429d010a81261f))
+
+- **versioning**: Add version in __init__.py
+  ([`f8f8e6d`](https://github.com/sparkdq-community/sparkdq/commit/f8f8e6d8fbc4c2a8d5b4132a9803c574050bf844))
+
+### Refactoring
+
+- **string-min-length-check**: Simplify validate logic
+  ([`b888d46`](https://github.com/sparkdq-community/sparkdq/commit/b888d4628348db93f7677b75f851889b04a58d31))
+
+
 ## v0.4.0 (2025-05-01)
 
 ### Features
