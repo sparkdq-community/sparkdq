@@ -163,6 +163,7 @@
 <li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks/columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_between_check.html">Count Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
@@ -180,6 +181,9 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_between_length.html">String Length Between Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_max_length.html">String Max Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_min_length.html">String Min Length Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
@@ -381,7 +385,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fluent-api-recommended">Fluent API (recommended):</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classic-api-equivalent-but-more-verbose">Classic API (equivalent but more verbose):</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unified-check-handling">Unified Check Handling</a></li>
 </ul>
@@ -440,7 +448,34 @@ such as unexpected value distributions or optional completeness requirements.</p
 <section id="python-native-configuration">
 <h2>Python-native Configuration<a class="headerlink" href="#python-native-configuration" title="Link to this heading">#</a></h2>
 <p>For dynamic or code-driven use cases (e.g. notebooks, CI pipelines), you can define checks directly in Python
-using type-safe config classes:</p>
+using type-safe config classes. The <code class="docutils literal notranslate"><span class="pre">CheckSet</span></code> supports both the classic and the fluent API style.</p>
+<section id="fluent-api-recommended">
+<h3>Fluent API (recommended):<a class="headerlink" href="#fluent-api-recommended" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span><span class="p">,</span> <span class="n">RowCountBetweenCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
+
+<span class="n">check_set</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">CheckSet</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
+        <span class="n">NullCheckConfig</span><span class="p">(</span>
+            <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
+        <span class="n">RowCountBetweenCheckConfig</span><span class="p">(</span>
+            <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-count-check&quot;</span><span class="p">,</span>
+            <span class="n">min_count</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">max_count</span><span class="o">=</span><span class="mi">5000</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="classic-api-equivalent-but-more-verbose">
+<h3>Classic API (equivalent but more verbose):<a class="headerlink" href="#classic-api-equivalent-but-more-verbose" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span><span class="p">,</span> <span class="n">RowCountBetweenCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
@@ -448,16 +483,20 @@ using type-safe config classes:</p>
 <span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
 <span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
     <span class="n">NullCheckConfig</span><span class="p">(</span>
-        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
     <span class="p">)</span>
 <span class="p">)</span>
 <span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span>
     <span class="n">RowCountBetweenCheckConfig</span><span class="p">(</span>
-        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-count-check&quot;</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_count</span><span class="o">=</span><span class="mi">5000</span>
+        <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-count-check&quot;</span><span class="p">,</span>
+        <span class="n">min_count</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">max_count</span><span class="o">=</span><span class="mi">5000</span>
     <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="declarative-configuration">
 <h2>Declarative Configuration<a class="headerlink" href="#declarative-configuration" title="Link to this heading">#</a></h2>
@@ -561,7 +600,11 @@ existing system or pipeline.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning">Warning</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-configuration">Python-native Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fluent-api-recommended">Fluent API (recommended):</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classic-api-equivalent-but-more-verbose">Classic API (equivalent but more verbose):</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unified-check-handling">Unified Check Handling</a></li>
 </ul>

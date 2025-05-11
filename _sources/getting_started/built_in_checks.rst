@@ -14,6 +14,7 @@ configuration is provided as a Python dictionary at runtime.
    :caption: Built-in Checks
    :hidden:
 
+   checks/columns_comparison/column_less
    checks/schema/column_presence_check
    checks/count/count_between_check
    checks/count/count_exact_check
@@ -35,11 +36,25 @@ configuration is provided as a Python dictionary at runtime.
    checks/numeric/numeric_max_check
    checks/numeric/numeric_between_check
 
+   checks/strings/regex_match_check
+
    checks/schema/schema_check
+   checks/strings/string_between_length
+   checks/strings/string_max_length
+   checks/strings/string_min_length
 
    checks/timestamp/timestamp_min_check
    checks/timestamp/timestamp_max_check
    checks/timestamp/timestamp_between_check
+
+Comparison Checks
+-----------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`column_less_than_check`", "Validates that values in one column are strictly less than (or less than or equal to) the values in another column."
 
 Contained-In Checks
 ----------------------
@@ -100,3 +115,15 @@ Schema Checks
 
     ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
     ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."
+
+String Checks
+-------------
+
+.. csv-table::
+    :header: "Check", "Description"
+    :widths: 20, 80
+
+    ":ref:`regex_match_check`", "Validates that string values match a given regular expression pattern."
+    ":ref:`string_min_length_check`", "Validates that string values in a column meet a minimum length requirement."
+    ":ref:`string_max_length_check`", "Ensures that string values do not exceed a maximum length."
+    ":ref:`string_length_between_check`", "Checks that string lengths fall within a specified range."

@@ -163,6 +163,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/applying_validation.html">Integration Patterns</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/count/count_between_check.html">Count Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/count/count_exact_check.html">Count Exact</a></li>
@@ -180,6 +181,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_between_length.html">String Length Between Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_max_length.html">String Max Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_min_length.html">String Min Length Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
@@ -432,8 +436,7 @@ mechanism is the <code class="docutils literal notranslate"><span class="pre">Ch
 <p>These steps are executed <strong>automatically in the background</strong> when you call:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
 
-<span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
-<span class="n">check_set</span><span class="o">.</span><span class="n">add_checks_from_dicts</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span><span class="o">.</span><span class="n">add_checks_from_dicts</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The registry is an essential part of this mechanism: it allows the factory to resolve config classes

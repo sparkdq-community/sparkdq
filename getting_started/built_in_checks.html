@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/built_in_checks';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Column Presence" href="checks/schema/column_presence_check.html" />
+    <link rel="next" title="Column Less Than Check" href="checks/columns_comparison/column_less.html" />
     <link rel="prev" title="Integration Patterns" href="applying_validation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -163,6 +163,7 @@
 <li class="toctree-l1"><a class="reference internal" href="validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applying_validation.html">Integration Patterns</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Built-In Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks/columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_between_check.html">Count Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
@@ -180,6 +181,9 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_between_length.html">String Length Between Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_max_length.html">String Max Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/strings/string_min_length.html">String Min Length Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
@@ -371,11 +375,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-checks">Comparison Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contained-in-checks">Contained-In Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-checks">Count Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-checks">Null Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#range-checks">Range Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-checks">Schema Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-checks">String Checks</a></li>
 </ul>
             </nav>
         </div>
@@ -397,6 +403,26 @@ You can still define checks via JSON, or external sources — as long as the
 configuration is provided as a Python dictionary at runtime.</p>
 <div class="toctree-wrapper compound">
 </div>
+<section id="comparison-checks">
+<h2>Comparison Checks<a class="headerlink" href="#comparison-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/columns_comparison/column_less.html#column-less-than-check"><span class="std std-ref">Column Less Than Check</span></a></p></td>
+<td><p>Validates that values in one column are strictly less than (or less than or equal to) the values in another column.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="contained-in-checks">
 <h2>Contained-In Checks<a class="headerlink" href="#contained-in-checks" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -542,6 +568,35 @@ configuration is provided as a Python dictionary at runtime.</p>
 </table>
 </div>
 </section>
+<section id="string-checks">
+<h2>String Checks<a class="headerlink" href="#string-checks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Check</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/strings/regex-match-check.html#regex-match-check"><span class="std std-ref">Regex Match Check</span></a></p></td>
+<td><p>Validates that string values match a given regular expression pattern.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/strings/string_min_length.html#string-min-length-check"><span class="std std-ref">String Min Length Check</span></a></p></td>
+<td><p>Validates that string values in a column meet a minimum length requirement.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/strings/string_max_length.html#string-max-length-check"><span class="std std-ref">String Max Length Check</span></a></p></td>
+<td><p>Ensures that string values do not exceed a maximum length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/strings/string_between_length.html#string-length-between-check"><span class="std std-ref">String Length Between Check</span></a></p></td>
+<td><p>Checks that string lengths fall within a specified range.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 
 
@@ -565,11 +620,11 @@ configuration is provided as a Python dictionary at runtime.</p>
       </div>
     </a>
     <a class="right-next"
-       href="checks/schema/column_presence_check.html"
+       href="checks/columns_comparison/column_less.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Column Presence</p>
+        <p class="prev-next-title">Column Less Than Check</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -589,11 +644,13 @@ configuration is provided as a Python dictionary at runtime.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-checks">Comparison Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contained-in-checks">Contained-In Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-checks">Count Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#null-checks">Null Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#range-checks">Range Checks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-checks">Schema Checks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-checks">String Checks</a></li>
 </ul>
   </nav></div>
 

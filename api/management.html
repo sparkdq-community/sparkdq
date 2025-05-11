@@ -163,6 +163,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/validation_dataframes.html">Validating DataFrames</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/applying_validation.html">Integration Patterns</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/built_in_checks.html">Built-In Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/count/count_between_check.html">Count Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/count/count_exact_check.html">Count Exact</a></li>
@@ -180,6 +181,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_between_length.html">String Length Between Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_max_length.html">String Max Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/strings/string_min_length.html">String Min Length Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/checks/timestamp/timestamp_between_check.html">Timestamp Between</a></li>
@@ -387,11 +391,17 @@ checks.</p>
 <p>This component decouples check definition from check execution.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">add_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCheckConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.add_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Adds a single check from a validated configuration object.</p>
+<span class="sig-name descname"><span class="pre">add_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCheckConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CheckSet</span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.add_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Adds a single check from a validated configuration object and returns self for fluent chaining.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config</strong> (<em>BaseCheckConfig</em>) – The configuration object defining the check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The current instance with the added check.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CheckSet</p>
 </dd>
 </dl>
 </dd></dl>
