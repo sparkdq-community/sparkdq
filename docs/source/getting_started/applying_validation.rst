@@ -9,6 +9,11 @@ different destinations.
 
 Here are two practical approaches that you can implement with just a few lines of code.
 
+.. image:: /_static/integration_patterns.png
+   :alt: Integration patterns diagram
+   :align: center
+   :width: 100%
+
 Fail-Fast Validation
 --------------------
 
