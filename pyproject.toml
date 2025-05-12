@@ -79,6 +79,7 @@ exclude = [
     ".ruff_cache",
     ".venv",
     "docs",
+    "examples",
 ]
 line-length = 110
 target-version = "py311"
