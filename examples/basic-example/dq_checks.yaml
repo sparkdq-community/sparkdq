@@ -12,16 +12,16 @@
   check-id: trip-positive
   columns:
     - trip_distance
-  min_value: 0
+  min-value: 0
 
 - check: numeric-min-check
   check-id: fare-positive
   columns:
     - fare_amount
-  min_value: 0
+  min-value: 0
 
 - check: column-less-than-check
   check-id: chronological
-  smaller_column: tpep_pickup_datetime
-  greater_column: tpep_dropoff_datetime
+  smaller-column: tpep_pickup_datetime
+  greater-column: tpep_dropoff_datetime
   inclusive: false
