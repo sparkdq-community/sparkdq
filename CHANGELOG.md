@@ -1,6 +1,34 @@
 # CHANGELOG
 
 
+## v0.5.1 (2025-05-12)
+
+### Bug Fixes
+
+- **check-definition**: Enforce kebab-case for check definition
+  ([`4bd8ada`](https://github.com/sparkdq-community/sparkdq/commit/4bd8ada789fd6046963e359deda8e65b286bd351))
+
+- **check-runner**: _dq_errors contains only validation failures
+  ([`db80414`](https://github.com/sparkdq-community/sparkdq/commit/db80414f511e505486fdaf2b9850ae2455e195f8))
+
+- **validation-summary**: Add string representation of validation summary
+  ([`42657ac`](https://github.com/sparkdq-community/sparkdq/commit/42657ac1474635c9d947edf3567b3d5cd17f7af8))
+
+### Documentation
+
+- **sphinx**: Add correct import to example
+  ([`f877df9`](https://github.com/sparkdq-community/sparkdq/commit/f877df99cd6e5dba5c242ea9742d126a7e655c07))
+
+- **sphinx**: Add image to section Integration Patterns
+  ([`0ce8424`](https://github.com/sparkdq-community/sparkdq/commit/0ce84248a93faf35362f996b0ea9153aa8d8751d))
+
+- **sphinx**: Renamed filename of regex-match-check
+  ([`1395b09`](https://github.com/sparkdq-community/sparkdq/commit/1395b09fc5a2f22fa401d92fd2e5a6647948b321))
+
+- **sphinx**: Restructured documentation
+  ([`2c9e670`](https://github.com/sparkdq-community/sparkdq/commit/2c9e670555f1e3f2370e32fc7be7b40316f931fa))
+
+
 ## v0.5.0 (2025-05-11)
 
 ### Documentation
