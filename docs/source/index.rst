@@ -24,7 +24,14 @@ SparkDQ — Data Quality Validation
    getting_started/defining_checks
    getting_started/validation_dataframes
    getting_started/applying_validation
-   getting_started/built_in_checks
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Built-In Checks
+   :hidden:
+
+   built_in_checks/row_level
+   built_in_checks/aggregate
 
 .. toctree::
    :maxdepth: 2
