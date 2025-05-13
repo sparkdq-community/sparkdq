@@ -40,7 +40,7 @@ class IsContainedInCheck(BaseRowCheck):
         """
         conditions = [F.col(column).isin(values) for column, values in self.allowed_values.items()]
 
-        overall_condition = F.reduce(F.array(*conditions), F.lit(True), lambda acc, x: acc & x)
+        overall_condition = F.aggregate(F.array(*conditions), F.lit(True), lambda acc, x: acc & x)
 
         return self.with_check_result_column(df, overall_condition)
 

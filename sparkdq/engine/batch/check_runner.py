@@ -141,7 +141,7 @@ class BatchCheckRunner:
         if not fail_flags:
             return df.withColumn("_dq_passed", F.lit(True))
 
-        combined_flag = F.reduce(F.array(*fail_flags), F.lit(False), lambda acc, x: acc | x)
+        combined_flag = F.aggregate(F.array(*fail_flags), F.lit(False), lambda acc, x: acc | x)
 
         return df.withColumn("_dq_passed", ~combined_flag)
 

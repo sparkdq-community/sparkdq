@@ -60,7 +60,7 @@ class NullCheck(BaseRowCheck):
         null_checks = F.array(*[F.col(c).isNull() for c in self.columns])
 
         # Reduce the array by OR-ing all null checks
-        any_null_expr = F.reduce(null_checks, F.lit(False), lambda acc, x: acc | x)
+        any_null_expr = F.aggregate(null_checks, F.lit(False), lambda acc, x: acc | x)
 
         return self.with_check_result_column(df, any_null_expr)
 
