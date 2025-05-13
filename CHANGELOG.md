@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.5.2 (2025-05-13)
+
+### Bug Fixes
+
+- Replace reduce with aggregate
+  ([`a04d586`](https://github.com/sparkdq-community/sparkdq/commit/a04d58659c920e1ee8ba2f892f7d34e87f9c00be))
+
+### Documentation
+
+- **examples**: Add simple example ([#30](https://github.com/sparkdq-community/sparkdq/pull/30),
+  [`53fa344`](https://github.com/sparkdq-community/sparkdq/commit/53fa3446a4aa5d53567964f354de7df868b8b446))
+
+
 ## v0.5.1 (2025-05-12)
 
 ### Bug Fixes
