@@ -93,8 +93,10 @@ Alternatively, if you're using uv, a fast and modern Python package manager:
 uv add sparkdq
 ```
 
-The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. No additional Spark installation
-is required when running inside environments like Databricks, AWS Glue, or EMR.
+The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. If you're running SparkDQ outside
+of managed platforms like Databricks, AWS Glue, or EMR, make sure Spark is installed and properly
+configured on your system. You can install it via your package manager or by following the official
+[Installation Guide](https://spark.apache.org/docs/latest/api/python/getting_started/install.html).
 
 ## Why SparkDQ?
 
