@@ -46,7 +46,7 @@ Implementation Tip
 
 .. code-block:: python
 
-    if result.summary().failed_records > 0:
+    if not result.summary().all_passed:
         raise RuntimeError("Critical checks failed — stopping pipeline.")
 
 Quarantine Strategy
