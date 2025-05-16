@@ -49,3 +49,4 @@ SparkDQ — Data Quality Validation
    :hidden:
 
    api_docs
+   examples
