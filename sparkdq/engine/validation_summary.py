@@ -24,6 +24,11 @@ class ValidationSummary:
     pass_rate: float
     timestamp: datetime
 
+    @property
+    def all_passed(self) -> bool:
+        """Returns True if all records passed validation (pass_rate == 1.0)."""
+        return self.pass_rate == 1.0
+
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
