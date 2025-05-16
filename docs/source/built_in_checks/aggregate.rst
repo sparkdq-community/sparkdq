@@ -12,6 +12,7 @@ Aggregate Checks
    checks/count/count_min_check
    checks/count/count_max_check
    checks/schema/schema_check
+   checks/uniqueness/unique_rows_check
 
 .. csv-table::
     :header: "Check", "Description"
@@ -23,3 +24,4 @@ Aggregate Checks
     ":ref:`count-exact-check` ", "Ensures that the dataset contains exactly the specified number of rows."
     ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
     ":ref:`schema-check` ", "Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns."
+   ":ref:`unique-rows-check`", "Validates that all rows in a DataFrame are unique, either across all columns or a defined subset, helping to detect unintended duplication and enforce row-level uniqueness."
