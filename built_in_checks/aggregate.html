@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/aggregate';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Column Presence" href="checks/schema/column_presence_check.html" />
+    <link rel="next" title="Columns Are Complete" href="checks/completeness/columns_are_complete_check.html" />
     <link rel="prev" title="Timestamp Min" href="checks/timestamp/timestamp_min_check.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -188,12 +188,17 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Aggregate Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks/completeness/columns_are_complete_check.html">Columns Are Complete</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/column_presence_check.html">Column Presence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/completeness/completeness_ratio_check.html">Completeness Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_between_check.html">Count Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/uniqueness/unique_rows_check.html">Unique Rows</a></li>
 </ul>
 </details></li>
 </ul>
@@ -219,6 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/plugin.html">sparkdq.plugin</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
 
     </div>
@@ -388,17 +394,19 @@ document.write(`
 <h1>Aggregate Checks<a class="headerlink" href="#aggregate-checks" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 20.0%" />
-<col style="width: 80.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Check</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-text">:header: “Check”, “Description”
+ :widths: 20, 80</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/completeness/columns_are_complete_check.html#columns-are-complete-check"><span class="std std-ref">Columns Are Complete</span></a></p></td>
+<td><p>Validates that a set of columns are fully populated. If any nulls are detected in the specified columns, the entire DataFrame is marked as invalid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/schema/column_presence_check.html#column-presence-check"><span class="std std-ref">Column Presence</span></a></p></td>
+<td><p>Verifies the existence of required columns in the DataFrame, independent of their data types.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/completeness/completeness_ratio_check.html#completeness-ratio-check"><span class="std std-ref">Completeness Ratio</span></a></p></td>
+<td><p>Validates that the ratio of non-null values in a column meets a minimum threshold, enabling soft completeness validation and early detection of partially missing data.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="checks/count/count_min_check.html#count-min-check"><span class="std std-ref">Count Min</span></a></p></td>
 <td><p>Ensures that the DataFrame contains at least a defined minimum number of rows.</p></td>
 </tr>
@@ -411,11 +419,17 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="checks/count/count_exact_check.html#count-exact-check"><span class="std std-ref">Count Exact</span></a></p></td>
 <td><p>Ensures that the dataset contains exactly the specified number of rows.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="checks/schema/column_presence_check.html#column-presence-check"><span class="std std-ref">Column Presence</span></a></p></td>
-<td><p>Verifies the existence of required columns in the DataFrame, independent of their data types.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/uniqueness/distinct_ratio_check.html#distinct-ratio-check"><span class="std std-ref">Distinct Ratio</span></a></p></td>
+<td><p>Validates that the ratio of distinct non-null values in a column exceeds a defined threshold, helping to detect overly uniform or low-cardinality fields.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="checks/schema/schema_check.html#schema-check"><span class="std std-ref">Schema Check</span></a></p></td>
 <td><p>Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/uniqueness/unique_ratio_check.html#unique-ratio-check"><span class="std std-ref">Unique Ratio</span></a></p></td>
+<td><p>Validates that a specified column maintains a minimum ratio of unique (non-null) values, helping to detect excessive duplication and assess data entropy or feature distinctiveness.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/uniqueness/unique_rows_check.html#unique-rows-check"><span class="std std-ref">Unique Rows</span></a></p></td>
+<td><p>Validates that all rows in a DataFrame are unique, either across all columns or a defined subset, helping to detect unintended duplication and enforce row-level uniqueness.</p></td>
 </tr>
 </tbody>
 </table>
@@ -443,11 +457,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="checks/schema/column_presence_check.html"
+       href="checks/completeness/columns_are_complete_check.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Column Presence</p>
+        <p class="prev-next-title">Columns Are Complete</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
