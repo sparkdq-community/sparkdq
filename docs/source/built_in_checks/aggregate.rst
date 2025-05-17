@@ -6,6 +6,7 @@ Aggregate Checks
    :caption: Built-in Checks
    :hidden:
 
+   checks/completeness/columns_are_complete_check
    checks/schema/column_presence_check
    checks/completeness/completeness_ratio_check
    checks/count/count_between_check
@@ -20,6 +21,7 @@ Aggregate Checks
     :header: "Check", "Description"
     :widths: 20, 80
 
+   ":ref:`columns-are-complete-check`", "Validates that a set of columns are fully populated. If any nulls are detected in the specified columns, the entire DataFrame is marked as invalid."
    ":ref:`column-presence-check` ", "Verifies the existence of required columns in the DataFrame, independent of their data types."
    ":ref:`completeness-ratio-check`", "Validates that the ratio of non-null values in a column meets a minimum threshold, enabling soft completeness validation and early detection of partially missing data."
    ":ref:`count-min-check` ", "Ensures that the DataFrame contains at least a defined minimum number of rows."
