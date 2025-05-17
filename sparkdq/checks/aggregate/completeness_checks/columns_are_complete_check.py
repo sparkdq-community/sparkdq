@@ -63,7 +63,7 @@ class ColumnsAreCompleteCheck(BaseAggregateCheck):
         null_counts = (
             df.select(*[F.sum(F.col(col).isNull().cast("int")).alias(col) for col in self.columns])
             .first()
-            .asDict()
+            .asDict()  # type: ignore
         )
 
         failed_columns = [col for col, null_count in null_counts.items() if null_count > 0]
