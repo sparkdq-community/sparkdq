@@ -1,6 +1,37 @@
 # CHANGELOG
 
 
+## v0.6.0 (2025-05-17)
+
+### Documentation
+
+- **README**: Add spark installation guideline link
+  ([`7c1049c`](https://github.com/sparkdq-community/sparkdq/commit/7c1049ccd53c0a49d00cbcf4e03ffac45685446d))
+
+- **sphinx**: Add example link
+  ([`c256caf`](https://github.com/sparkdq-community/sparkdq/commit/c256caf67992b837aca1200df95b26f141bb1c15))
+
+### Features
+
+- Add property to validation summary to indicate if all checks passed
+  ([`b9c6e5b`](https://github.com/sparkdq-community/sparkdq/commit/b9c6e5b74ceb8c540d02d587e8f9bd6b548518ef))
+
+- **check**: Add aggregate-level check to ensure completeness of specified columns
+  ([`7ed6a3a`](https://github.com/sparkdq-community/sparkdq/commit/7ed6a3ab963d3b2a18d8264e80a9ee4585482814))
+
+- **check**: Add CompletenessRatioCheck to validate non-null ratio of a column
+  ([`5e32627`](https://github.com/sparkdq-community/sparkdq/commit/5e32627aca83327b9fe105c4b59d464397d360d9))
+
+- **check**: Add DistinctRatioCheck to validate column cardinality
+  ([`4c0c936`](https://github.com/sparkdq-community/sparkdq/commit/4c0c936981849684fb22e7f948bcac860a650d03))
+
+- **check**: Add UniqueRatioCheck to validate minimum uniqueness ratio in a column
+  ([`7a82ab3`](https://github.com/sparkdq-community/sparkdq/commit/7a82ab31b5791559e5cacfd28cc961efd8507a01))
+
+- **check**: Add UniqueRowsCheck to detect duplicate rows based on full or partial column sets
+  ([`71a7f1d`](https://github.com/sparkdq-community/sparkdq/commit/71a7f1dbfdc027728acf267bf1b3309e08087e5f))
+
+
 ## v0.5.2 (2025-05-13)
 
 ### Bug Fixes
