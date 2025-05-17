@@ -1,3 +1,4 @@
+from .aggregate.completeness_checks.columns_are_complete_check import ColumnsAreCompleteCheckConfig
 from .aggregate.completeness_checks.completeness_ratio_check import CompletenessRatioCheckConfig
 from .aggregate.count_checks.count_between_check import RowCountBetweenCheckConfig
 from .aggregate.count_checks.count_exact_check import RowCountExactCheckConfig
@@ -56,4 +57,5 @@ __all__ = [
     "UniqueRowsCheckConfig",
     "UniqueRatioCheckConfig",
     "CompletenessRatioCheckConfig",
+    "ColumnsAreCompleteCheckConfig",
 ]
