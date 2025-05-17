@@ -1,3 +1,4 @@
+from .aggregate.completeness_checks.completeness_ratio_check import CompletenessRatioCheckConfig
 from .aggregate.count_checks.count_between_check import RowCountBetweenCheckConfig
 from .aggregate.count_checks.count_exact_check import RowCountExactCheckConfig
 from .aggregate.count_checks.count_max_check import RowCountMaxCheckConfig
@@ -54,4 +55,5 @@ __all__ = [
     "RegexMatchCheckConfig",
     "UniqueRowsCheckConfig",
     "UniqueRatioCheckConfig",
+    "CompletenessRatioCheckConfig",
 ]
