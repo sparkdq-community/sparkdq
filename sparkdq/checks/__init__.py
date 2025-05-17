@@ -4,6 +4,7 @@ from .aggregate.count_checks.count_max_check import RowCountMaxCheckConfig
 from .aggregate.count_checks.count_min_check import RowCountMinCheckConfig
 from .aggregate.schema_checks.column_presence_check import ColumnPresenceCheckConfig
 from .aggregate.schema_checks.schema_check import SchemaCheckConfig
+from .aggregate.uniqueness_checks.unique_ratio_check import UniqueRatioCheckConfig
 from .aggregate.uniqueness_checks.unique_rows_check import UniqueRowsCheckConfig
 from .row_level.columns_comparison_checks.column_less_than import ColumnLessThanCheckConfig
 from .row_level.contained_checks.is_contained_in_check import IsContainedInCheckConfig
@@ -52,4 +53,5 @@ __all__ = [
     "StringLengthBetweenCheckConfig",
     "RegexMatchCheckConfig",
     "UniqueRowsCheckConfig",
+    "UniqueRatioCheckConfig",
 ]
