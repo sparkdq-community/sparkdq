@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.6.1 (2025-05-19)
+
+### Bug Fixes
+
+- **engine**: Ensure aggregate checks run on original input DataFrame
+  ([#35](https://github.com/sparkdq-community/sparkdq/pull/35),
+  [`4dbd7a5`](https://github.com/sparkdq-community/sparkdq/commit/4dbd7a56e9c8cdf265f86b77b61ce6408ff1afe8))
+
+
 ## v0.6.0 (2025-05-17)
 
 ### Documentation
