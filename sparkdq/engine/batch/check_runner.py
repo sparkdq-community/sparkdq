@@ -47,14 +47,16 @@ class BatchCheckRunner:
         agg_checks = [c for c in checks if isinstance(c, BaseAggregateCheck)]
 
         # Run row checks, collect error annotations and critical fail flags
-        df, error_structs, fail_flags = self._run_row_checks(df, row_checks)
+        transformed_df, error_structs, fail_flags = self._run_row_checks(df, row_checks)
 
         # Compute _dq_passed column based on critical flags
-        df = self._combine_failure_flags(df, fail_flags)
+        transformed_df = self._combine_failure_flags(transformed_df, fail_flags)
 
         # Combine all row-level error structs into _dq_errors array
         dq_errors_array = F.array(*error_structs)
-        df = df.withColumn("_dq_errors", F.filter(dq_errors_array, lambda x: x.isNotNull()))
+        transformed_df = transformed_df.withColumn(
+            "_dq_errors", F.filter(dq_errors_array, lambda x: x.isNotNull())
+        )
 
         # Run aggregate checks and collect results
         aggregate_results = self._run_aggregate_checks(df, agg_checks)
@@ -62,13 +64,13 @@ class BatchCheckRunner:
 
         # Attach aggregate error information if any failed
         if failed_aggregates:
-            df = self._attach_aggregate_errors(df, failed_aggregates)
+            transformed_df = self._attach_aggregate_errors(transformed_df, failed_aggregates)
 
             # If a failed aggregate has critical severity, mark all rows as failed
             if any(agg.severity in self.fail_levels for agg in failed_aggregates):
-                df = df.withColumn("_dq_passed", F.lit(False))
+                transformed_df = transformed_df.withColumn("_dq_passed", F.lit(False))
 
-        return df, aggregate_results
+        return transformed_df, aggregate_results
 
     def _run_row_checks(
         self, df: DataFrame, row_checks: List[BaseRowCheck]
