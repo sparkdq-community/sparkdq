@@ -2045,7 +2045,7 @@ wheels = [
 
 [[package]]
 name = "sparkdq"
-version = "0.5.2"
+version = "0.6.1"
 source = { virtual = "." }
 dependencies = [
     { name = "pydantic" },
