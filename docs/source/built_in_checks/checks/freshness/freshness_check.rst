@@ -13,13 +13,13 @@ The check fails if the newest value is **older than** the specified interval (e.
 
     The following time units are supported for the `period` parameter:
 
-    * ``years``
-    * ``months``
-    * ``weeks``
-    * ``days``
-    * ``hours``
-    * ``minutes``
-    * ``seconds``
+    * ``year``
+    * ``month``
+    * ``week``
+    * ``day``
+    * ``hour``
+    * ``minute``
+    * ``second``
 
 Python Configuration
 --------------------
@@ -33,7 +33,7 @@ Python Configuration
        check_id="data-update-recent",
        column="last_updated",
        interval=24,
-       period="hours",
+       period="hour",
        severity=Severity.CRITICAL
    )
 
@@ -46,7 +46,7 @@ Declarative Configuration
       check-id: data-update-recent
       column: last_updated
       interval: 24
-      period: hours
+      period: hour
       severity: critical
 
 Typical Use Cases
