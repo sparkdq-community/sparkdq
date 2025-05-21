@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Null Check &#8212; SparkDQ Documentation</title>
+    <title>Freshness Check &#8212; SparkDQ Documentation</title>
   
   
   
@@ -44,11 +44,11 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/null/null_check';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/freshness/freshness_check';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Numeric Between" href="../numeric/numeric_between_check.html" />
-    <link rel="prev" title="Not Null Check" href="not_null_check.html" />
+    <link rel="next" title="Distinct Ratio" href="../uniqueness/distinct_ratio_check.html" />
+    <link rel="prev" title="Count Max" href="../count/count_max_check.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -165,16 +165,16 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-In Checks</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../row_level.html">Row-Level Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../row_level.html">Row-Level Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_max_check.html">Date Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_min_check.html">Date Min</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../null/exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../contained_in/is_contained_in_check.html">Is Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
-<li class="toctree-l2"><a class="reference internal" href="not_null_check.html">Not Null Check</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../null/not_null_check.html">Not Null Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../null/null_check.html">Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_min_check.html">Numeric Min</a></li>
@@ -187,7 +187,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../aggregate.html">Aggregate Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../aggregate.html">Aggregate Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../completeness/columns_are_complete_check.html">Columns Are Complete</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../completeness/completeness_ratio_check.html">Completeness Ratio</a></li>
@@ -195,7 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../count/count_exact_check.html">Count Exact</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../count/count_max_check.html">Count Max</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Freshness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -295,7 +295,7 @@
       
       
       
-      <li><a href="../../../_sources/built_in_checks/checks/null/null_check.rst" target="_blank"
+      <li><a href="../../../_sources/built_in_checks/checks/freshness/freshness_check.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -379,7 +379,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Null Check</h1>
+    <h1>Freshness Check</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -403,42 +403,58 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="null-check">
-<span id="id1"></span><h1>Null Check<a class="headerlink" href="#null-check" title="Link to this heading">#</a></h1>
-<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">null-check</span></code></p>
-<p><strong>Purpose</strong>: Verifies that the specified columns do not contain null values.
-This check is typically used to ensure the completeness of mandatory fields
-and to prevent incomplete or invalid records from entering downstream processes.</p>
+  <section id="freshness-check">
+<span id="id1"></span><h1>Freshness Check<a class="headerlink" href="#freshness-check" title="Link to this heading">#</a></h1>
+<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">freshness-check</span></code></p>
+<p><strong>Purpose</strong>:
+Validates that the <strong>most recent timestamp</strong> in a given column is within a defined freshness threshold relative to the current system time.
+The check fails if the newest value is <strong>older than</strong> the specified interval (e.g., more than 24 hours ago).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following time units are supported for the <cite>period</cite> parameter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">year</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">month</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">week</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">day</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hour</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minute</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">second</span></code></p></li>
+</ul>
+</div>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreshnessCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
 
-<span class="n">NullCheckConfig</span><span class="p">(</span>
-    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;require_email&quot;</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">],</span>
-    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">ERROR</span>
+<span class="n">FreshnessCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;data-update-recent&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;last_updated&quot;</span><span class="p">,</span>
+    <span class="n">interval</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
+    <span class="n">period</span><span class="o">=</span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="declarative-configuration">
 <h2>Declarative Configuration<a class="headerlink" href="#declarative-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null-check</span>
-<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-null-check</span>
-<span class="w">  </span><span class="nt">columns</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
-<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freshness-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-update-recent</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">last_updated</span>
+<span class="w">  </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span>
+<span class="w">  </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hour</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>
 </section>
 <section id="typical-use-cases">
 <h2>Typical Use Cases<a class="headerlink" href="#typical-use-cases" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>✅ Ensure that mandatory fields (e.g., IDs, keys, or business-critical attributes) are fully populated.</p></li>
-<li><p>✅ Validate that primary key columns do not contain null values to guarantee referential integrity.</p></li>
-<li><p>✅ Prevent incomplete records from entering downstream processes, reports, or analytics.</p></li>
-<li><p>✅ Detect data gaps early to avoid issues in data transformations or aggregations.</p></li>
+<li><p>✅ Ensure that ingested data was recently updated (e.g., within the last hour).</p></li>
+<li><p>✅ Detect delays or failures in upstream data ingestion pipelines.</p></li>
+<li><p>✅ Validate that partitioned tables or snapshots are being refreshed regularly.</p></li>
+<li><p>✅ Use to monitor SLAs and enforce data freshness for reporting or analytics.</p></li>
 </ul>
 </section>
 </section>
@@ -455,20 +471,20 @@ and to prevent incomplete or invalid records from entering downstream processes.
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="not_null_check.html"
+       href="../count/count_max_check.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Not Null Check</p>
+        <p class="prev-next-title">Count Max</p>
       </div>
     </a>
     <a class="right-next"
-       href="../numeric/numeric_between_check.html"
+       href="../uniqueness/distinct_ratio_check.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Numeric Between</p>
+        <p class="prev-next-title">Distinct Ratio</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

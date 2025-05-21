@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sparkdq.checks.row_level.numeric_checks.numeric_max_check &#8212; SparkDQ Documentation</title>
+    <title>sparkdq.checks.aggregate.freshness_checks.freshness_check &#8212; SparkDQ Documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sparkdq/checks/row_level/numeric_checks/numeric_max_check';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sparkdq/checks/aggregate/freshness_checks/freshness_check';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -342,47 +342,125 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for sparkdq.checks.row_level.numeric_checks.numeric_max_check</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+  <h1>Source code for sparkdq.checks.aggregate.freshness_checks.freshness_check</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">model_validator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks.utils.base_comparison_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMaxCheck</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRowCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAggregateCheck</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAggregateCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.check_results</span><span class="w"> </span><span class="kn">import</span> <span class="n">AggregateEvaluationResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.severity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidCheckConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.plugin.check_config_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_check_config</span>
 
+<span class="n">FreshnessPeriod</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;month&quot;</span><span class="p">,</span> <span class="s2">&quot;week&quot;</span><span class="p">,</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span> <span class="s2">&quot;minute&quot;</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">]</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">NumericMaxCheck</span><span class="p">(</span><span class="n">BaseMaxCheck</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FreshnessCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that numeric values in the specified columns</span>
-<span class="sd">    are less than or equal to a defined maximum threshold.</span>
+<span class="sd">    Aggregate-level check that verifies whether the most recent timestamp in the given column</span>
+<span class="sd">    is within the allowed freshness threshold relative to the current system time.</span>
 
-<span class="sd">    A row fails the check if **any** of the target columns contain a value above `max_value`.</span>
+<span class="sd">    A row fails if the most recent timestamp is older than the configured interval.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">pass</span>  <span class="c1"># implemented via BaseMaxCheck</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">period</span><span class="p">:</span> <span class="n">FreshnessPeriod</span><span class="p">,</span>
+        <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="n">period</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the freshness of the most recent timestamp in a specified column.</span>
+
+<span class="sd">        This method checks whether the latest timestamp value in the target column</span>
+<span class="sd">        falls within a defined freshness threshold relative to the current system time.</span>
+<span class="sd">        The threshold is defined by a combination of `interval` and `period`</span>
+<span class="sd">        (e.g., &quot;10 minutes&quot;, &quot;2 days&quot;).</span>
+
+<span class="sd">        The check is performed using a Spark SQL expression that compares the</span>
+<span class="sd">        most recent timestamp (`max(column)`) against `current_timestamp() - INTERVAL`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (DataFrame): The input DataFrame containing the column to validate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            AggregateEvaluationResult: An object containing the result of the freshness check</span>
+<span class="sd">            (`passed`) and associated metrics:</span>
+<span class="sd">                - &quot;max_timestamp&quot;: the most recent value in the timestamp column</span>
+<span class="sd">                - &quot;freshness_threshold&quot;: the threshold used for comparison</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If the column contains only null values, the check fails by default</span>
+<span class="sd">            and &quot;max_timestamp&quot; is set to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get most recent timestamp</span>
+        <span class="n">max_ts</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;max_ts&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()[</span><span class="s2">&quot;max_ts&quot;</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">if</span> <span class="n">max_ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">AggregateEvaluationResult</span><span class="p">(</span>
+                <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;max_timestamp&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;freshness_threshold&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Construct comparison expression</span>
+        <span class="n">interval_expr</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INTERVAL </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="n">max_ts</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">current_timestamp</span><span class="p">()</span> <span class="o">-</span> <span class="n">interval_expr</span><span class="p">)</span>
+
+        <span class="c1"># Evaluate condition using a single-row DataFrame</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sparkSession</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;freshness_passed&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">passed</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;freshness_passed&quot;</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">return</span> <span class="n">AggregateEvaluationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;max_timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">max_ts</span><span class="p">),</span>
+                <span class="s2">&quot;freshness_threshold&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
 
 
-<div class="viewcode-block" id="NumericMaxCheckConfig">
-<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.NumericMaxCheckConfig">[docs]</a>
-<span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;numeric-max-check&quot;</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">NumericMaxCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
+<div class="viewcode-block" id="FreshnessCheckConfig">
+<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.FreshnessCheckConfig">[docs]</a>
+<span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;freshness-check&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FreshnessCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NumericMaxCheck.</span>
+<span class="sd">    Declarative configuration model for the FreshnessCheck.</span>
+
+<span class="sd">    Ensures that the newest value in the specified timestamp column is recent enough</span>
+<span class="sd">    relative to the current time.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The list of numeric columns to validate.</span>
-<span class="sd">        max_value (float | int | Decimal): The maximum allowed value (inclusive).</span>
-<span class="sd">        inclusive (bool): Whether to include the maximum value.</span>
+<span class="sd">        column (str): Name of the timestamp column.</span>
+<span class="sd">        interval (int): Time window size (must be positive).</span>
+<span class="sd">        period (str): Unit of time (e.g., &quot;days&quot;, &quot;hours&quot;, &quot;mins&quot;).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">check_class</span> <span class="o">=</span> <span class="n">NumericMaxCheck</span>
-    <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The list of numeric columns to check for maximum value&quot;</span><span class="p">)</span>
-    <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Decimal</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The maximum allowed value (inclusive) for the specified columns&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;max-value&quot;</span>
-    <span class="p">)</span>
-    <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the maximum value is inclusive&quot;</span><span class="p">)</span></div>
+    <span class="n">check_class</span> <span class="o">=</span> <span class="n">FreshnessCheck</span>
+
+    <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The timestamp column to check for freshness&quot;</span><span class="p">)</span>
+    <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of time units representing allowed delay&quot;</span><span class="p">)</span>
+    <span class="n">period</span><span class="p">:</span> <span class="n">FreshnessPeriod</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time unit for the freshness interval&quot;</span><span class="p">)</span>
+
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FreshnessCheckConfig&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span><span class="s2">&quot;interval must be a positive integer&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 </pre></div>
 

@@ -195,6 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_exact_check.html">Count Exact</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/count/count_max_check.html">Count Max</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks/freshness/freshness_check.html">Freshness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -422,13 +423,16 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="checks/uniqueness/distinct_ratio_check.html#distinct-ratio-check"><span class="std std-ref">Distinct Ratio</span></a></p></td>
 <td><p>Validates that the ratio of distinct non-null values in a column exceeds a defined threshold, helping to detect overly uniform or low-cardinality fields.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="checks/schema/schema_check.html#schema-check"><span class="std std-ref">Schema Check</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/freshness/freshness_check.html#freshness-check"><span class="std std-ref">Freshness Check</span></a></p></td>
+<td><p>Validates that the most recent timestamp in a given column is within a defined freshness window relative to the current system time, helping detect outdated or stale data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/schema/schema_check.html#schema-check"><span class="std std-ref">Schema Check</span></a></p></td>
 <td><p>Ensures that a DataFrame matches an expected schema by verifying column names and data types, with optional strict enforcement against unexpected columns.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="checks/uniqueness/unique_ratio_check.html#unique-ratio-check"><span class="std std-ref">Unique Ratio</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="checks/uniqueness/unique_ratio_check.html#unique-ratio-check"><span class="std std-ref">Unique Ratio</span></a></p></td>
 <td><p>Validates that a specified column maintains a minimum ratio of unique (non-null) values, helping to detect excessive duplication and assess data entropy or feature distinctiveness.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="checks/uniqueness/unique_rows_check.html#unique-rows-check"><span class="std std-ref">Unique Rows</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="checks/uniqueness/unique_rows_check.html#unique-rows-check"><span class="std std-ref">Unique Rows</span></a></p></td>
 <td><p>Validates that all rows in a DataFrame are unique, either across all columns or a defined subset, helping to detect unintended duplication and enforce row-level uniqueness.</p></td>
 </tr>
 </tbody>
