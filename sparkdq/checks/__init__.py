@@ -4,6 +4,7 @@ from .aggregate.count_checks.count_between_check import RowCountBetweenCheckConf
 from .aggregate.count_checks.count_exact_check import RowCountExactCheckConfig
 from .aggregate.count_checks.count_max_check import RowCountMaxCheckConfig
 from .aggregate.count_checks.count_min_check import RowCountMinCheckConfig
+from .aggregate.freshness_checks.freshness_check import FreshnessCheckConfig
 from .aggregate.schema_checks.column_presence_check import ColumnPresenceCheckConfig
 from .aggregate.schema_checks.schema_check import SchemaCheckConfig
 from .aggregate.uniqueness_checks.distinct_ratio_check import DistinctRatioCheckConfig
@@ -60,4 +61,5 @@ __all__ = [
     "CompletenessRatioCheckConfig",
     "ColumnsAreCompleteCheckConfig",
     "DistinctRatioCheckConfig",
+    "FreshnessCheckConfig",
 ]
