@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.7.0 (2025-05-21)
+
+### Features
+
+- Add data freshness check ([#38](https://github.com/sparkdq-community/sparkdq/pull/38),
+  [`f0d2318`](https://github.com/sparkdq-community/sparkdq/commit/f0d2318486c55f381a626acda6be68fd48adce45))
+
+
 ## v0.6.1 (2025-05-19)
 
 ### Bug Fixes
