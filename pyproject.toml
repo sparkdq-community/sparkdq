@@ -4,6 +4,7 @@ version = "0.7.0"
 description = "A declarative PySpark framework for row- and aggregate-level data quality validation."
 authors = [{ name = "Marcel Kennert", email = "marcel.kennert@gmx.de" }]
 readme = "README.md"
+license = {file = "LICENSE"}
 keywords = [
   "data-quality",
   "data-validation",
@@ -67,6 +68,10 @@ jupyter = [
     "ipykernel>=6.20.0,<7.0.0"
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.mypy]
 python_version = "3.11"
 exclude = ["docs", "tests", "examples"]
@@ -87,7 +92,7 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
-extend-ignore = ["N812", "N803"]
+extend-ignore = ["N812", "N803"]  # N812: lowercase imported as non-lowercase, N803: argument name should be lowercase
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
