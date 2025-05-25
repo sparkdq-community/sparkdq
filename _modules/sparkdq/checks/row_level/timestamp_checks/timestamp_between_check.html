@@ -354,8 +354,6 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.plugin.check_config_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_check_config</span>
 
 
-<div class="viewcode-block" id="TimestampBetweenCheck">
-<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.TimestampBetweenCheck">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TimestampBetweenCheck</span><span class="p">(</span><span class="n">BaseBetweenCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Row-level data quality check that verifies timestamp values are within a defined range.</span>
@@ -392,10 +390,11 @@ document.write(`
             <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
             <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span>
             <span class="n">cast_type</span><span class="o">=</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
 
-
+<div class="viewcode-block" id="TimestampBetweenCheckConfig">
+<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.TimestampBetweenCheckConfig">[docs]</a>
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;timestamp-between-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TimestampBetweenCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -415,6 +414,8 @@ document.write(`
     <span class="n">max_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum allowed timestamp (ISO format)&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;max-value&quot;</span><span class="p">)</span>
     <span class="n">inclusive</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">((</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to include [min, max] bounds&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="TimestampBetweenCheckConfig.validate_between_values">
+<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.TimestampBetweenCheckConfig.validate_between_values">[docs]</a>
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_between_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TimestampBetweenCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -428,7 +429,9 @@ document.write(`
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;min_value (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_value</span><span class="si">}</span><span class="s2">) must not be greater than max_value (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_value</span><span class="si">}</span><span class="s2">)&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
 </pre></div>
 
                 </article>
