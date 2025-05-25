@@ -1,0 +1,27 @@
+- check: null-check
+  check-id: pickup-null
+  columns:
+    - tpep_pickup_datetime
+
+- check: null-check
+  check-id: dropoff-null
+  columns:
+    - tpep_dropoff_datetime
+
+- check: numeric-min-check
+  check-id: trip-positive
+  columns:
+    - trip_distance
+  min-value: 0
+
+- check: numeric-min-check
+  check-id: fare-positive
+  columns:
+    - fare_amount
+  min-value: 0
+
+- check: column-less-than-check
+  check-id: chronological
+  smaller-column: tpep_pickup_datetime
+  greater-column: tpep_dropoff_datetime
+  inclusive: false
