@@ -1,6 +1,21 @@
 # CHANGELOG
 
 
+## v0.7.1 (2025-05-25)
+
+### Continuous Integration
+
+- **dependabot**: Add ecosystem for actions
+  ([#39](https://github.com/sparkdq-community/sparkdq/pull/39),
+  [`15e0782`](https://github.com/sparkdq-community/sparkdq/commit/15e078281249a8c0d2089071a8ad4af1f43934b7))
+
+### Refactoring
+
+- **checks**: Dynamically register CheckConfig classes in __init__.py
+  ([#43](https://github.com/sparkdq-community/sparkdq/pull/43),
+  [`33023a8`](https://github.com/sparkdq-community/sparkdq/commit/33023a8039e9c5b51091d3941a823261adefaf57))
+
+
 ## v0.7.0 (2025-05-21)
 
 ### Features
