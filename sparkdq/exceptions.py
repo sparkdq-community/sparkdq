@@ -103,3 +103,38 @@ class MissingCheckTypeError(CheckConfigurationError):
             "Missing 'check' field in check configuration. "
             "Each check config must include a 'check' key to identify the check type."
         )
+
+
+class InvalidSQLExpressionError(RuntimeCheckConfigurationError):
+    """
+    Raised when a SQL expression is syntactically or semantically invalid.
+
+    This error indicates that the provided SQL expression cannot be parsed
+    or executed by PySpark, typically due to syntax errors, invalid function
+    calls, or other structural issues that prevent the expression from being
+    evaluated.
+
+    Examples include:
+        - Malformed syntax: "age + "
+        - Unbalanced parentheses: "upper(name"
+        - Invalid function calls: "invalid_function(column)"
+        - Dangerous operations: "DROP TABLE users"
+
+    This exception is used to ensure consistent error handling for SQL
+    expression validation in data quality checks.
+    """
+
+    def __init__(self, expression: str, error_message: str):
+        """
+        Initialize the exception with the invalid expression and error details.
+
+        Args:
+            expression (str): The SQL expression that failed validation.
+            error_message (str): Detailed description of why the expression is invalid.
+
+        The message will include both the expression and error details to aid
+        debugging and error reporting.
+        """
+        super().__init__(f"Invalid SQL expression '{expression}':\n{error_message}")
+        self.expression = expression
+        self.error_message = error_message

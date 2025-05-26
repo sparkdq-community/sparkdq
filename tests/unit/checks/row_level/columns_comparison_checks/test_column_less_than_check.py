@@ -8,12 +8,12 @@ from sparkdq.checks.row_level.columns_comparison_checks.column_less_than import 
     ColumnLessThanCheckConfig,
 )
 from sparkdq.core.severity import Severity
-from sparkdq.exceptions import MissingColumnError
+from sparkdq.exceptions import InvalidSQLExpressionError, MissingColumnError
 
 
 def test_column_less_than_strict(spark: SparkSession) -> None:
     """
-    Validates that ColumnLessThanCheck flags rows where smaller_column >= greater_column (strict mode).
+    Validates that ColumnLessThanCheck flags rows where column >= limit (strict mode).
     A row is marked as failed if start >= end.
     """
     df = spark.createDataFrame(
@@ -24,7 +24,8 @@ def test_column_less_than_strict(spark: SparkSession) -> None:
         ],
         ["id", "start", "end"],
     )
-    check = ColumnLessThanCheck(check_id="lt_check", smaller_column="start", greater_column="end")
+    check = ColumnLessThanCheck(check_id="lt_check", column="start", limit="end")
+
     result_df = check.validate(df)
 
     expected_df = spark.createDataFrame(
@@ -51,9 +52,7 @@ def test_column_less_than_inclusive(spark: SparkSession) -> None:
         ],
         ["id", "start", "end"],
     )
-    check = ColumnLessThanCheck(
-        check_id="lte_check", smaller_column="start", greater_column="end", inclusive=True
-    )
+    check = ColumnLessThanCheck(check_id="lte_check", column="start", limit="end", inclusive=True)
     result_df = check.validate(df)
 
     expected_df = spark.createDataFrame(
@@ -80,7 +79,7 @@ def test_column_less_than_null_values(spark: SparkSession) -> None:
         ],
         ["id", "start", "end"],
     )
-    check = ColumnLessThanCheck(check_id="lt_null_check", smaller_column="start", greater_column="end")
+    check = ColumnLessThanCheck(check_id="lt_null_check", column="start", limit="end")
     result_df = check.validate(df)
 
     expected_df = spark.createDataFrame(
@@ -101,9 +100,9 @@ def test_column_less_than_missing_column(spark: SparkSession) -> None:
     """
     df = spark.createDataFrame(
         [(1, 10)],
-        ["id", "start"],
+        ["id", "end"],
     )
-    check = ColumnLessThanCheck(check_id="missing_col", smaller_column="start", greater_column="end")
+    check = ColumnLessThanCheck(check_id="missing_col", column="start", limit="end")
     with pytest.raises(MissingColumnError):
         check.validate(df)
 
@@ -114,8 +113,8 @@ def test_column_less_than_check_config_to_check() -> None:
     """
     config = ColumnLessThanCheckConfig(
         check_id="config_check",
-        smaller_column="a",
-        greater_column="b",
+        column="a",
+        limit="b",
         inclusive=True,
         severity=Severity.WARNING,
     )
@@ -123,8 +122,8 @@ def test_column_less_than_check_config_to_check() -> None:
 
     assert isinstance(check, ColumnLessThanCheck)
     assert check.check_id == "config_check"
-    assert check.smaller_column == "a"
-    assert check.greater_column == "b"
+    assert check.column == "a"
+    assert check.limit == "b"
     assert check.inclusive is True
     assert check.severity == Severity.WARNING
 
@@ -147,9 +146,7 @@ def test_column_less_than_check_with_date_columns(spark: SparkSession) -> None:
         .withColumn("end_date", F.col("end_date").cast("date"))
     )
 
-    check = ColumnLessThanCheck(
-        check_id="date_check", smaller_column="start_date", greater_column="end_date", inclusive=True
-    )
+    check = ColumnLessThanCheck(check_id="date_check", column="start_date", limit="end_date", inclusive=True)
     result_df = check.validate(df)
 
     expected_df = (
@@ -186,9 +183,7 @@ def test_column_less_than_check_with_timestamp_columns(spark: SparkSession) -> N
         .withColumn("dropoff", F.col("dropoff").cast("timestamp"))
     )
 
-    check = ColumnLessThanCheck(
-        check_id="ts_check", smaller_column="pickup", greater_column="dropoff", inclusive=False
-    )
+    check = ColumnLessThanCheck(check_id="ts_check", column="pickup", limit="dropoff", inclusive=False)
     result_df = check.validate(df)
 
     expected_df = (
@@ -205,3 +200,61 @@ def test_column_less_than_check_with_timestamp_columns(spark: SparkSession) -> N
     )
 
     assertDataFrameEqual(result_df, expected_df)
+
+
+def test_column_less_than_check_with_limit_is_expression(spark: SparkSession) -> None:
+    """
+    Validates that ColumnLessThanCheck can handle expressions as limits.
+    """
+
+    df = spark.createDataFrame(
+        [
+            ("beginner", 95, 100),
+            ("expert", 90, 100),
+            ("beginner", 85, 100),
+        ],
+        ["level", "user_score", "max_score"],
+    )
+
+    check = ColumnLessThanCheck(
+        check_id="expression_check",
+        column="user_score",
+        limit="CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END",
+    )
+    result_df = check.validate(df)
+
+    expected_df = spark.createDataFrame(
+        [
+            ("beginner", 95, 100, True),  # Should pass: 95 >= 90 (100 * 0.9)
+            ("expert", 90, 100, False),  # Should fail: 90 > 100
+            ("beginner", 85, 100, False),  # Should fail: 85 >= 90 (100 * 0.9)
+        ],
+        ["level", "user_score", "max_score", "expression_check"],
+    )
+
+    assertDataFrameEqual(result_df, expected_df)
+
+
+def test_column_less_than_check_with_invalid_limit(spark: SparkSession) -> None:
+    """
+    Validates that ColumnLessThanCheck raises an error if the limit is not a valid column or expression.
+    """
+    df = spark.createDataFrame(
+        [(1, 10)],
+        ["id", "start"],
+    )
+
+    check_missing_col = ColumnLessThanCheck(check_id="missing_col", column="id", limit="non_existent_column")
+
+    check_malformed_syntax = ColumnLessThanCheck(check_id="malformed_syntax", column="id", limit="start ++3")
+
+    check_dangerous_expr = ColumnLessThanCheck(
+        check_id="dangerous_expr",
+        column="id",
+        limit="drop table test_table",
+    )
+
+    with pytest.raises(InvalidSQLExpressionError):
+        check_missing_col.validate(df)
+        check_malformed_syntax.validate(df)
+        check_dangerous_expr.validate(df)
