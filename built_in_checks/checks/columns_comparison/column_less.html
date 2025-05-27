@@ -407,16 +407,19 @@ document.write(`
 <span id="id1"></span><h1>Column Less Than Check<a class="headerlink" href="#column-less-than-check" title="Link to this heading">#</a></h1>
 <p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">column-less-than-check</span></code></p>
 <p><strong>Purpose</strong>: Ensures that values in one column are strictly less than (or less than or equal to)
-the values in another column.</p>
+the values in another column or the result of evaluating a Spark SQL expression.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Rows with <code class="docutils literal notranslate"><span class="pre">null</span></code> values in either column or the limit result are treated as <strong>invalid</strong></p></li>
+</ul>
+<p>and will fail the check.</p>
 <ul>
-<li><p>Rows with <code class="docutils literal notranslate"><span class="pre">null</span></code> values in either column are treated as <strong>invalid</strong> and will fail the check.</p></li>
 <li><p>Use the <code class="docutils literal notranslate"><span class="pre">inclusive</span></code> flag to control whether equality (<code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>) is permitted.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">false</span></code>: requires <code class="docutils literal notranslate"><span class="pre">smaller_column</span> <span class="pre">&lt;</span> <span class="pre">greater_column</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">true</span></code>: allows <code class="docutils literal notranslate"><span class="pre">smaller_column</span> <span class="pre">&lt;=</span> <span class="pre">greater_column</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">false</span></code>: requires <code class="docutils literal notranslate"><span class="pre">column</span> <span class="pre">&lt;</span> <span class="pre">limit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">true</span></code>: allows <code class="docutils literal notranslate"><span class="pre">column</span> <span class="pre">&lt;=</span> <span class="pre">limit</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -427,11 +430,29 @@ the values in another column.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnLessThanCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
 
+<span class="c1"># Simple column comparison</span>
 <span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
     <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;pickup-before-dropoff&quot;</span><span class="p">,</span>
-    <span class="n">smaller_column</span><span class="o">=</span><span class="s2">&quot;pickup_datetime&quot;</span><span class="p">,</span>
-    <span class="n">greater_column</span><span class="o">=</span><span class="s2">&quot;dropoff_datetime&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;pickup_datetime&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;dropoff_datetime&quot;</span><span class="p">,</span>
     <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># use True to allow equality</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
+<span class="p">)</span>
+
+<span class="c1"># Expression with mathematical operation</span>
+<span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;price-with-margin&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cost_price&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;selling_price * 0.8&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># use False to require strict less than</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
+<span class="p">)</span>
+
+<span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;score-validation&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;user_score&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
@@ -441,8 +462,22 @@ the values in another column.</p>
 <h2>Declarative Configuration<a class="headerlink" href="#declarative-configuration" title="Link to this heading">#</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-less-than-check</span>
 <span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pickup-before-dropoff</span>
-<span class="w">  </span><span class="nt">smaller-column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pickup_datetime</span>
-<span class="w">  </span><span class="nt">greater-column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dropoff_datetime</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pickup_datetime</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dropoff_datetime</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-less-than-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">price-with-margin</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cost_price</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">selling_price * 0.8</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-less-than-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">score-validation</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user_score</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END</span>
 <span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
@@ -453,6 +488,14 @@ the values in another column.</p>
 <ul class="simple">
 <li><p>✅ Enforce correct ordering of timestamps, such as ensuring pickup time is before dropoff time.</p></li>
 <li><p>✅ Detect incorrect or corrupted ranges in financial or numeric fields.</p></li>
+<li><p>✅ Validate business rules with dynamic limits, such as ensuring selling</p></li>
+</ul>
+<p>price is within acceptable margins of cost price (e.g., selling_price &lt; cost_price * 1.2).</p>
+<ul class="simple">
+<li><p>✅ Apply conditional validation logic based on categories or statuses</p></li>
+</ul>
+<p>(e.g., score &lt; CASE WHEN level=’expert’ THEN max_score ELSE max_score * 0.9 END).</p>
+<ul class="simple">
 <li><p>✅ Prevent invalid or logically inconsistent data entries in business-critical systems.</p></li>
 </ul>
 </section>

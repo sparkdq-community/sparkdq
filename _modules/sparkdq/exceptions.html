@@ -469,6 +469,44 @@ document.write(`
             <span class="s2">&quot;Each check config must include a &#39;check&#39; key to identify the check type.&quot;</span>
         <span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="InvalidSQLExpressionError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidSQLExpressionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidSQLExpressionError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a SQL expression is syntactically or semantically invalid.</span>
+
+<span class="sd">    This error indicates that the provided SQL expression cannot be parsed</span>
+<span class="sd">    or executed by PySpark, typically due to syntax errors, invalid function</span>
+<span class="sd">    calls, or other structural issues that prevent the expression from being</span>
+<span class="sd">    evaluated.</span>
+
+<span class="sd">    Examples include:</span>
+<span class="sd">        - Malformed syntax: &quot;age + &quot;</span>
+<span class="sd">        - Unbalanced parentheses: &quot;upper(name&quot;</span>
+<span class="sd">        - Invalid function calls: &quot;invalid_function(column)&quot;</span>
+<span class="sd">        - Dangerous operations: &quot;DROP TABLE users&quot;</span>
+
+<span class="sd">    This exception is used to ensure consistent error handling for SQL</span>
+<span class="sd">    expression validation in data quality checks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the exception with the invalid expression and error details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            expression (str): The SQL expression that failed validation.</span>
+<span class="sd">            error_message (str): Detailed description of why the expression is invalid.</span>
+
+<span class="sd">        The message will include both the expression and error details to aid</span>
+<span class="sd">        debugging and error reporting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid SQL expression &#39;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">error_message</span></div>
+
 </pre></div>
 
                 </article>

@@ -414,6 +414,28 @@ supplying conflicting or incomplete configuration parameters.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSQLExpressionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#InvalidSQLExpressionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
+<p>Raised when a SQL expression is syntactically or semantically invalid.</p>
+<p>This error indicates that the provided SQL expression cannot be parsed
+or executed by PySpark, typically due to syntax errors, invalid function
+calls, or other structural issues that prevent the expression from being
+evaluated.</p>
+<dl class="simple">
+<dt>Examples include:</dt><dd><ul class="simple">
+<li><p>Malformed syntax: “age + “</p></li>
+<li><p>Unbalanced parentheses: “upper(name”</p></li>
+<li><p>Invalid function calls: “invalid_function(column)”</p></li>
+<li><p>Dangerous operations: “DROP TABLE users”</p></li>
+</ul>
+</dd>
+</dl>
+<p>This exception is used to ensure consistent error handling for SQL
+expression validation in data quality checks.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSeverityLevelError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#InvalidSeverityLevelError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckConfigurationError</span></code></p>
 <p>Raised when a provided severity level is not recognized by the framework.</p>

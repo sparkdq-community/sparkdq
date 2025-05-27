@@ -350,7 +350,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRowCheck</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRowCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.severity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingColumnError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidSQLExpressionError</span><span class="p">,</span> <span class="n">MissingColumnError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.plugin.check_config_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_check_config</span>
 
 
@@ -358,24 +358,29 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Row-level data quality check that flags rows where a comparison between two columns fails.</span>
 
-<span class="sd">    This check ensures that values in `smaller_column` are less than (or less than or equal to,</span>
-<span class="sd">    if `inclusive=True`) the values in `greater_column`. It is designed to enforce business rules</span>
-<span class="sd">    such as &quot;start_time &lt;= end_time&quot; or &quot;amount &lt; limit&quot;.</span>
+<span class="sd">    This check ensures that values in `column` are less than (or less than or equal to,</span>
+<span class="sd">    if `inclusive=True`) the result of evaluating `limit`. It is designed to enforce</span>
+<span class="sd">    business rules such as &quot;start_time &lt;= end_time&quot; or &quot;selling_price &lt; cost_price * 1.1&quot;.</span>
 
-<span class="sd">    Rows with nulls in either column are considered invalid.</span>
+<span class="sd">    The limit can be:</span>
+<span class="sd">    - A simple column name: &quot;end_time&quot;</span>
+<span class="sd">    - A mathematical expression: &quot;cost_price * 1.1&quot;</span>
+<span class="sd">    - A complex expression: &quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;</span>
+
+<span class="sd">    Rows with nulls in either the column or the limit result are considered invalid.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        smaller_column (str): The column expected to contain smaller (or equal) values.</span>
-<span class="sd">        greater_column (str): The column expected to contain greater values.</span>
-<span class="sd">        inclusive (bool): Whether to allow equality (i.e. smaller_column &lt;= greater_column).</span>
+<span class="sd">        column (str): The column expected to contain smaller (or equal) values.</span>
+<span class="sd">        limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
+<span class="sd">        inclusive (bool): Whether to allow equality (i.e. column &lt;= limit).</span>
 <span class="sd">            Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">smaller_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">greater_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
@@ -384,14 +389,14 @@ document.write(`
 
 <span class="sd">        Args:</span>
 <span class="sd">            check_id (str): Unique identifier for the check. Will be used as the result column name.</span>
-<span class="sd">            smaller_column (str): Column expected to contain smaller (or equal) values.</span>
-<span class="sd">            greater_column (str): Column expected to contain greater values.</span>
+<span class="sd">            column (str): Column expected to contain smaller (or equal) values.</span>
+<span class="sd">            limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
 <span class="sd">            inclusive (bool, optional): If True, the check allows equal values (&lt;=). Defaults to False.</span>
 <span class="sd">            severity (Severity, optional): Severity level of failed rows. Defaults to CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">smaller_column</span> <span class="o">=</span> <span class="n">smaller_column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">greater_column</span> <span class="o">=</span> <span class="n">greater_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inclusive</span> <span class="o">=</span> <span class="n">inclusive</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
@@ -399,8 +404,8 @@ document.write(`
 <span class="sd">        Apply the comparison and flag violations.</span>
 
 <span class="sd">        Rows are marked as failed if:</span>
-<span class="sd">        - the comparison fails (`smaller_column &gt;= greater_column` or `&gt;`, depending on `inclusive`), OR</span>
-<span class="sd">        - either column is null</span>
+<span class="sd">        - the comparison fails (`column &gt;= limit` or `&gt;`, depending on `inclusive`), OR</span>
+<span class="sd">        - either the column or the limit result is null</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            df (DataFrame): Input Spark DataFrame to validate.</span>
@@ -409,14 +414,20 @@ document.write(`
 <span class="sd">            DataFrame: A new DataFrame with an additional boolean column where True indicates failure.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If either column is not found in the DataFrame.</span>
+<span class="sd">            MissingColumnError: If column is not found in the DataFrame.</span>
+<span class="sd">            InvalidSQLExpressionError: If the limit expression is invalid or cannot be evaluated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">smaller_column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">greater_column</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-        <span class="n">smaller</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smaller_column</span><span class="p">)</span>
-        <span class="n">greater</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">greater_column</span><span class="p">)</span>
+        <span class="c1"># Validate that limit is a valid expression</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;_validation_limit&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSQLExpressionError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="n">smaller</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">)</span>
+        <span class="n">greater</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inclusive</span><span class="p">:</span>
             <span class="n">fail_expr</span> <span class="o">=</span> <span class="p">(</span><span class="n">smaller</span> <span class="o">&gt;</span> <span class="n">greater</span><span class="p">)</span> <span class="o">|</span> <span class="n">smaller</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span> <span class="o">|</span> <span class="n">greater</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span>
@@ -433,34 +444,54 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Declarative configuration model for the ColumnLessThanCheck.</span>
 
-<span class="sd">    This config defines a row-level comparison between two columns, ensuring that</span>
-<span class="sd">    values in `smaller_column` are strictly less than (or less than or equal to,</span>
-<span class="sd">    if `inclusive=True`) the values in `greater_column`.</span>
+<span class="sd">    This config defines a row-level comparison between a column and a Spark SQL expression,</span>
+<span class="sd">    ensuring that values in `column` are strictly less than (or less than or equal to,</span>
+<span class="sd">    if `inclusive=True`) the result of evaluating `limit`.</span>
 
-<span class="sd">    Null values in either column are treated as invalid and will fail the check.</span>
+<span class="sd">    Null values in either column or the limit result are treated as invalid</span>
+<span class="sd">    and will fail the check.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        # Simple column comparison</span>
 <span class="sd">        ColumnLessThanCheckConfig(</span>
 <span class="sd">            check_id=&quot;start-before-end&quot;,</span>
-<span class="sd">            smaller_column=&quot;start_time&quot;,</span>
-<span class="sd">            greater_column=&quot;end_time&quot;,</span>
+<span class="sd">            column=&quot;start_time&quot;,</span>
+<span class="sd">            limit=&quot;end_time&quot;,</span>
 <span class="sd">            inclusive=True</span>
 <span class="sd">        )</span>
 
+<span class="sd">        # Expression with mathematical operation</span>
+<span class="sd">        ColumnLessThanCheckConfig(</span>
+<span class="sd">            check_id=&quot;price-with-margin&quot;,</span>
+<span class="sd">            column=&quot;cost_price&quot;,</span>
+<span class="sd">            limit=&quot;selling_price * 0.8&quot;,</span>
+<span class="sd">            inclusive=True</span>
+<span class="sd">        )</span>
+
+<span class="sd">        # Complex conditional expression</span>
+<span class="sd">        ColumnLessThanCheckConfig(</span>
+<span class="sd">            check_id=&quot;score-validation&quot;,</span>
+<span class="sd">            column=&quot;user_score&quot;,</span>
+<span class="sd">            limit=&quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;,</span>
+<span class="sd">            inclusive=False</span>
+<span class="sd">        )</span>
+
 <span class="sd">    Attributes:</span>
-<span class="sd">        smaller_column (str): Column expected to contain smaller (or equal) values.</span>
-<span class="sd">        greater_column (str): Column expected to contain greater values.</span>
-<span class="sd">        inclusive (bool): If True, validates `smaller_column &lt;= greater_column`.</span>
+<span class="sd">        column (str): Column expected to contain smaller (or equal) values.</span>
+<span class="sd">        limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
+<span class="sd">        inclusive (bool): If True, validates `column &lt;= limit`.</span>
 <span class="sd">                          If False, requires strict inequality (`&lt;`). Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">ColumnLessThanCheck</span>
 
-    <span class="n">smaller_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column expected to contain smaller (or equal) values.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;smaller-column&quot;</span>
+    <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column expected to contain smaller (or equal) values.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;column&quot;</span>
     <span class="p">)</span>
-    <span class="n">greater_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column expected to contain greater values.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;greater-column&quot;</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column or a Spark SQL expression expected to contain greater values.&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If True, allows equality (&lt;=). Otherwise requires strict inequality (&lt;).&quot;</span>
