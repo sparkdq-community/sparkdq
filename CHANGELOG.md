@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.8.0 (2025-05-27)
+
+### Features
+
+- Update ColumnLessThanCheck to use a limit expression
+  ([#45](https://github.com/sparkdq-community/sparkdq/pull/45),
+  [`06df3b3`](https://github.com/sparkdq-community/sparkdq/commit/06df3b34cde4b70cf2ccdc0076aef9de6ff0125c))
+
+
 ## v0.7.1 (2025-05-25)
 
 ### Continuous Integration
