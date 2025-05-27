@@ -69,7 +69,8 @@ class ColumnLessThanCheck(BaseRowCheck):
             DataFrame: A new DataFrame with an additional boolean column where True indicates failure.
 
         Raises:
-            MissingColumnError: If either column is not found in the DataFrame.
+            MissingColumnError: If column is not found in the DataFrame.
+            InvalidSQLExpressionError: If the limit expression is invalid or cannot be evaluated.
         """
         if self.column not in df.columns:
             raise MissingColumnError(self.column, df.columns)
@@ -138,12 +139,12 @@ class ColumnLessThanCheckConfig(BaseRowCheckConfig):
     check_class = ColumnLessThanCheck
 
     column: str = Field(
-        ..., description="The column expected to contain smaller (or equal) values.", alias="smaller-column"
+        ..., description="The column expected to contain smaller (or equal) values.", alias="column"
     )
     limit: str = Field(
         ...,
         description="The column or a Spark SQL expression expected to contain greater values.",
-        alias="greater-column",
+        alias="limit",
     )
     inclusive: bool = Field(
         False, description="If True, allows equality (<=). Otherwise requires strict inequality (<)."
