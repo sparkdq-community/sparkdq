@@ -10,12 +10,10 @@ the values in another column or the result of evaluating a Spark SQL expression.
 
 .. note::
 
-    * Rows with ``null`` values in either column or the limit result are treated as **invalid**
-    and will fail the check.
-
+    * Rows with ``null`` values in either column or the limit result are treated as **invalid** and will fail the check.
     * Use the ``inclusive`` flag to control whether equality (``<=``) is permitted.
 
-        - ``inclusive: false``: requires ``column < limit``  
+        - ``inclusive: false``: requires ``column < limit``
         - ``inclusive: true``: allows ``column <= limit``
 
 Python Configuration
@@ -85,10 +83,8 @@ Typical Use Cases
 
 * ✅ Detect incorrect or corrupted ranges in financial or numeric fields.
 
-* ✅ Validate business rules with dynamic limits, such as ensuring selling
-price is within acceptable margins of cost price (e.g., selling_price < cost_price * 1.2).
+* ✅ Validate business rules with dynamic limits, such as ensuring selling price is within acceptable margins of cost price (e.g., selling_price < cost_price * 1.2).
 
-* ✅ Apply conditional validation logic based on categories or statuses
-(e.g., score < CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END).
+* ✅ Apply conditional validation logic based on categories or statuses (e.g., score < CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END).
 
 * ✅ Prevent invalid or logically inconsistent data entries in business-critical systems.
