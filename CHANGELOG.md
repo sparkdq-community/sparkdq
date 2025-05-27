@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.8.1 (2025-05-27)
+
+### Bug Fixes
+
+- **deps**: Set minimum required Pydantic version to 2.8.0
+  ([#47](https://github.com/sparkdq-community/sparkdq/pull/47),
+  [`8fe75ab`](https://github.com/sparkdq-community/sparkdq/commit/8fe75ab1210df6b3c17c540fdcf3e01c8e69a515))
+
+
 ## v0.8.0 (2025-05-27)
 
 ### Features
