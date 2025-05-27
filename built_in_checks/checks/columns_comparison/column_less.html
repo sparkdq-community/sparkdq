@@ -410,11 +410,8 @@ document.write(`
 the values in another column or the result of evaluating a Spark SQL expression.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>Rows with <code class="docutils literal notranslate"><span class="pre">null</span></code> values in either column or the limit result are treated as <strong>invalid</strong></p></li>
-</ul>
-<p>and will fail the check.</p>
 <ul>
+<li><p>Rows with <code class="docutils literal notranslate"><span class="pre">null</span></code> values in either column or the limit result are treated as <strong>invalid</strong> and will fail the check.</p></li>
 <li><p>Use the <code class="docutils literal notranslate"><span class="pre">inclusive</span></code> flag to control whether equality (<code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>) is permitted.</p>
 <blockquote>
 <div><ul class="simple">
@@ -488,14 +485,8 @@ the values in another column or the result of evaluating a Spark SQL expression.
 <ul class="simple">
 <li><p>✅ Enforce correct ordering of timestamps, such as ensuring pickup time is before dropoff time.</p></li>
 <li><p>✅ Detect incorrect or corrupted ranges in financial or numeric fields.</p></li>
-<li><p>✅ Validate business rules with dynamic limits, such as ensuring selling</p></li>
-</ul>
-<p>price is within acceptable margins of cost price (e.g., selling_price &lt; cost_price * 1.2).</p>
-<ul class="simple">
-<li><p>✅ Apply conditional validation logic based on categories or statuses</p></li>
-</ul>
-<p>(e.g., score &lt; CASE WHEN level=’expert’ THEN max_score ELSE max_score * 0.9 END).</p>
-<ul class="simple">
+<li><p>✅ Validate business rules with dynamic limits, such as ensuring selling price is within acceptable margins of cost price (e.g., selling_price &lt; cost_price * 1.2).</p></li>
+<li><p>✅ Apply conditional validation logic based on categories or statuses (e.g., score &lt; CASE WHEN level=’expert’ THEN max_score ELSE max_score * 0.9 END).</p></li>
 <li><p>✅ Prevent invalid or logically inconsistent data entries in business-critical systems.</p></li>
 </ul>
 </section>
