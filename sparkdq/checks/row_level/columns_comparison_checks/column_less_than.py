@@ -78,7 +78,7 @@ class ColumnLessThanCheck(BaseRowCheck):
         try:
             df.limit(0).select(F.expr(self.limit).alias("_validation_limit"))
         except Exception as e:
-            raise InvalidSQLExpressionError(self.limit, e)
+            raise InvalidSQLExpressionError(self.limit, str(e))
 
         smaller = F.col(self.column)
         greater = F.expr(self.limit)
