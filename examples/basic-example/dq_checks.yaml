@@ -22,6 +22,6 @@
 
 - check: column-less-than-check
   check-id: chronological
-  smaller-column: tpep_pickup_datetime
-  greater-column: tpep_dropoff_datetime
+  column: tpep_pickup_datetime
+  limit: tpep_dropoff_datetime
   inclusive: false
