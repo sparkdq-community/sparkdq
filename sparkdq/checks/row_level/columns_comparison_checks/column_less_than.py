@@ -104,30 +104,30 @@ class ColumnLessThanCheckConfig(BaseRowCheckConfig):
     Null values in either column or the limit result are treated as invalid
     and will fail the check.
 
-    Example:
-        # Simple column comparison
-        ColumnLessThanCheckConfig(
-            check_id="start-before-end",
-            column="start_time",
-            limit="end_time",
-            inclusive=True
-        )
+    Examples:
+        >>> # Simple column comparison
+        >>> cfg = ColumnLessThanCheckConfig(
+        ...     check_id="start-before-end",
+        ...     column="start_time",
+        ...     limit="end_time",
+        ...     inclusive=True
+        ... )
 
-        # Expression with mathematical operation
-        ColumnLessThanCheckConfig(
-            check_id="price-with-margin",
-            column="cost_price",
-            limit="selling_price * 0.8",
-            inclusive=True
-        )
+        >>> # Expression with mathematical operation
+        >>> cfg = ColumnLessThanCheckConfig(
+        ...     check_id="price-with-margin",
+        ...     column="cost_price",
+        ...     limit="selling_price * 0.8",
+        ...     inclusive=True
+        ... )
 
-        # Complex conditional expression
-        ColumnLessThanCheckConfig(
-            check_id="score-validation",
-            column="user_score",
-            limit="CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END",
-            inclusive=False
-        )
+        >>> # Complex conditional expression
+        >>> cfg = ColumnLessThanCheckConfig(
+        ...     check_id="score-validation",
+        ...     column="user_score",
+        ...     limit="CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END",
+        ...     inclusive=False
+        ... )
 
     Attributes:
         column (str): Column expected to contain smaller (or equal) values.

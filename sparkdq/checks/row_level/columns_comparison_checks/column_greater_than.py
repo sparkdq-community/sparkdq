@@ -106,29 +106,29 @@ class ColumnGreaterThanCheckConfig(BaseRowCheckConfig):
     and will fail the check.
 
     Example:
-        # Simple column comparison
-        ColumnGreaterThanCheckConfig(
-            check_id="end-after-start",
-            column="end_time",
-            limit="start_time",
-            inclusive=True
-        )
+        >>> # Simple column comparison
+        >>> cfg = ColumnGreaterThanCheckConfig(
+        ...     check_id="end-after-start",
+        ...     column="end_time",
+        ...     limit="start_time",
+        ...     inclusive=True
+        ... )
 
-        # Expression with mathematical operation
-        ColumnGreaterThanCheckConfig(
-            check_id="price-with-margin",
-            column="selling_price",
-            limit="cost_price * 1.2",
-            inclusive=False
-        )
+        >>> # Expression with mathematical operation
+        >>> cfg = ColumnGreaterThanCheckConfig(
+        ...     check_id="price-with-margin",
+        ...     column="selling_price",
+        ...     limit="cost_price * 1.2",
+        ...     inclusive=False
+        ... )
 
-        # Complex conditional expression
-        ColumnGreaterThanCheckConfig(
-            check_id="score-validation",
-            column="user_score",
-            limit="CASE WHEN level='beginner' THEN min_score ELSE min_score * 1.1 END",
-            inclusive=True
-        )
+        >>> # Complex conditional expression
+        >>> cfg = ColumnGreaterThanCheckConfig(
+        ...     check_id="score-validation",
+        ...     column="user_score",
+        ...     limit="CASE WHEN level='beginner' THEN min_score ELSE min_score * 1.1 END",
+        ...     inclusive=True
+        ... )
 
     Attributes:
         column (str): Column expected to contain greater (or equal) values.
