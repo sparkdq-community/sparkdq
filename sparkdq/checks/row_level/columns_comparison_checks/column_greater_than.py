@@ -9,25 +9,26 @@ from sparkdq.exceptions import InvalidSQLExpressionError, MissingColumnError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class ColumnLessThanCheck(BaseRowCheck):
+class ColumnGreaterThanCheck(BaseRowCheck):
     """
-    Row-level data quality check that flags rows where a comparison between two columns fails.
+    Row-level data quality check that flags rows where a comparison between a column and
+    another column or a SQL expression.
 
-    This check ensures that values in `column` are less than (or less than or equal to,
+    This check ensures that values in `column` are greater than (or greater than or equal to,
     if `inclusive=True`) the result of evaluating `limit`. It is designed to enforce
-    business rules such as "start_time <= end_time" or "selling_price < cost_price * 1.1".
+    business rules such as "end_time >= start_time" or "selling_price > cost_price * 1.1".
 
     The limit can be:
-    - A simple column name: "end_time"
+    - A simple column name: "start_time"
     - A mathematical expression: "cost_price * 1.1"
-    - A complex expression: "CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END"
+    - A complex expression: "CASE WHEN level='expert' THEN min_score ELSE min_score * 0.9 END"
 
     Rows with nulls in either the column or the limit result are considered invalid.
 
     Attributes:
-        column (str): The column expected to contain smaller (or equal) values.
-        limit (str): The column or a Spark SQL expression expected to contain greater values.
-        inclusive (bool): Whether to allow equality (i.e. column <= limit).
+        column (str): The column expected to contain greater (or equal) values.
+        limit (str): The column or a Spark SQL expression expected to contain smaller values.
+        inclusive (bool): Whether to allow equality (i.e. column >= limit).
             Defaults to False.
     """
 
@@ -40,13 +41,13 @@ class ColumnLessThanCheck(BaseRowCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a ColumnLessThanCheck instance.
+        Initialize a ColumnGreaterThanCheck instance.
 
         Args:
             check_id (str): Unique identifier for the check. Will be used as the result column name.
-            column (str): Column expected to contain smaller (or equal) values.
-            limit (str): The column or a Spark SQL expression expected to contain greater values.
-            inclusive (bool, optional): If True, the check allows equal values (<=). Defaults to False.
+            column (str): Column expected to contain greater (or equal) values.
+            limit (str): The column or a Spark SQL expression expected to contain smaller values.
+            inclusive (bool, optional): If True, the check allows equal values (>=). Defaults to False.
             severity (Severity, optional): Severity level of failed rows. Defaults to CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -59,7 +60,7 @@ class ColumnLessThanCheck(BaseRowCheck):
         Apply the comparison and flag violations.
 
         Rows are marked as failed if:
-        - the comparison fails (`column >= limit` or `>`, depending on `inclusive`), OR
+        - the comparison fails (`column <= limit` or `<`, depending on `inclusive`), OR
         - either the column or the limit result is null
 
         Args:
@@ -81,71 +82,71 @@ class ColumnLessThanCheck(BaseRowCheck):
         except Exception as e:
             raise InvalidSQLExpressionError(self.limit, str(e))
 
-        smaller = F.col(self.column)
-        greater = F.expr(self.limit)
+        greater = F.col(self.column)
+        smaller = F.expr(self.limit)
 
         if self.inclusive:
-            fail_expr = (smaller > greater) | smaller.isNull() | greater.isNull()
+            fail_expr = (greater < smaller) | greater.isNull() | smaller.isNull()
         else:
-            fail_expr = (smaller >= greater) | smaller.isNull() | greater.isNull()
+            fail_expr = (greater <= smaller) | greater.isNull() | smaller.isNull()
 
         return self.with_check_result_column(df, fail_expr)
 
 
-@register_check_config(check_name="column-less-than-check")
-class ColumnLessThanCheckConfig(BaseRowCheckConfig):
+@register_check_config(check_name="column-greater-than-check")
+class ColumnGreaterThanCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the ColumnLessThanCheck.
+    Declarative configuration model for the ColumnGreaterThanCheck.
 
     This config defines a row-level comparison between a column and a Spark SQL expression,
-    ensuring that values in `column` are strictly less than (or less than or equal to,
+    ensuring that values in `column` are strictly greater than (or greater than or equal to,
     if `inclusive=True`) the result of evaluating `limit`.
 
     Null values in either column or the limit result are treated as invalid
     and will fail the check.
 
-    Examples:
+    Example:
         >>> # Simple column comparison
-        >>> cfg = ColumnLessThanCheckConfig(
-        ...     check_id="start-before-end",
-        ...     column="start_time",
-        ...     limit="end_time",
+        >>> cfg = ColumnGreaterThanCheckConfig(
+        ...     check_id="end-after-start",
+        ...     column="end_time",
+        ...     limit="start_time",
         ...     inclusive=True
         ... )
 
         >>> # Expression with mathematical operation
-        >>> cfg = ColumnLessThanCheckConfig(
+        >>> cfg = ColumnGreaterThanCheckConfig(
         ...     check_id="price-with-margin",
-        ...     column="cost_price",
-        ...     limit="selling_price * 0.8",
-        ...     inclusive=True
-        ... )
-
-        >>> # Complex conditional expression
-        >>> cfg = ColumnLessThanCheckConfig(
-        ...     check_id="score-validation",
-        ...     column="user_score",
-        ...     limit="CASE WHEN level='expert' THEN max_score ELSE max_score * 0.9 END",
+        ...     column="selling_price",
+        ...     limit="cost_price * 1.2",
         ...     inclusive=False
         ... )
 
+        >>> # Complex conditional expression
+        >>> cfg = ColumnGreaterThanCheckConfig(
+        ...     check_id="score-validation",
+        ...     column="user_score",
+        ...     limit="CASE WHEN level='beginner' THEN min_score ELSE min_score * 1.1 END",
+        ...     inclusive=True
+        ... )
+
     Attributes:
-        column (str): Column expected to contain smaller (or equal) values.
-        limit (str): The column or a Spark SQL expression expected to contain greater values.
-        inclusive (bool): If True, validates `column <= limit`.
-                          If False, requires strict inequality (`<`). Defaults to False.
+        column (str): Column expected to contain greater (or equal) values.
+        limit (str): The column or a Spark SQL expression expected to contain smaller values.
+        inclusive (bool): If True, validates `column >= limit`.
+                          If False, requires strict inequality (`>`). Defaults to False.
     """
 
-    check_class = ColumnLessThanCheck
+    check_class = ColumnGreaterThanCheck
 
     column: str = Field(
-        ..., description="The column expected to contain smaller (or equal) values.", alias="column"
+        ..., description="The column expected to contain greater (or equal) values.", alias="column"
     )
     limit: str = Field(
         ...,
-        description="The column or a Spark SQL expression expected to contain greater values.",
+        description="The column or a Spark SQL expression expected to contain smaller values.",
         alias="limit",
     )
     inclusive: bool = Field(
-        False, description="If True, allows equality (<=). Otherwise requires strict inequality (<)."
+        False, description="If True, allows equality (>=). Otherwise requires strict inequality (>)."
     )

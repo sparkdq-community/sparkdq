@@ -42,6 +42,7 @@ Python Configuration
         severity=Severity.CRITICAL
     )
 
+    # Complex conditional expression
     ColumnLessThanCheckConfig(
         check_id="score-validation",
         column="user_score",

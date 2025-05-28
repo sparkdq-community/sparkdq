@@ -7,6 +7,7 @@ Row-Level Checks
    :hidden:
 
    checks/columns_comparison/column_less
+   checks/columns_comparison/column_greater
    checks/date/date_between_check
    checks/date/date_max_check
    checks/date/date_min_check
@@ -30,6 +31,8 @@ Row-Level Checks
     :header: "Check", "Description"
     :widths: 20, 80
 
+    ":ref:`column-less-than-check` ", "Ensures that values in one column are less than another column or expression result."
+    ":ref:`column-greater-than-check` ", "Ensures that values in one column are greater than another column or expression result."
     ":ref:`date-between-check` ", "Ensures that date column values are within a defined range."
     ":ref:`date-max-check` ", "Ensures that date column values are less than a defined maximum date."
     ":ref:`date-min-check` ", "Ensures that date column values are greater than a defined minimum date."
