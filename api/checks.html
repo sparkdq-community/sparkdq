@@ -167,6 +167,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../built_in_checks/row_level.html">Row-Level Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/columns_comparison/column_less.html">Column Less Than Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/columns_comparison/column_greater.html">Column Greater Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/date/date_max_check.html">Date Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/date/date_min_check.html">Date Min</a></li>
@@ -405,6 +406,92 @@ check configuration directly from the top-level <cite>sparkdq</cite> namespace.<
 but improves maintainability and scalability significantly in large modular frameworks.</p>
 <dl class="py class">
 <dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ColumnGreaterThanCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/columns_comparison_checks/column_greater_than.html#ColumnGreaterThanCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
+<p>Declarative configuration model for the ColumnGreaterThanCheck.</p>
+<p>This config defines a row-level comparison between a column and a Spark SQL expression,
+ensuring that values in <cite>column</cite> are strictly greater than (or greater than or equal to,
+if <cite>inclusive=True</cite>) the result of evaluating <cite>limit</cite>.</p>
+<p>Null values in either column or the limit result are treated as invalid
+and will fail the check.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple column comparison</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;end-after-start&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;end_time&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;start_time&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Expression with mathematical operation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;price-with-margin&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;selling_price&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;cost_price * 1.2&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Complex conditional expression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;score-validation&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;user_score&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;CASE WHEN level=&#39;beginner&#39; THEN min_score ELSE min_score * 1.1 END&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">column</span></span></dt>
+<dd><p>Column expected to contain greater (or equal) values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">limit</span></span></dt>
+<dd><p>The column or a Spark SQL expression expected to contain smaller values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
+<dd><p>If True, validates <cite>column &gt;= limit</cite>.
+If False, requires strict inequality (<cite>&gt;</cite>). Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">check_class</span></span></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnGreaterThanCheck</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'populate_by_name':</span> <span class="pre">True,</span> <span class="pre">'validate_by_alias':</span> <span class="pre">True,</span> <span class="pre">'validate_by_name':</span> <span class="pre">True}</span></em></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ColumnLessThanCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/columns_comparison_checks/column_less_than.html#ColumnLessThanCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
 <p>Declarative configuration model for the ColumnLessThanCheck.</p>
@@ -413,34 +500,34 @@ ensuring that values in <cite>column</cite> are strictly less than (or less than
 if <cite>inclusive=True</cite>) the result of evaluating <cite>limit</cite>.</p>
 <p>Null values in either column or the limit result are treated as invalid
 and will fail the check.</p>
-<p class="rubric">Example</p>
-<p># Simple column comparison
-ColumnLessThanCheckConfig(</p>
-<blockquote>
-<div><p>check_id=”start-before-end”,
-column=”start_time”,
-limit=”end_time”,
-inclusive=True</p>
-</div></blockquote>
-<p>)</p>
-<p># Expression with mathematical operation
-ColumnLessThanCheckConfig(</p>
-<blockquote>
-<div><p>check_id=”price-with-margin”,
-column=”cost_price”,
-limit=”selling_price * 0.8”,
-inclusive=True</p>
-</div></blockquote>
-<p>)</p>
-<p># Complex conditional expression
-ColumnLessThanCheckConfig(</p>
-<blockquote>
-<div><p>check_id=”score-validation”,
-column=”user_score”,
-limit=”CASE WHEN level=’expert’ THEN max_score ELSE max_score * 0.9 END”,
-inclusive=False</p>
-</div></blockquote>
-<p>)</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple column comparison</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;start-before-end&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;start_time&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;end_time&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Expression with mathematical operation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;price-with-margin&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cost_price&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;selling_price * 0.8&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Complex conditional expression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">ColumnLessThanCheckConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;score-validation&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;user_score&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">column</span></span></dt>

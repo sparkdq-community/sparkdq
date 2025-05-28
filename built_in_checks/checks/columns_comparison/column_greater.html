@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>String Length Between Check &#8212; SparkDQ Documentation</title>
+    <title>Column Greater Than Check &#8212; SparkDQ Documentation</title>
   
   
   
@@ -44,11 +44,11 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/strings/string_between_length';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/columns_comparison/column_greater';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="String Max Length Check" href="string_max_length.html" />
-    <link rel="prev" title="Regex Match Check" href="regex_match_check.html" />
+    <link rel="next" title="Date Between" href="../date/date_between_check.html" />
+    <link rel="prev" title="Column Less Than Check" href="column_less.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -166,8 +166,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-In Checks</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../row_level.html">Row-Level Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../columns_comparison/column_less.html">Column Less Than Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../columns_comparison/column_greater.html">Column Greater Than Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="column_less.html">Column Less Than Check</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Column Greater Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_max_check.html">Date Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_min_check.html">Date Min</a></li>
@@ -179,10 +179,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_between_check.html">Numeric Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_max_check.html">Numeric Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_min_check.html">Numeric Min</a></li>
-<li class="toctree-l2"><a class="reference internal" href="regex_match_check.html">Regex Match Check</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">String Length Between Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string_max_length.html">String Max Length Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string_min_length.html">String Min Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../strings/regex_match_check.html">Regex Match Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../strings/string_between_length.html">String Length Between Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../strings/string_max_length.html">String Max Length Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../strings/string_min_length.html">String Min Length Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../timestamp/timestamp_between_check.html">Timestamp Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../timestamp/timestamp_max_check.html">Timestamp Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../timestamp/timestamp_min_check.html">Timestamp Min</a></li>
@@ -296,7 +296,7 @@
       
       
       
-      <li><a href="../../../_sources/built_in_checks/checks/strings/string_between_length.rst" target="_blank"
+      <li><a href="../../../_sources/built_in_checks/checks/columns_comparison/column_greater.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -380,7 +380,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>String Length Between Check</h1>
+    <h1>Column Greater Than Check</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -404,35 +404,54 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="string-length-between-check">
-<span id="id1"></span><h1>String Length Between Check<a class="headerlink" href="#string-length-between-check" title="Link to this heading">#</a></h1>
-<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">string-length-between-check</span></code></p>
-<p><strong>Purpose</strong>: Validates that non-null string values in a column have a length within a specified range.
-This helps ensure that strings are neither too short nor too long, which is useful for validating
-user input, field formatting, or value truncation risks.</p>
+  <section id="column-greater-than-check">
+<span id="id1"></span><h1>Column Greater Than Check<a class="headerlink" href="#column-greater-than-check" title="Link to this heading">#</a></h1>
+<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">column-greater-than-check</span></code></p>
+<p><strong>Purpose</strong>: Ensures that values in one column are strictly greater than (or greater than or equal to)
+the values in another column or the result of evaluating a Spark SQL expression.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul>
-<li><p>Null values are ignored and treated as valid.</p></li>
-<li><p>You can configure both ends of the range to be inclusive or exclusive:</p>
+<li><p>Rows with <code class="docutils literal notranslate"><span class="pre">null</span></code> values in either column or the limit result are treated as <strong>invalid</strong> and will fail the check.</p></li>
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">inclusive</span></code> flag to control whether equality (<code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>) is permitted.</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">[true,</span> <span class="pre">false]</span></code> → <cite>min_length &lt;= len(value) &lt; max_length</cite></p>
-<p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">[false,</span> <span class="pre">true]</span></code> → <cite>min_length &lt; len(value) &lt;= max_length</cite></p>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">false</span></code>: requires <code class="docutils literal notranslate"><span class="pre">column</span> <span class="pre">&gt;</span> <span class="pre">limit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inclusive:</span> <span class="pre">true</span></code>: allows <code class="docutils literal notranslate"><span class="pre">column</span> <span class="pre">&gt;=</span> <span class="pre">limit</span></code></p></li>
+</ul>
 </div></blockquote>
 </li>
 </ul>
 </div>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringLengthBetweenCheckConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnGreaterThanCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
 
-<span class="n">StringLengthBetweenCheckConfig</span><span class="p">(</span>
-    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;valid-zone-length&quot;</span><span class="p">,</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;Zone&quot;</span><span class="p">,</span>
-    <span class="n">min_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">inclusive</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="c1"># Simple column comparison</span>
+<span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;dropoff-after-pickup&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;dropoff_datetime&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;pickup_datetime&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># use True to allow equality</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
+<span class="p">)</span>
+
+<span class="c1"># Expression with mathematical operation</span>
+<span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;price-with-margin&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;selling_price&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;cost_price * 1.2&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># use False to require strict greater than</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
+<span class="p">)</span>
+
+<span class="c1"># Complex conditional expression</span>
+<span class="n">ColumnGreaterThanCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;score-validation&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;user_score&quot;</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;CASE WHEN level=&#39;beginner&#39; THEN min_score ELSE min_score * 1.1 END&quot;</span><span class="p">,</span>
+    <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
@@ -440,12 +459,25 @@ user input, field formatting, or value truncation risks.</p>
 </section>
 <section id="declarative-configuration">
 <h2>Declarative Configuration<a class="headerlink" href="#declarative-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string-length-between-check</span>
-<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">valid-zone-length</span>
-<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Zone</span>
-<span class="w">  </span><span class="nt">min-length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="w">  </span><span class="nt">max-length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">false</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-greater-than-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dropoff-after-pickup</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dropoff_datetime</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pickup_datetime</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-greater-than-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">price-with-margin</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">selling_price</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cost_price * 1.2</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">column-greater-than-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">score-validation</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user_score</span>
+<span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CASE WHEN level=&#39;beginner&#39; THEN min_score ELSE min_score * 1.1 END</span>
+<span class="w">  </span><span class="nt">inclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>
@@ -453,9 +485,11 @@ user input, field formatting, or value truncation risks.</p>
 <section id="typical-use-cases">
 <h2>Typical Use Cases<a class="headerlink" href="#typical-use-cases" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>✅ Ensure user-entered strings meet minimum and maximum length requirements.</p></li>
-<li><p>✅ Detect truncated, malformed, or overly verbose values in system integrations.</p></li>
-<li><p>✅ Enforce business rules that require string values to fall within a specific range.</p></li>
+<li><p>✅ Enforce correct ordering of timestamps, such as ensuring dropoff time is after pickup time.</p></li>
+<li><p>✅ Detect incorrect or corrupted ranges in financial or numeric fields.</p></li>
+<li><p>✅ Validate business rules with dynamic limits, such as ensuring selling price exceeds minimum margins above cost price (e.g., selling_price &gt; cost_price * 1.2).</p></li>
+<li><p>✅ Apply conditional validation logic based on categories or statuses (e.g., score &gt; CASE WHEN level=’beginner’ THEN min_score ELSE min_score * 1.1 END).</p></li>
+<li><p>✅ Prevent invalid or logically inconsistent data entries in business-critical systems.</p></li>
 </ul>
 </section>
 </section>
@@ -472,20 +506,20 @@ user input, field formatting, or value truncation risks.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="regex_match_check.html"
+       href="column_less.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Regex Match Check</p>
+        <p class="prev-next-title">Column Less Than Check</p>
       </div>
     </a>
     <a class="right-next"
-       href="string_max_length.html"
+       href="../date/date_between_check.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">String Max Length Check</p>
+        <p class="prev-next-title">Date Between</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
