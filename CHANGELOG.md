@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.9.0 (2025-05-28)
+
+### Features
+
+- Add ColumnGreaterThanCheck with validation logic and configuration
+  ([#48](https://github.com/sparkdq-community/sparkdq/pull/48),
+  [`e46734e`](https://github.com/sparkdq-community/sparkdq/commit/e46734eee7c380fa3724885efcb269d282aae29e))
+
+
 ## v0.8.1 (2025-05-27)
 
 ### Bug Fixes
