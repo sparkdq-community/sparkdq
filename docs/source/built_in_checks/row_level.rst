@@ -12,6 +12,7 @@ Row-Level Checks
    checks/date/date_max_check
    checks/date/date_min_check
    checks/null/exactly_one_not_null_check
+   checks/integrity/foreign_key_check
    checks/contained_in/is_contained_in_check
    checks/contained_in/is_not_contained_in_check
    checks/null/not_null_check
@@ -37,6 +38,7 @@ Row-Level Checks
     ":ref:`date-max-check` ", "Ensures that date column values are less than a defined maximum date."
     ":ref:`date-min-check` ", "Ensures that date column values are greater than a defined minimum date."
     ":ref:`exactly_one_not_null_check` ", "Validates that exactly one of the specified columns is non-null per row."
+    ":ref:`foreign-key-check`", "Ensures that values in a given column exist in a reference dataset column to enforce referential integrity."
     ":ref:`is-contained-in-check` ", "Ensures that column values are contained within a predefined set of allowed values."
     ":ref:`is-not-contained-in-check` ", "Ensures that column values are not contained within a set of forbidden values."
     ":ref:`not_null_check` ", "Checks whether the specified column contains at least one non-null value."
