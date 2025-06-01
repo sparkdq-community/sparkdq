@@ -196,6 +196,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -362,6 +363,8 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingReferenceDatasetError</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.check_results</span><span class="w"> </span><span class="kn">import</span> <span class="n">AggregateCheckResult</span><span class="p">,</span> <span class="n">AggregateEvaluationResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.severity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
@@ -533,6 +536,70 @@ document.write(`
             <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">(),</span>
             <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
         <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># Typalias for mapping reference dataset names to Spark DataFrames</span>
+<span class="n">ReferenceDatasetDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="IntegrityCheckMixin">
+<a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IntegrityCheckMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A mixin that enables data quality checks to perform integrity validations</span>
+<span class="sd">    involving external reference datasets.</span>
+
+<span class="sd">    This mixin is intended for checks that compare the primary dataset with one</span>
+<span class="sd">    or more external datasets (e.g., foreign key validation, cross-dataset consistency).</span>
+<span class="sd">    It allows reference datasets to be injected once and retrieved by name during check execution.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _reference_datasets (ReferenceDatasetDict):</span>
+<span class="sd">            A dictionary that maps string identifiers (reference names) to Spark DataFrames</span>
+<span class="sd">            containing the corresponding reference data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_reference_datasets</span><span class="p">:</span> <span class="n">ReferenceDatasetDict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="IntegrityCheckMixin.inject_reference_datasets">
+<a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin.inject_reference_datasets">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inject_reference_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasets</span><span class="p">:</span> <span class="n">ReferenceDatasetDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stores the given reference datasets for use during check execution.</span>
+
+<span class="sd">        This method is typically called by the validation engine before the check&#39;s `run(...)`</span>
+<span class="sd">        method is invoked. It allows checks to access any required external datasets by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datasets (ReferenceDatasetDict): A mapping from reference names to Spark DataFrames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reference_datasets</span> <span class="o">=</span> <span class="n">datasets</span></div>
+
+
+<div class="viewcode-block" id="IntegrityCheckMixin.get_reference_df">
+<a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin.get_reference_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reference_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a reference DataFrame by its assigned name.</span>
+
+<span class="sd">        This method is used by checks during execution to access the appropriate</span>
+<span class="sd">        reference dataset that was previously injected.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the reference dataset to retrieve.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame: The corresponding Spark DataFrame for the given name.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingReferenceDatasetError: If no dataset with the given name has been injected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference_datasets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MissingReferenceDatasetError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

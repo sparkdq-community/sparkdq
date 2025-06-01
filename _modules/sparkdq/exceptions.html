@@ -196,6 +196,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -416,6 +417,20 @@ document.write(`
 
 <span class="sd">    In most cases, this error is raised during static validation of a config object.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="MissingReferenceDatasetError">
+<a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingReferenceDatasetError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MissingReferenceDatasetError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when a requested reference dataset is not available</span>
+<span class="sd">    in the current validation context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference dataset &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
 
 
 

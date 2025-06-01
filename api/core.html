@@ -197,6 +197,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -579,6 +580,64 @@ from <cite>BaseRowCheck</cite>.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'populate_by_name':</span> <span class="pre">True,</span> <span class="pre">'validate_by_alias':</span> <span class="pre">True,</span> <span class="pre">'validate_by_name':</span> <span class="pre">True}</span></em></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IntegrityCheckMixin</span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A mixin that enables data quality checks to perform integrity validations
+involving external reference datasets.</p>
+<p>This mixin is intended for checks that compare the primary dataset with one
+or more external datasets (e.g., foreign key validation, cross-dataset consistency).
+It allows reference datasets to be injected once and retrieved by name during check execution.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reference_datasets</span></span></dt>
+<dd><p>A dictionary that maps string identifiers (reference names) to Spark DataFrames
+containing the corresponding reference data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ReferenceDatasetDict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_reference_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin.get_reference_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Retrieves a reference DataFrame by its assigned name.</p>
+<p>This method is used by checks during execution to access the appropriate
+reference dataset that was previously injected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the reference dataset to retrieve.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding Spark DataFrame for the given name.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>MissingReferenceDatasetError</strong> – If no dataset with the given name has been injected.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">inject_reference_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin.inject_reference_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Stores the given reference datasets for use during check execution.</p>
+<p>This method is typically called by the validation engine before the check’s <cite>run(…)</cite>
+method is invoked. It allows checks to access any required external datasets by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datasets</strong> (<em>ReferenceDatasetDict</em>) – A mapping from reference names to Spark DataFrames.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

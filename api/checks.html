@@ -197,6 +197,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -932,6 +933,26 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">check_class</span></span></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ExactlyOneNotNullCheck</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'populate_by_name':</span> <span class="pre">True,</span> <span class="pre">'validate_by_alias':</span> <span class="pre">True,</span> <span class="pre">'validate_by_name':</span> <span class="pre">True}</span></em></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ForeignKeyCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/integrity_checks/foreign_key_check.html#ForeignKeyCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
+<p>Configuration model for ForeignKeyCheck.</p>
+<p>Validates referential integrity by ensuring that all values in <cite>column</cite> exist in a reference dataset.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">check_class</span></span></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ForeignKeyCheck</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">

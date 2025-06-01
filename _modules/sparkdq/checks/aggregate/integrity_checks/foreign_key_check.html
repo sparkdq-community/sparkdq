@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sparkdq.checks.row_level.columns_comparison_checks.column_less_than &#8212; SparkDQ Documentation</title>
+    <title>sparkdq.checks.aggregate.integrity_checks.foreign_key_check &#8212; SparkDQ Documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sparkdq/checks/row_level/columns_comparison_checks/column_less_than';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sparkdq/checks/aggregate/integrity_checks/foreign_key_check';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -344,159 +344,93 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for sparkdq.checks.row_level.columns_comparison_checks.column_less_than</h1><div class="highlight"><pre>
+  <h1>Source code for sparkdq.checks.aggregate.integrity_checks.foreign_key_check</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRowCheck</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRowCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAggregateCheck</span><span class="p">,</span> <span class="n">IntegrityCheckMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAggregateCheckConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.check_results</span><span class="w"> </span><span class="kn">import</span> <span class="n">AggregateEvaluationResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.severity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidSQLExpressionError</span><span class="p">,</span> <span class="n">MissingColumnError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingColumnError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.plugin.check_config_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_check_config</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">ColumnLessThanCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ForeignKeyCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">,</span> <span class="n">IntegrityCheckMixin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that flags rows where a comparison between two columns fails.</span>
+<span class="sd">    Aggregate check to verify that all values in a given column exist in a reference dataset column.</span>
 
-<span class="sd">    This check ensures that values in `column` are less than (or less than or equal to,</span>
-<span class="sd">    if `inclusive=True`) the result of evaluating `limit`. It is designed to enforce</span>
-<span class="sd">    business rules such as &quot;start_time &lt;= end_time&quot; or &quot;selling_price &lt; cost_price * 1.1&quot;.</span>
-
-<span class="sd">    The limit can be:</span>
-<span class="sd">    - A simple column name: &quot;end_time&quot;</span>
-<span class="sd">    - A mathematical expression: &quot;cost_price * 1.1&quot;</span>
-<span class="sd">    - A complex expression: &quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;</span>
-
-<span class="sd">    Rows with nulls in either the column or the limit result are considered invalid.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        column (str): The column expected to contain smaller (or equal) values.</span>
-<span class="sd">        limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
-<span class="sd">        inclusive (bool): Whether to allow equality (i.e. column &lt;= limit).</span>
-<span class="sd">            Defaults to False.</span>
+<span class="sd">    This check enforces referential integrity between datasets. It fails if any value in the source column</span>
+<span class="sd">    does not have a match in the reference column.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reference_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reference_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a ColumnLessThanCheck instance.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check. Will be used as the result column name.</span>
-<span class="sd">            column (str): Column expected to contain smaller (or equal) values.</span>
-<span class="sd">            limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
-<span class="sd">            inclusive (bool, optional): If True, the check allows equal values (&lt;=). Defaults to False.</span>
-<span class="sd">            severity (Severity, optional): Severity level of failed rows. Defaults to CRITICAL.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inclusive</span> <span class="o">=</span> <span class="n">inclusive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_dataset</span> <span class="o">=</span> <span class="n">reference_dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_column</span> <span class="o">=</span> <span class="n">reference_column</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply the comparison and flag violations.</span>
+<span class="sd">        Perform a left join to find unmatched values.</span>
 
-<span class="sd">        Rows are marked as failed if:</span>
-<span class="sd">        - the comparison fails (`column &gt;= limit` or `&gt;`, depending on `inclusive`), OR</span>
-<span class="sd">        - either the column or the limit result is null</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): Input Spark DataFrame to validate.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: A new DataFrame with an additional boolean column where True indicates failure.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If column is not found in the DataFrame.</span>
-<span class="sd">            InvalidSQLExpressionError: If the limit expression is invalid or cannot be evaluated.</span>
+<span class="sd">        The check fails if there is at least one row in `df` whose value in `column` is not present</span>
+<span class="sd">        in the reference dataset&#39;s `reference_column`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-        <span class="c1"># Validate that limit is a valid expression</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;_validation_limit&quot;</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidSQLExpressionError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">ref_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reference_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ref_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_column</span><span class="p">,</span> <span class="n">ref_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-        <span class="n">smaller</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">)</span>
-        <span class="n">greater</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+        <span class="n">ref_alias</span> <span class="o">=</span> <span class="s2">&quot;__ref_fk__&quot;</span>
+        <span class="n">source_alias</span> <span class="o">=</span> <span class="s2">&quot;__src_fk__&quot;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inclusive</span><span class="p">:</span>
-            <span class="n">fail_expr</span> <span class="o">=</span> <span class="p">(</span><span class="n">smaller</span> <span class="o">&gt;</span> <span class="n">greater</span><span class="p">)</span> <span class="o">|</span> <span class="n">smaller</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span> <span class="o">|</span> <span class="n">greater</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fail_expr</span> <span class="o">=</span> <span class="p">(</span><span class="n">smaller</span> <span class="o">&gt;=</span> <span class="n">greater</span><span class="p">)</span> <span class="o">|</span> <span class="n">smaller</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span> <span class="o">|</span> <span class="n">greater</span><span class="o">.</span><span class="n">isNull</span><span class="p">()</span>
+        <span class="n">df_aliased</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2"> as join_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="n">source_alias</span><span class="p">)</span>
+        <span class="n">df_ref_aliased</span> <span class="o">=</span> <span class="n">ref_df</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_column</span><span class="si">}</span><span class="s2"> as join_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="n">ref_alias</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_check_result_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">fail_expr</span><span class="p">)</span>
+        <span class="n">joined</span> <span class="o">=</span> <span class="n">df_aliased</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_ref_aliased</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+        <span class="n">missing_count</span> <span class="o">=</span> <span class="n">joined</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ref_alias</span><span class="si">}</span><span class="s2">.join_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isNull</span><span class="p">())</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="n">total_count</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+        <span class="n">passed</span> <span class="o">=</span> <span class="n">missing_count</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">AggregateEvaluationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;missing_foreign_keys&quot;</span><span class="p">:</span> <span class="n">missing_count</span><span class="p">,</span>
+                <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="n">total_count</span><span class="p">,</span>
+                <span class="s2">&quot;missing_ratio&quot;</span><span class="p">:</span> <span class="n">missing_count</span> <span class="o">/</span> <span class="n">total_count</span> <span class="k">if</span> <span class="n">total_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
 
 
-<div class="viewcode-block" id="ColumnLessThanCheckConfig">
-<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.ColumnLessThanCheckConfig">[docs]</a>
-<span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;column-less-than-check&quot;</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">ColumnLessThanCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
+<div class="viewcode-block" id="ForeignKeyCheckConfig">
+<a class="viewcode-back" href="../../../../../api/checks.html#sparkdq.checks.ForeignKeyCheckConfig">[docs]</a>
+<span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;foreign-key-check&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ForeignKeyCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the ColumnLessThanCheck.</span>
+<span class="sd">    Configuration model for ForeignKeyCheck.</span>
 
-<span class="sd">    This config defines a row-level comparison between a column and a Spark SQL expression,</span>
-<span class="sd">    ensuring that values in `column` are strictly less than (or less than or equal to,</span>
-<span class="sd">    if `inclusive=True`) the result of evaluating `limit`.</span>
-
-<span class="sd">    Null values in either column or the limit result are treated as invalid</span>
-<span class="sd">    and will fail the check.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; # Simple column comparison</span>
-<span class="sd">        &gt;&gt;&gt; cfg = ColumnLessThanCheckConfig(</span>
-<span class="sd">        ...     check_id=&quot;start-before-end&quot;,</span>
-<span class="sd">        ...     column=&quot;start_time&quot;,</span>
-<span class="sd">        ...     limit=&quot;end_time&quot;,</span>
-<span class="sd">        ...     inclusive=True</span>
-<span class="sd">        ... )</span>
-
-<span class="sd">        &gt;&gt;&gt; # Expression with mathematical operation</span>
-<span class="sd">        &gt;&gt;&gt; cfg = ColumnLessThanCheckConfig(</span>
-<span class="sd">        ...     check_id=&quot;price-with-margin&quot;,</span>
-<span class="sd">        ...     column=&quot;cost_price&quot;,</span>
-<span class="sd">        ...     limit=&quot;selling_price * 0.8&quot;,</span>
-<span class="sd">        ...     inclusive=True</span>
-<span class="sd">        ... )</span>
-
-<span class="sd">        &gt;&gt;&gt; # Complex conditional expression</span>
-<span class="sd">        &gt;&gt;&gt; cfg = ColumnLessThanCheckConfig(</span>
-<span class="sd">        ...     check_id=&quot;score-validation&quot;,</span>
-<span class="sd">        ...     column=&quot;user_score&quot;,</span>
-<span class="sd">        ...     limit=&quot;CASE WHEN level=&#39;expert&#39; THEN max_score ELSE max_score * 0.9 END&quot;,</span>
-<span class="sd">        ...     inclusive=False</span>
-<span class="sd">        ... )</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Column expected to contain smaller (or equal) values.</span>
-<span class="sd">        limit (str): The column or a Spark SQL expression expected to contain greater values.</span>
-<span class="sd">        inclusive (bool): If True, validates `column &lt;= limit`.</span>
-<span class="sd">                          If False, requires strict inequality (`&lt;`). Defaults to False.</span>
+<span class="sd">    Validates referential integrity by ensuring that all values in `column` exist in a reference dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">check_class</span> <span class="o">=</span> <span class="n">ColumnLessThanCheck</span>
+    <span class="n">check_class</span> <span class="o">=</span> <span class="n">ForeignKeyCheck</span>
 
-    <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column expected to contain smaller (or equal) values.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;column&quot;</span>
-    <span class="p">)</span>
-    <span class="n">limit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column or a Spark SQL expression expected to contain greater values.&quot;</span><span class="p">,</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If True, allows equality (&lt;=). Otherwise requires strict inequality (&lt;).&quot;</span>
+    <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column in the source DataFrame to validate&quot;</span><span class="p">)</span>
+    <span class="n">reference_dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The name of the reference dataset to compare against&quot;</span><span class="p">)</span>
+    <span class="n">reference_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The column in the reference dataset that contains valid values&quot;</span>
     <span class="p">)</span></div>
 
 </pre></div>

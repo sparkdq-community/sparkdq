@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Is Contained In &#8212; SparkDQ Documentation</title>
+    <title>Foreign Key Check &#8212; SparkDQ Documentation</title>
   
   
   
@@ -44,11 +44,11 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/contained_in/is_contained_in_check';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'built_in_checks/checks/integrity/foreign_key_check';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Is Not Contained In" href="is_not_contained_in_check.html" />
-    <link rel="prev" title="Exactly One Not Null Check" href="../null/exactly_one_not_null_check.html" />
+    <link rel="next" title="Distinct Ratio" href="../uniqueness/distinct_ratio_check.html" />
+    <link rel="prev" title="Freshness Check" href="../freshness/freshness_check.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -165,15 +165,15 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Built-In Checks</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../row_level.html">Row-Level Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../row_level.html">Row-Level Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../columns_comparison/column_less.html">Column Less Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../columns_comparison/column_greater.html">Column Greater Than Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_between_check.html">Date Between</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_max_check.html">Date Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../date/date_min_check.html">Date Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../null/exactly_one_not_null_check.html">Exactly One Not Null Check</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Is Contained In</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_not_contained_in_check.html">Is Not Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contained_in/is_contained_in_check.html">Is Contained In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contained_in/is_not_contained_in_check.html">Is Not Contained In</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../null/not_null_check.html">Not Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../null/null_check.html">Null Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../numeric/numeric_between_check.html">Numeric Between</a></li>
@@ -188,7 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../timestamp/timestamp_min_check.html">Timestamp Min</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../aggregate.html">Aggregate Checks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../aggregate.html">Aggregate Checks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../completeness/columns_are_complete_check.html">Columns Are Complete</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../schema/column_presence_check.html">Column Presence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../completeness/completeness_ratio_check.html">Completeness Ratio</a></li>
@@ -197,7 +197,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../freshness/freshness_check.html">Freshness Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrity/foreign_key_check.html">Foreign Key Check</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -297,7 +297,7 @@
       
       
       
-      <li><a href="../../../_sources/built_in_checks/checks/contained_in/is_contained_in_check.rst" target="_blank"
+      <li><a href="../../../_sources/built_in_checks/checks/integrity/foreign_key_check.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -381,7 +381,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Is Contained In</h1>
+    <h1>Foreign Key Check</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -394,7 +394,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-configuration">Python Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-use-cases">Typical Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-data-types">Supported Data Types</a></li>
 </ul>
             </nav>
         </div>
@@ -406,57 +405,48 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="is-contained-in">
-<span id="is-contained-in-check"></span><h1>Is Contained In<a class="headerlink" href="#is-contained-in" title="Link to this heading">#</a></h1>
-<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">is-contained-in-check</span></code></p>
+  <section id="foreign-key-check">
+<span id="id1"></span><h1>Foreign Key Check<a class="headerlink" href="#foreign-key-check" title="Link to this heading">#</a></h1>
+<p><strong>Check</strong>: <code class="docutils literal notranslate"><span class="pre">foreign-key-check</span></code></p>
 <p><strong>Purpose</strong>:
-Verifies that the values in the specified columns are contained within predefined sets of allowed values.
-Useful to enforce domain constraints or catch unexpected values early in the pipeline.</p>
+Validates that all values in a specified column exist in a reference dataset’s column.
+This check ensures referential integrity between two datasets — typically used to verify that foreign keys are resolvable.</p>
+<p>This check operates at the <strong>aggregate level</strong>.
+It computes the number and ratio of missing foreign key references and returns a single validation result for the entire dataset.</p>
+<p>The check <strong>fails</strong> if any value in the source column is <strong>not found</strong> in the referenced column of the injected reference dataset.</p>
 <section id="python-configuration">
 <h2>Python Configuration<a class="headerlink" href="#python-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">IsContainedInCheckConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForeignKeyCheckConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span>
 
-<span class="n">IsContainedInCheckConfig</span><span class="p">(</span>
-    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;validate_status_and_country&quot;</span><span class="p">,</span>
-    <span class="n">allowed_values</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ACTIVE&quot;</span><span class="p">,</span> <span class="s2">&quot;INACTIVE&quot;</span><span class="p">,</span> <span class="s2">&quot;PENDING&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;DE&quot;</span><span class="p">,</span> <span class="s2">&quot;FR&quot;</span><span class="p">,</span> <span class="s2">&quot;IT&quot;</span><span class="p">]</span>
-    <span class="p">},</span>
-    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">ERROR</span>
+<span class="n">ForeignKeyCheckConfig</span><span class="p">(</span>
+    <span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;valid_customer_id&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;customer_id&quot;</span><span class="p">,</span>
+    <span class="n">reference_dataset</span><span class="o">=</span><span class="s2">&quot;customers&quot;</span><span class="p">,</span>
+    <span class="n">reference_column</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="declarative-configuration">
 <h2>Declarative Configuration<a class="headerlink" href="#declarative-configuration" title="Link to this heading">#</a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is-contained-in-check</span>
-<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate_status_and_country</span>
-<span class="w">  </span><span class="nt">allowed-values</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">status</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ACTIVE</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INACTIVE</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PENDING</span>
-<span class="w">    </span><span class="nt">country</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DE</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FR</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IT</span>
-<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foreign-key-check</span>
+<span class="w">  </span><span class="nt">check-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">valid_customer_id</span>
+<span class="w">  </span><span class="nt">column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer_id</span>
+<span class="w">  </span><span class="nt">reference-dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<span class="w">  </span><span class="nt">reference-column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<span class="w">  </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
 </pre></div>
 </div>
 </section>
 <section id="typical-use-cases">
 <h2>Typical Use Cases<a class="headerlink" href="#typical-use-cases" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>✅ Validate that status fields contain only allowed operational states.</p></li>
-<li><p>✅ Check that country codes belong to a known set of supported countries.</p></li>
-<li><p>✅ Ensure reference data mappings only include allowed categories.</p></li>
-<li><p>✅ Catch ingestion errors where unexpected values are introduced.</p></li>
+<li><p>✅ Ensure that every <cite>order.customer_id</cite> exists in the <cite>customers</cite> table.</p></li>
+<li><p>✅ Validate that foreign keys in fact tables (e.g., <cite>sales.product_id</cite>) refer to known dimension entries.</p></li>
+<li><p>✅ Guarantee relational integrity between joined datasets in data lakes or data warehouses.</p></li>
 </ul>
-</section>
-<section id="supported-data-types">
-<h2>Supported Data Types<a class="headerlink" href="#supported-data-types" title="Link to this heading">#</a></h2>
-<p>This check supports any data type that can be compared using equality (e.g., strings, integers, dates).</p>
 </section>
 </section>
 
@@ -472,20 +462,20 @@ Useful to enforce domain constraints or catch unexpected values early in the pip
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../null/exactly_one_not_null_check.html"
+       href="../freshness/freshness_check.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Exactly One Not Null Check</p>
+        <p class="prev-next-title">Freshness Check</p>
       </div>
     </a>
     <a class="right-next"
-       href="is_not_contained_in_check.html"
+       href="../uniqueness/distinct_ratio_check.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Is Not Contained In</p>
+        <p class="prev-next-title">Distinct Ratio</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -508,7 +498,6 @@ Useful to enforce domain constraints or catch unexpected values early in the pip
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-configuration">Python Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-configuration">Declarative Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-use-cases">Typical Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-data-types">Supported Data Types</a></li>
 </ul>
   </nav></div>
 

@@ -197,6 +197,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -483,6 +484,14 @@ of configuration sources (e.g. JSON, YAML).</p>
 <p>Raised when a required column is not present in the DataFrame at runtime.</p>
 <p>This typically indicates a misconfiguration in the check setup, where a
 column was referenced that does not exist in the current dataset.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MissingReferenceDatasetError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#MissingReferenceDatasetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
+<p>Raised when a requested reference dataset is not available
+in the current validation context.</p>
 </dd></dl>
 
 <dl class="py exception">

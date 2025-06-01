@@ -196,6 +196,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/count/count_min_check.html">Count Min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/count/count_max_check.html">Count Max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/freshness/freshness_check.html">Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/integrity/foreign_key_check.html">Foreign Key Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/uniqueness/distinct_ratio_check.html">Distinct Ratio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/schema/schema_check.html">Schema Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../built_in_checks/checks/uniqueness/unique_ratio_check.html">Unique Ratio</a></li>
@@ -344,8 +345,11 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for sparkdq.engine.batch.dq_engine</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.core.base_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReferenceDatasetDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingCheckSetError</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDQEngine</span>
@@ -365,7 +369,9 @@ document.write(`
 
 <div class="viewcode-block" id="BatchDQEngine.run_batch">
 <a class="viewcode-back" href="../../../../api/engine.html#sparkdq.engine.BatchDQEngine.run_batch">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchValidationResult</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_batch</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">reference_datasets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReferenceDatasetDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchValidationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run all registered checks against the given DataFrame.</span>
 
@@ -375,6 +381,11 @@ document.write(`
 
 <span class="sd">        Args:</span>
 <span class="sd">            df (DataFrame): The input Spark DataFrame to validate.</span>
+<span class="sd">            reference_datasets (ReferenceDatasetDict, optional):</span>
+<span class="sd">                A dictionary of named reference DataFrames used by integrity checks.</span>
+<span class="sd">                Required for checks that compare values against external datasets</span>
+<span class="sd">                (e.g., foreign key validation). Each key should match the</span>
+<span class="sd">                `reference_dataset` name expected by the check.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BatchValidationResult: Object containing the validated DataFrame,</span>
@@ -384,7 +395,7 @@ document.write(`
             <span class="k">raise</span> <span class="n">MissingCheckSetError</span><span class="p">()</span>
         <span class="n">input_columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
         <span class="n">runner</span> <span class="o">=</span> <span class="n">BatchCheckRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_levels</span><span class="p">)</span>
-        <span class="n">validated_df</span><span class="p">,</span> <span class="n">aggregate_results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_set</span><span class="o">.</span><span class="n">get_all</span><span class="p">())</span>
+        <span class="n">validated_df</span><span class="p">,</span> <span class="n">aggregate_results</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_set</span><span class="o">.</span><span class="n">get_all</span><span class="p">(),</span> <span class="n">reference_datasets</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">BatchValidationResult</span><span class="p">(</span><span class="n">validated_df</span><span class="p">,</span> <span class="n">aggregate_results</span><span class="p">,</span> <span class="n">input_columns</span><span class="p">)</span></div>
 </div>

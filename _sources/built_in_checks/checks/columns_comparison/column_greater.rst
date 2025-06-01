@@ -1,4 +1,4 @@
-.. _column_greater_than_check:
+.. _column-greater-than-check:
 
 Column Greater Than Check
 =========================
