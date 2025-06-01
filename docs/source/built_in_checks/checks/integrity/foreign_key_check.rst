@@ -9,10 +9,10 @@ Foreign Key Check
 Validates that all values in a specified column exist in a reference dataset's column.  
 This check ensures referential integrity between two datasets — typically used to verify that foreign keys are resolvable.
 
-A row fails the check if the value in the source column **does not appear** in the referenced column of the injected reference dataset.
+This check operates at the **aggregate level**.  
+It computes the number and ratio of missing foreign key references and returns a single validation result for the entire dataset.
 
-This check operates at the **row level** and appends a boolean result column where `True` indicates a missing
-reference (i.e., check failed), and `False` means the key was found.
+The check **fails** if any value in the source column is **not found** in the referenced column of the injected reference dataset.
 
 Python Configuration
 --------------------
