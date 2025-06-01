@@ -17,6 +17,8 @@ from typing import Any
 
 from pyspark.sql import Column, DataFrame
 
+from sparkdq.exceptions import MissingReferenceDatasetError
+
 from .check_results import AggregateCheckResult, AggregateEvaluationResult
 from .severity import Severity
 
@@ -174,3 +176,58 @@ class BaseAggregateCheck(BaseCheck):
             parameters=self._parameters(),
             result=result,
         )
+
+
+# Typalias for mapping reference dataset names to Spark DataFrames
+ReferenceDatasetDict = dict[str, DataFrame]
+
+
+class IntegrityCheckMixin:
+    """
+    A mixin that enables data quality checks to perform integrity validations
+    involving external reference datasets.
+
+    This mixin is intended for checks that compare the primary dataset with one
+    or more external datasets (e.g., foreign key validation, cross-dataset consistency).
+    It allows reference datasets to be injected once and retrieved by name during check execution.
+
+    Attributes:
+        _reference_datasets (ReferenceDatasetDict):
+            A dictionary that maps string identifiers (reference names) to Spark DataFrames
+            containing the corresponding reference data.
+    """
+
+    _reference_datasets: ReferenceDatasetDict = {}
+
+    def inject_reference_datasets(self, datasets: ReferenceDatasetDict) -> None:
+        """
+        Stores the given reference datasets for use during check execution.
+
+        This method is typically called by the validation engine before the check's `run(...)`
+        method is invoked. It allows checks to access any required external datasets by name.
+
+        Args:
+            datasets (ReferenceDatasetDict): A mapping from reference names to Spark DataFrames.
+        """
+        self._reference_datasets = datasets
+
+    def get_reference_df(self, name: str) -> DataFrame:
+        """
+        Retrieves a reference DataFrame by its assigned name.
+
+        This method is used by checks during execution to access the appropriate
+        reference dataset that was previously injected.
+
+        Args:
+            name (str): The name of the reference dataset to retrieve.
+
+        Returns:
+            DataFrame: The corresponding Spark DataFrame for the given name.
+
+        Raises:
+            MissingReferenceDatasetError: If no dataset with the given name has been injected.
+        """
+        try:
+            return self._reference_datasets[name]
+        except KeyError:
+            raise MissingReferenceDatasetError(name)

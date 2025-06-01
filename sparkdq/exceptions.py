@@ -58,6 +58,17 @@ class InvalidCheckConfigurationError(CheckConfigurationError):
     """
 
 
+class MissingReferenceDatasetError(RuntimeCheckConfigurationError):
+    """
+    Raised when a requested reference dataset is not available
+    in the current validation context.
+    """
+
+    def __init__(self, name: str) -> None:
+        super().__init__(f"Reference dataset '{name}' not found.")
+        self.name = name
+
+
 class InvalidSeverityLevelError(CheckConfigurationError):
     """
     Raised when a provided severity level is not recognized by the framework.

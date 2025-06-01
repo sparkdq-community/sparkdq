@@ -1,4 +1,4 @@
-.. _column_less_than_check:
+.. _column-less-than-check:
 
 Column Less Than Check
 =======================

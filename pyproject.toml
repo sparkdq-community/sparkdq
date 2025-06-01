@@ -103,7 +103,6 @@ filterwarnings = [
 
 [tool.coverage.run]
 source = ["sparkdq"]
-branch = true
 
 [tool.coverage.report]
 exclude_lines = [

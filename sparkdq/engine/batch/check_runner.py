@@ -1,9 +1,15 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
-from sparkdq.core.base_check import BaseAggregateCheck, BaseCheck, BaseRowCheck
+from sparkdq.core.base_check import (
+    BaseAggregateCheck,
+    BaseCheck,
+    BaseRowCheck,
+    IntegrityCheckMixin,
+    ReferenceDatasetDict,
+)
 from sparkdq.core.check_results import AggregateCheckResult
 from sparkdq.core.severity import Severity
 
@@ -31,17 +37,34 @@ class BatchCheckRunner:
         """
         self.fail_levels = fail_levels
 
-    def run(self, df: DataFrame, checks: List[BaseCheck]) -> Tuple[DataFrame, List[AggregateCheckResult]]:
+    def run(
+        self,
+        df: DataFrame,
+        checks: List[BaseCheck],
+        reference_datasets: Optional[ReferenceDatasetDict] = None,
+    ) -> Tuple[DataFrame, List[AggregateCheckResult]]:
         """
         Runs all provided checks against the input DataFrame.
 
         Args:
             df (DataFrame): The Spark DataFrame to validate.
             checks (List[BaseCheck]): A list of BaseRowCheck or BaseAggregateCheck instances.
+            reference_datasets (ReferenceDatasetDict, optional):
+                A dictionary of named reference DataFrames used by integrity checks.
+                Required for checks that compare values against external datasets
+                (e.g., foreign key validation). Each key should match the
+                `reference_dataset` name expected by the check.
 
         Returns:
             Tuple[DataFrame, List[AggregateCheckResult]]: The annotated DataFrame and list of results.
         """
+        # Inject reference datasets into all compatible checks
+        if reference_datasets is not None:
+            for check in checks:
+                if isinstance(check, IntegrityCheckMixin):
+                    print("here")
+                    check.inject_reference_datasets(reference_datasets)
+
         # Split checks into row-level and aggregate-level
         row_checks = [c for c in checks if isinstance(c, BaseRowCheck)]
         agg_checks = [c for c in checks if isinstance(c, BaseAggregateCheck)]
