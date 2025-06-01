@@ -1,14 +1,10 @@
-from pyspark.sql import SparkSession
-
 from sparkdq.checks import ForeignKeyCheckConfig
 from sparkdq.core import Severity
 from sparkdq.engine import BatchDQEngine
 from sparkdq.management import CheckSet
 
-spark = SparkSession.builder.master("local[*]").appName("DQTest").getOrCreate()
 
-
-def test_foreign_key_check_end_to_end() -> None:
+def test_foreign_key_check_end_to_end(spark) -> None:
     """
     End-to-end test for the ForeignKeyCheck as an aggregate check.
 

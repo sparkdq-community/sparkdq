@@ -62,6 +62,7 @@ class BatchCheckRunner:
         if reference_datasets is not None:
             for check in checks:
                 if isinstance(check, IntegrityCheckMixin):
+                    print("here")
                     check.inject_reference_datasets(reference_datasets)
 
         # Split checks into row-level and aggregate-level
