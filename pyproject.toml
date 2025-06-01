@@ -1,6 +1,6 @@
 [project]
 name = "sparkdq"
-version = "0.9.0"
+version = "0.10.0"
 description = "A declarative PySpark framework for row- and aggregate-level data quality validation."
 authors = [{ name = "Marcel Kennert", email = "marcel.kennert@gmx.de" }]
 readme = "README.md"

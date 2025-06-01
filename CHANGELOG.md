@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.10.0 (2025-06-01)
+
+### Features
+
+- **engine**: Add support for reference-based integrity checks
+  ([#51](https://github.com/sparkdq-community/sparkdq/pull/51),
+  [`f33565b`](https://github.com/sparkdq-community/sparkdq/commit/f33565bf8420ea662a98e5e6b429f32545dfe29d))
+
+
 ## v0.9.0 (2025-05-28)
 
 ### Features
