@@ -81,22 +81,33 @@ into orchestration tools, CI pipelines, and data contract workflows.
 
 ## Installation
 
-Install the latest stable version using pip:
+### For Local Development / Standalone Clusters
 
+Install with PySpark included:
+
+```bash
+pip install sparkdq[spark]
 ```
+
+### For Databricks / Managed Platforms
+
+Install without PySpark (runtime provided by platform):
+
+```bash
 pip install sparkdq
 ```
 
-Alternatively, if you're using uv, a fast and modern Python package manager:
+### For uv Users
 
-```
+```bash
+# With PySpark
+uv add sparkdq[spark]
+
+# Without PySpark (Databricks/managed platforms)  
 uv add sparkdq
 ```
 
-The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. If you're running SparkDQ outside
-of managed platforms like Databricks, AWS Glue, or EMR, make sure Spark is installed and properly
-configured on your system. You can install it via your package manager or by following the official
-[Installation Guide](https://spark.apache.org/docs/latest/api/python/getting_started/install.html).
+The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.
 
 ## Why SparkDQ?
 
