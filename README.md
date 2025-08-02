@@ -101,7 +101,7 @@ It helps teams enforce quality standards early and consistently — across inges
 Validate raw data as it enters your platform
 
 - Schema validation and type checking
-- Completeness and null value detection
+- Completeness detection
 - Format and pattern validation
 - Early failure detection
 
@@ -126,7 +126,7 @@ Enforce rules before persisting to storage
 
 Assert conditions before model training
 
-- Feature quality and distribution checks
+- Feature and distribution checks
 - Training data completeness validation
 - Bias detection and fairness metrics
 - Model input/output validation
