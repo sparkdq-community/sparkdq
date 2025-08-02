@@ -113,7 +113,7 @@ Validate raw data as it enters your platform
 Enforce rules before persisting to storage
 
 - Delta/Iceberg/Hudi table validation
-- Partition and schema evolution checks
+- Partition and schema evolution
 - Data freshness and lineage validation
 - Storage optimization verification
 
