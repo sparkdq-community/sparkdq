@@ -97,16 +97,6 @@ Install without PySpark (runtime provided by platform):
 pip install sparkdq
 ```
 
-### For uv Users
-
-```bash
-# With PySpark
-uv add sparkdq[spark]
-
-# Without PySpark (Databricks/managed platforms)  
-uv add sparkdq
-```
-
 The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.
 
 ## Why SparkDQ?
