@@ -91,62 +91,13 @@ The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. Spar
 SparkDQ is built for modern data platforms that demand trust, transparency, and resilience.
 It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.
 
-<div align="center">
-<table>
-<tr>
-<td width="50%">
+- 🔄 **Data Ingestion**: Validate raw data as it enters your platform with schema validation, completeness detection, format validation, and early failure detection
 
-### 🔄 **Data Ingestion**
+- 🏠 **Lakehouse Quality**: Enforce rules before persisting to storage including Delta/Iceberg/Hudi table validation, partition checks, and data freshness validation
 
-Validate raw data as it enters your platform
+- 🤖 **ML & Analytics**: Assert conditions before model training with feature quality checks, training data validation, bias detection, and model I/O validation
 
-- Schema validation and type checking
-- Completeness detection
-- Format and pattern validation
-- Early failure detection
-
-</td>
-<td width="50%">
-
-### 🏠 **Lakehouse Quality**
-
-Enforce rules before persisting to storage
-
-- Delta/Iceberg/Hudi table validation
-- Partition and schema evolution
-- Data freshness and lineage validation
-- Storage optimization verification
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 🤖 **ML & Analytics**
-
-Assert conditions before model training
-
-- Feature and distribution checks
-- Training data completeness validation
-- Bias detection and fairness metrics
-- Model input/output validation
-
-</td>
-<td width="50%">
-
-### 🚨 **Pipeline Monitoring**
-
-Flag violations in production workflows
-
-- Real-time quality alerts
-- SLA compliance monitoring
-- Data drift detection
-- Automated incident response
-
-</td>
-</tr>
-</table>
-</div>
+- � **Pipeline Monitoring**: Flag violations in production workflows through real-time alerts, SLA compliance monitoring, data drift detection, and automated incident response
 
 ## Let’s Build Better Data Together
 
