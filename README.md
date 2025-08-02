@@ -12,7 +12,9 @@ Most data quality frameworks weren’t designed with PySpark in mind. They aren�
 **SparkDQ** takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you're validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
 
 <!-- doc-link-start -->
-🚀  See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
+
+🚀 See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
+
 <!-- doc-link-end -->
 
 ## Quickstart Examples
@@ -72,37 +74,79 @@ The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. Spar
 
 ## Why SparkDQ?
 
-* ✅ **Robust Validation Layer**: Clean separation of check definition, execution, and reporting
+- ✅ **Robust Validation Layer**: Clean separation of check definition, execution, and reporting
 
-* ✅ **Declarative or Programmatic**: Define checks via config files or directly in Python
+- ✅ **Declarative or Programmatic**: Define checks via config files or directly in Python
 
-* ✅ **Severity-Aware**: Built-in distinction between warning and critical violations
+- ✅ **Severity-Aware**: Built-in distinction between warning and critical violations
 
-* ✅ **Row & Aggregate Logic**: Supports both record-level and dataset-wide constraints
+- ✅ **Row & Aggregate Logic**: Supports both record-level and dataset-wide constraints
 
-* ✅ **Typed & Tested**: Built with type safety, testability, and extensibility in mind
+- ✅ **Typed & Tested**: Built with type safety, testability, and extensibility in mind
 
-* ✅ **Zero Overhead**: Pure PySpark, no heavy dependencies
+- ✅ **Zero Overhead**: Pure PySpark, no heavy dependencies
 
 ## Typical Use Cases
 
 SparkDQ is built for modern data platforms that demand trust, transparency, and resilience.
 It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.
 
-Whether you're building a real-time ingestion pipeline or curating a data product for thousands of downstream users,
-SparkDQ lets you define and execute checks that are precise, scalable, and easy to maintain.
+<div align="center">
+<table>
+<tr>
+<td width="50%">
 
-**Common Scenarios**:
+### 🔄 **Data Ingestion**
 
-* ✅ Validating raw ingestion data
+Validate raw data as it enters your platform
 
-* ✅ Enforcing schema and content rules before persisting to a lakehouse (Delta, Iceberg, Hudi)
+- Schema validation and type checking
+- Completeness and null value detection
+- Format and pattern validation
+- Early failure detection
 
-* ✅ Asserting quality conditions before analytics or ML training jobs
+</td>
+<td width="50%">
 
-* ✅ Flagging critical violations in batch pipelines via structured summaries and alerts
+### 🏠 **Lakehouse Quality**
 
-* ✅ Driving Data Contracts: Use declarative checks in CI pipelines to catch issues before deployment
+Enforce rules before persisting to storage
+
+- Delta/Iceberg/Hudi table validation
+- Partition and schema evolution checks
+- Data freshness and lineage validation
+- Storage optimization verification
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🤖 **ML & Analytics**
+
+Assert conditions before model training
+
+- Feature quality and distribution checks
+- Training data completeness validation
+- Bias detection and fairness metrics
+- Model input/output validation
+
+</td>
+<td width="50%">
+
+### 🚨 **Pipeline Monitoring**
+
+Flag violations in production workflows
+
+- Real-time quality alerts
+- SLA compliance monitoring
+- Data drift detection
+- Automated incident response
+
+</td>
+</tr>
+</table>
+</div>
 
 ## Let’s Build Better Data Together
 
