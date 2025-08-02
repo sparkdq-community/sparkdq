@@ -10,10 +10,15 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class NumericMinCheck(BaseMinCheck):
     """
-    Row-level data quality check that verifies that numeric values in the specified columns
-    are greater than or equal to a defined minimum threshold.
+    Record-level validation check that enforces minimum numeric thresholds.
 
-    A row fails the check if **any** of the target columns contain a value below `min_value`.
+    Validates that numeric values in specified columns meet or exceed a configured
+    minimum threshold. This check is essential for enforcing business rules such
+    as minimum order amounts, positive balance requirements, or acceptable
+    measurement ranges in data quality validation scenarios.
+
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over numeric validation requirements.
     """
 
     pass  # implemented via BaseMinCheck
@@ -22,12 +27,16 @@ class NumericMinCheck(BaseMinCheck):
 @register_check_config(check_name="numeric-min-check")
 class NumericMinCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the NumericMinCheck.
+    Configuration schema for minimum numeric threshold validation checks.
+
+    Defines the parameters required for configuring checks that enforce minimum
+    numeric boundaries. This configuration enables declarative check definition
+    through external configuration sources while ensuring parameter validity.
 
     Attributes:
-        columns (List[str]): The list of numeric columns to validate.
-        min_value (float): The minimum allowed value (inclusive).
-        inclusive (bool): Whether to include the minimum value.
+        columns (List[str]): Numeric column names that must meet minimum threshold requirements.
+        min_value (float | int | Decimal): Minimum acceptable numeric value for validation.
+        inclusive (bool): Whether the minimum threshold includes the boundary value itself.
     """
 
     check_class = NumericMinCheck

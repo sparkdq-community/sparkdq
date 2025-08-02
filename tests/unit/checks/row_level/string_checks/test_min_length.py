@@ -12,7 +12,10 @@ from sparkdq.exceptions import InvalidCheckConfigurationError, MissingColumnErro
 
 def test_string_min_length_inclusive(spark: SparkSession) -> None:
     """
-    Validates that StringMinLengthCheck (inclusive=True) flags strings shorter than the threshold.
+    Verify that StringMinLengthCheck correctly identifies strings below minimum length threshold.
+
+    The validation should mark records as failed when string values fall below the
+    configured minimum length, using inclusive boundary semantics.
     """
     df = spark.createDataFrame(
         [
@@ -40,7 +43,10 @@ def test_string_min_length_inclusive(spark: SparkSession) -> None:
 
 def test_string_min_length_exclusive(spark: SparkSession) -> None:
     """
-    Validates that StringMinLengthCheck (inclusive=False) requires strictly greater length.
+    Verify that StringMinLengthCheck correctly applies exclusive boundary semantics.
+
+    The validation should mark records as failed when string values are equal to
+    or below the configured minimum length, using exclusive boundary logic.
     """
     df = spark.createDataFrame(
         [
@@ -68,7 +74,10 @@ def test_string_min_length_exclusive(spark: SparkSession) -> None:
 
 def test_string_min_length_nulls_pass(spark: SparkSession) -> None:
     """
-    Validates that null values are skipped and treated as valid.
+    Verify that StringMinLengthCheck correctly handles null values as valid records.
+
+    The validation should skip null values during length evaluation, treating
+    them as acceptable regardless of the configured minimum length threshold.
     """
     df = spark.createDataFrame(
         [
@@ -96,7 +105,10 @@ def test_string_min_length_nulls_pass(spark: SparkSession) -> None:
 
 def test_string_min_length_missing_column(spark: SparkSession) -> None:
     """
-    Validates that MissingColumnError is raised when the column does not exist.
+    Verify that StringMinLengthCheck raises MissingColumnError for non-existent target columns.
+
+    The validation should perform schema validation and fail immediately when
+    attempting to access columns that do not exist in the dataset schema.
     """
     df = spark.createDataFrame([(1, "A")], ["id", "x"])
     check = StringMinLengthCheck(check_id="missing_col", column="y", min_length=2)
@@ -107,7 +119,10 @@ def test_string_min_length_missing_column(spark: SparkSession) -> None:
 
 def test_string_min_length_config_to_check() -> None:
     """
-    Validates that the config correctly instantiates the check with all parameters.
+    Verify that StringMinLengthCheckConfig correctly instantiates checks with proper parameter mapping.
+
+    The configuration should produce a check instance with all parameters correctly
+    transferred from the configuration object to the check implementation.
     """
     config = StringMinLengthCheckConfig(
         check_id="config_test", column="description", min_length=5, inclusive=False, severity=Severity.WARNING
@@ -124,7 +139,10 @@ def test_string_min_length_config_to_check() -> None:
 
 def test_string_min_length_config_invalid_threshold() -> None:
     """
-    Validates that config raises an error when min_length is <= 0.
+    Verify that StringMinLengthCheckConfig rejects invalid minimum length parameters.
+
+    The configuration should validate parameter ranges during instantiation and
+    prevent the creation of checks with meaningless zero or negative thresholds.
     """
     with pytest.raises(InvalidCheckConfigurationError):
         StringMinLengthCheckConfig(check_id="fail_cfg", column="field", min_length=0)

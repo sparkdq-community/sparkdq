@@ -13,28 +13,31 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class NotNullCheck(BaseRowCheck):
     """
-    Row-level data quality check that flags rows where any of the specified columns is *not null*.
+    Record-level validation check that identifies rows with unexpected non-null values.
 
-    This check appends a boolean result column to the input DataFrame.
-    Each row will be marked as a failure (True) if any of the specified columns contain a value.
-    This is useful in scenarios where columns are expected to remain empty (null) under normal conditions.
+    Validates that specified columns remain null across all records, flagging any
+    rows where these columns contain values. This check is particularly useful for
+    validating optional fields that should remain unset under normal business
+    conditions or for identifying data quality issues in columns that should be
+    consistently empty.
 
-    If any of the target columns do not exist in the input DataFrame, a
-    `MissingColumnError` is raised at runtime to signal a misconfiguration.
+    The check performs runtime schema validation to ensure all specified columns
+    exist in the target dataset, providing clear error messages for configuration
+    mismatches.
 
     Attributes:
-        columns (List[str]): List of column names to validate for null values (i.e. should remain unset).
+        columns (List[str]): Column names that should consistently contain null values.
     """
 
     def __init__(self, check_id: str, columns: List[str], severity: Severity = Severity.CRITICAL):
         """
-        Initialize a NotNullCheck instance.
+        Initialize the not-null validation check with target columns and configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance. Used as the
-                name of the result column in the output DataFrame.
-            columns (List[str]): List of column names that are expected to be null.
-            severity (Severity, optional): Severity level of the check result.
+            check_id (str): Unique identifier for this check instance, used for
+                result column naming and tracking.
+            columns (List[str]): Column names that should consistently contain null values.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -42,20 +45,24 @@ class NotNullCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Execute the not-null check on the given DataFrame.
+        Execute the validation logic against the provided dataset.
 
-        This method appends a new boolean column (named after `check_id`) that indicates
-        for each row whether any of the specified columns is *not* null.
+        Performs schema validation to ensure all target columns exist, then applies
+        the not-null validation logic to identify records where any specified column
+        contains a value. The results are appended as a boolean column indicating
+        validation failures.
 
         Args:
-            df (DataFrame): The input Spark DataFrame to validate.
+            df (DataFrame): The dataset to validate against null value expectations.
 
         Returns:
-            DataFrame: A new DataFrame with an additional boolean column where
-                `True` indicates a non-null value (i.e. check failed), and `False` means valid.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (unexpected non-null values) and
+                False indicates compliance with null value requirements.
 
         Raises:
-            MissingColumnError: If any of the specified columns do not exist in the DataFrame.
+            MissingColumnError: When any specified column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         for column in self.columns:
             if column not in df.columns:
@@ -73,10 +80,14 @@ class NotNullCheck(BaseRowCheck):
 @register_check_config(check_name="not-null-check")
 class NotNullCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the NotNullCheck.
+    Configuration schema for not-null validation checks.
+
+    Defines the parameters required for configuring checks that validate columns
+    expected to remain null. This configuration enables declarative check
+    definition through external configuration sources.
 
     Attributes:
-        columns (List[str]): The names of the columns that should remain null.
+        columns (List[str]): Column names that should consistently contain null values.
     """
 
     check_class = NotNullCheck

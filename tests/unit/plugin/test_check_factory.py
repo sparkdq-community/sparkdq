@@ -1,13 +1,14 @@
 """
-Unit tests for CheckFactory, which builds check instances from raw config dictionaries.
+Unit tests for CheckFactory, the dynamic check instantiation engine for configuration-driven workflows.
 
-These tests verify:
-- Correct creation of check objects using registered config classes
-- Proper normalization of severity fields
-- Robust error handling when required fields are missing
-- Support for batch creation via from_list()
+This test suite validates the complete factory functionality including:
+- Dynamic check instantiation from raw configuration dictionaries
+- Proper parameter normalization and validation during instantiation
+- Robust error handling for malformed or incomplete configurations
+- Batch processing capabilities for bulk check creation
 
-CheckFactory is key for YAML/JSON-driven pipelines and must behave predictably.
+CheckFactory enables declarative validation pipeline configuration by bridging
+external configuration sources with concrete check implementations.
 """
 
 from typing import ClassVar, Type
@@ -42,8 +43,10 @@ def setup_module():
 
 def test_from_dict_creates_check_instance() -> None:
     """
-    Validates that from_dict() returns a valid check instance
-    when provided with a properly structured config dictionary.
+    Verify that from_dict correctly instantiates checks from well-formed configuration dictionaries.
+
+    The factory should process configuration parameters, perform validation,
+    and produce properly initialized check instances ready for execution.
     """
     # Arrange
     config_data = {"check-id": "test", "check": "dummy-check", "column": "foo", "severity": "warning"}
@@ -59,8 +62,10 @@ def test_from_dict_creates_check_instance() -> None:
 
 def test_from_dict_raises_on_missing_check_field() -> None:
     """
-    Validates that from_dict() raises MissingCheckTypeError
-    when the 'check' field is missing from the dictionary.
+    Verify that from_dict raises MissingCheckTypeError for incomplete configurations.
+
+    The factory should validate required configuration fields and provide
+    clear error messages when essential type identification is missing.
     """
     with pytest.raises(MissingCheckTypeError):
         CheckFactory._from_dict({"column": "foo"})
@@ -68,8 +73,10 @@ def test_from_dict_raises_on_missing_check_field() -> None:
 
 def test_from_list_creates_multiple_checks() -> None:
     """
-    Validates that from_list() creates multiple check instances
-    from a list of configuration dictionaries.
+    Verify that from_list correctly processes collections of configuration dictionaries.
+
+    The factory should handle batch processing scenarios, creating multiple
+    check instances while maintaining proper parameter validation for each.
     """
     configs = [
         {"check-id": "test1", "check": "dummy-check", "column": "a", "severity": "critical"},

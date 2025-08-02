@@ -10,14 +10,15 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class DateMaxCheck(BaseMaxCheck):
     """
-    Row-level data quality check that verifies date values are below a defined maximum date.
+    Record-level validation check that enforces maximum date boundaries.
 
-    A row fails if any of the target columns contains a date after (or equal to, depending on `inclusive`)
-    `max_value`.
+    Validates that date values in specified columns remain within or before a
+    configured maximum date threshold. This check is essential for preventing
+    future date entries, enforcing reporting period boundaries, and maintaining
+    temporal data integrity across business processes.
 
-    Example use cases:
-        - Ensure that no future dates are recorded.
-        - Validate that invoice dates do not exceed the end of the reporting period.
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over date validation requirements for different business contexts.
     """
 
     def __init__(
@@ -29,14 +30,15 @@ class DateMaxCheck(BaseMaxCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a new DateMaxCheck.
+        Initialize the maximum date validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): List of date columns to check.
-            max_value (str): The maximum allowed date (inclusive), in 'YYYY-MM-DD' format.
-            inclusive (bool): Whether the maximum date is inclusive.
-            severity (Severity, optional): Severity level of the check result.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Date column names that must remain within the maximum threshold.
+            max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).
+            inclusive (bool): Whether the maximum date threshold includes the boundary
+                date itself for validation purposes.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(
@@ -52,12 +54,16 @@ class DateMaxCheck(BaseMaxCheck):
 @register_check_config(check_name="date-max-check")
 class DateMaxCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for DateMaxCheck.
+    Configuration schema for maximum date validation checks.
+
+    Defines the parameters required for configuring checks that enforce maximum
+    date boundaries. This configuration enables declarative check definition
+    through external configuration sources while ensuring parameter validity.
 
     Attributes:
-        columns (List[str]): Date columns to validate.
-        max_value (str): The maximum allowed date in ISO format.
-        inclusive (bool): Whether to include the maximum date.
+        columns (List[str]): Date column names that must remain within the maximum threshold.
+        max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).
+        inclusive (bool): Whether the maximum date threshold includes the boundary date itself.
     """
 
     check_class = DateMaxCheck

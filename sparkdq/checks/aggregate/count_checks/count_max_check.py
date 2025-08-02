@@ -11,23 +11,29 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class RowCountMaxCheck(BaseAggregateCheck):
     """
-    Aggregate-level data quality check that ensures a DataFrame does not exceed a maximum number of rows.
+    Dataset-level validation check that enforces maximum row count limits.
 
-    It is evaluated once per DataFrame and produces a pass/fail result
-    along with row count metrics.
+    Validates that the total number of records in a dataset remains within a
+    configured maximum threshold, preventing excessive data volume that could
+    impact processing performance or storage constraints. This check is essential
+    for detecting data explosion scenarios, runaway processes, or capacity limit
+    violations.
+
+    The check provides comprehensive metrics including actual counts and configured
+    limits to support detailed analysis of validation outcomes.
 
     Attributes:
-        max_count (int): The maximum acceptable number of rows.
+        max_count (int): Maximum acceptable number of records in the dataset.
     """
 
     def __init__(self, check_id: str, max_count: int, severity: Severity = Severity.CRITICAL):
         """
-        Initialize a new RowCountMaxCheck instance.
+        Initialize the maximum row count validation check with threshold configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            max_count (int): The maximum allowed number of rows.
-            severity (Severity, optional): The severity level to assign if the check fails.
+            check_id (str): Unique identifier for this check instance.
+            max_count (int): Maximum acceptable number of records in the dataset.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -35,17 +41,18 @@ class RowCountMaxCheck(BaseAggregateCheck):
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Evaluate the row count of the given DataFrame against the defined maximum.
+        Execute the maximum row count validation against the configured threshold.
 
-        If the row count is less than or equal to `max_count`, the check passes.
-        Otherwise, it fails and the actual count is included in the result metrics.
+        Computes the total row count of the dataset and evaluates it against the
+        configured maximum threshold. The validation passes when the actual count
+        remains within or below the maximum limit.
 
         Args:
-            df (DataFrame): The Spark DataFrame to evaluate.
+            df (DataFrame): The dataset to evaluate for maximum count compliance.
 
         Returns:
-            AggregateEvaluationResult: An object indicating the outcome of the check,
-            including relevant row count metrics.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and comprehensive metrics comparing actual count to maximum threshold.
         """
         actual = df.count()
         passed = actual <= self.max_count
@@ -61,13 +68,14 @@ class RowCountMaxCheck(BaseAggregateCheck):
 @register_check_config(check_name="row-count-max-check")
 class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
     """
-    Declarative configuration model for the RowCountMaxCheck.
+    Configuration schema for maximum row count validation checks.
 
-    This configuration defines a maximum row count requirement for a dataset. It ensures that the
-    ``max_count`` parameter is provided and has a positive value.
+    Defines the parameters and validation rules for configuring checks that
+    enforce maximum row count limits. The configuration includes logical
+    validation to ensure count parameters are positive and meaningful.
 
     Attributes:
-        max_count (int): Maximum number of rows allowed in the dataset.
+        max_count (int): Maximum acceptable number of records in the dataset.
     """
 
     check_class = RowCountMaxCheck
@@ -76,13 +84,18 @@ class RowCountMaxCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_max(self) -> "RowCountMaxCheckConfig":
         """
-        Validate that the configured ``max_count`` is greater than 0.
+        Validate the logical consistency of the configured maximum count parameter.
+
+        Ensures that the maximum count parameter is positive and meaningful for
+        dataset validation purposes. This validation prevents configuration errors
+        that would result in nonsensical validation conditions.
 
         Returns:
-            RowCountMaxCheckConfig: The validated configuration object.
+            RowCountMaxCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If ``max_count`` is not greater than 0.
+            InvalidCheckConfigurationError: When the maximum count parameter is
+                zero or negative, indicating an invalid configuration.
         """
         if self.max_count <= 0:
             raise InvalidCheckConfigurationError(f"max-count ({self.max_count}) must be greater than 0")

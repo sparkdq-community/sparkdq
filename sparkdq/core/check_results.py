@@ -1,15 +1,14 @@
 """
-Defines standardized result containers for aggregate-level data quality checks
-within the sparkdq framework.
+Standardized result containers for aggregate-level data quality check outcomes.
 
-Includes:
+This module provides immutable, serializable data structures for representing
+the results of aggregate-level data quality validations. The design ensures
+consistent result formatting across all check implementations while providing
+rich metadata for debugging, reporting, and audit trail generation.
 
-- `AggregateEvaluationResult`: Represents the outcome of a single check evaluation.
-- `AggregateCheckResult`: Wraps the evaluation result together with metadata such as
-  check name, severity level, and configuration parameters.
-
-These dataclasses ensure consistency in how check results are represented,
-serialized, and consumed across the framework.
+The result containers separate the core evaluation outcome from the surrounding
+metadata, enabling flexible consumption patterns while maintaining complete
+traceability of validation results and their context.
 """
 
 from dataclasses import asdict, dataclass
@@ -21,39 +20,22 @@ from .severity import Severity
 @dataclass(frozen=True)
 class AggregateEvaluationResult:
     """
-    Encapsulates the outcome of an aggregate-level data quality check.
+    Immutable container for aggregate-level data quality check evaluation outcomes.
 
-    This class holds both the result (`passed`) and additional diagnostic `metrics`
-    that were computed as part of the check evaluation. These metrics provide context
-    for understanding why a check passed or failed, and are especially useful during
-    debugging or reporting.
+    Encapsulates both the binary validation result and the supporting metrics that
+    explain the evaluation process. The metrics provide essential context for
+    understanding validation outcomes, enabling detailed debugging and comprehensive
+    reporting of data quality assessment results.
 
-    For example, in a CountMinCheck, the metrics might include:
-
-    - ``actual_count``: the number of rows actually found
-    - ``expected_min_count``: the configured minimum count threshold
-
-    Such context allows users to understand the degree of deviation from expectations
-    when a check fails.
+    The separation of validation outcome from supporting metrics enables flexible
+    consumption patterns while ensuring complete traceability of the evaluation
+    process and its underlying calculations.
 
     Attributes:
-        passed (bool): Indicates whether the check condition was satisfied.
-        metrics (Dict[str, Any]): Additional computed values or diagnostic information
-            relevant to the check (e.g., actual vs. expected counts, computed averages,
-            standard deviations, etc.).
-
-    Example:
-        >>> result = AggregateEvaluationResult(
-        ...     passed=False,
-        ...     metrics={
-        ...         "actual_count": 42,
-        ...         "expected_min_count": 100
-        ...     }
-        ... )
-        >>> result.passed
-        False
-        >>> result.metrics["actual_count"]
-        42
+        passed (bool): Binary indicator of whether the validation criteria were satisfied.
+        metrics (Dict[str, Any]): Comprehensive diagnostic information including
+            computed values, thresholds, and contextual data that explain the
+            validation outcome.
     """
 
     passed: bool
@@ -61,10 +43,14 @@ class AggregateEvaluationResult:
 
     def to_dict(self) -> Dict[str, Any]:
         """
-        Serializes the evaluation result to a dictionary.
+        Convert the evaluation result to a serializable dictionary format.
+
+        Produces a clean dictionary representation suitable for JSON serialization,
+        logging, or integration with external reporting systems.
 
         Returns:
-            Dict[str, Any]: Dictionary representation of the evaluation result.
+            Dict[str, Any]: Complete evaluation result in dictionary format,
+                preserving all validation outcomes and diagnostic metrics.
         """
         return asdict(self)
 
@@ -72,17 +58,22 @@ class AggregateEvaluationResult:
 @dataclass(frozen=True)
 class AggregateCheckResult:
     """
-    Encapsulates the full result of an aggregate-level data quality check.
+    Comprehensive container for complete aggregate-level data quality check results.
 
-    Combines the evaluation outcome with metadata such as the check name, severity,
-    configuration parameters, and the result of the check evaluation.
+    Combines the core evaluation outcome with complete metadata including check
+    identification, configuration parameters, and execution context. This design
+    provides full traceability and context for each validation result, supporting
+    detailed audit trails and comprehensive reporting requirements.
+
+    The immutable structure ensures result integrity while providing convenient
+    access to both high-level outcomes and detailed diagnostic information.
 
     Attributes:
-        check (str): Name of the check (e.g., "row-count-between").
-        check_id (str): Unique identifier for the check instance.
-        severity (Severity): Severity level of the check result (e.g., "CRITICAL", "WARNING").
-        parameters (Dict[str, Any]): Configuration parameters used for this check.
-        result (AggregateEvaluationResult): The outcome of the check evaluation.
+        check (str): Canonical name of the check implementation.
+        check_id (str): Unique identifier for this specific check instance.
+        severity (Severity): Classification level determining failure handling behavior.
+        parameters (Dict[str, Any]): Complete configuration parameters used during execution.
+        result (AggregateEvaluationResult): Detailed evaluation outcome with supporting metrics.
     """
 
     check: str
@@ -93,12 +84,15 @@ class AggregateCheckResult:
 
     def to_dict(self) -> Dict[str, Any]:
         """
-        Serializes the complete check result to a dictionary.
+        Convert the complete check result to a serializable dictionary format.
 
-        Converts enums (e.g., severity) to strings and includes the serialized evaluation result.
+        Produces a comprehensive dictionary representation with proper serialization
+        of complex types, suitable for JSON export, logging, or integration with
+        external monitoring and reporting systems.
 
         Returns:
-            Dict[str, Any]: Dictionary containing check metadata and evaluation outcome.
+            Dict[str, Any]: Complete check result including metadata and evaluation
+                outcome, with all complex types properly serialized.
         """
         return {
             "check": self.check,
@@ -111,23 +105,27 @@ class AggregateCheckResult:
     @property
     def passed(self) -> bool:
         """
-        Indicates whether the check passed.
+        Retrieve the binary validation outcome for this check.
 
-        Shortcut to access the `passed` status from the embedded result.
+        Provides convenient access to the core validation result without requiring
+        navigation through the nested result structure.
 
         Returns:
-            bool: True if the check passed, False otherwise.
+            bool: True if the validation criteria were satisfied, False otherwise.
         """
         return self.result.passed
 
     @property
     def metrics(self) -> Dict[str, Any]:
         """
-        Provides access to the evaluation metrics.
+        Retrieve the diagnostic metrics from the evaluation process.
 
-        Shortcut to access the `metrics` from the embedded result.
+        Provides convenient access to the detailed metrics that explain the
+        validation outcome without requiring navigation through the nested
+        result structure.
 
         Returns:
-            Dict[str, Any]: Metrics produced during the check evaluation.
+            Dict[str, Any]: Comprehensive diagnostic metrics including computed
+                values, thresholds, and contextual information.
         """
         return self.result.metrics

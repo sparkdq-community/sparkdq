@@ -8,35 +8,40 @@ from sparkdq.plugin.check_config_registry import CheckConfigRegistry, load_confi
 
 class CheckFactory:
     """
-    Factory for creating check instances from configuration dictionaries.
+    Factory for dynamic check instantiation from configuration dictionaries.
 
-    The CheckFactory uses the CheckConfigRegistry to resolve check names
-    to their corresponding configuration classes. It validates input dictionaries
-    against the expected schema and creates check instances via the configuration's
-    `to_check()` method.
+    Orchestrates the complete process of transforming raw configuration data into
+    executable check instances, including type resolution, parameter validation,
+    and proper instantiation. The factory leverages the CheckConfigRegistry to
+    maintain loose coupling between check implementations and their configurations.
 
-    This allows checks to be created dynamically from external sources
-    such as JSON, YAML, or API calls.
+    This design enables flexible deployment scenarios where validation rules can
+    be externally defined and dynamically loaded from various sources including
+    configuration files, databases, or API endpoints.
     """
 
     @staticmethod
     def _from_dict(config_data: Dict[str, Any]) -> BaseCheck:
         """
-        Creates a check instance from a configuration dictionary.
+        Instantiate a check from a raw configuration dictionary.
 
-        The configuration must contain a "check" key that specifies the
-        registered check type in the CheckConfigRegistry. If a "severity"
-        field is provided, it will be normalized to a valid Severity enum.
+        Processes a configuration dictionary through the complete validation and
+        instantiation pipeline, including check type resolution, parameter validation,
+        and severity normalization. This method serves as the core transformation
+        point between external configuration sources and executable check instances.
 
         Args:
-            config_data (Dict[str, Any]): The check configuration.
+            config_data (Dict[str, Any]): Raw configuration dictionary containing
+                check type specification and all required parameters.
 
         Returns:
-            BaseCheck: The instantiated and validated check object.
+            BaseCheck: Fully validated and configured check instance ready for execution.
 
         Raises:
-            MissingCheckTypeError: If the "check" field is missing.
-            ValidationError: If the configuration data is invalid for the resolved config class.
+            MissingCheckTypeError: When the configuration lacks the required
+                'check' field for type identification.
+            ValidationError: When the configuration parameters fail validation
+                against the resolved check configuration schema.
         """
         check_name = config_data.get("check")
         if not check_name:
@@ -53,16 +58,20 @@ class CheckFactory:
     @staticmethod
     def from_list(config_list: List[Dict[str, Any]]) -> List[BaseCheck]:
         """
-        Creates multiple check instances from a list of configuration dictionaries.
+        Instantiate multiple checks from a collection of configuration dictionaries.
 
-        This method calls `from_dict()` for each configuration entry and is typically
-        used for bulk configuration loading (e.g., from a YAML or JSON array).
+        Processes a collection of configuration dictionaries through the complete
+        validation and instantiation pipeline, enabling efficient bulk loading
+        from external configuration sources. This method ensures all check
+        implementations are properly registered before processing begins.
 
         Args:
-            config_list (List[Dict[str, Any]]): A list of check configuration dictionaries.
+            config_list (List[Dict[str, Any]]): Collection of configuration
+                dictionaries, each defining a complete check specification.
 
         Returns:
-            List[BaseCheck]: A list of instantiated and validated check objects.
+            List[BaseCheck]: Collection of fully validated and configured check
+                instances ready for execution.
         """
         # Ensure that all check classes are registered in the CheckFactory
         load_config_module("sparkdq.checks")

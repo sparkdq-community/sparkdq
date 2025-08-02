@@ -11,23 +11,28 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class RowCountMinCheck(BaseAggregateCheck):
     """
-    Aggregate-level data quality check that ensures a DataFrame contains at least a minimum number of rows.
+    Dataset-level validation check that enforces minimum row count thresholds.
 
-    It is evaluated once per DataFrame and produces a pass/fail result
-    along with row count metrics.
+    Validates that the total number of records in a dataset meets or exceeds a
+    configured minimum threshold, ensuring adequate data volume for downstream
+    processing. This check is essential for detecting incomplete data loads,
+    processing failures, or insufficient data scenarios.
+
+    The check provides comprehensive metrics including actual counts and configured
+    thresholds to support detailed analysis of validation outcomes.
 
     Attributes:
-        min_count (int): The minimum acceptable number of rows.
+        min_count (int): Minimum acceptable number of records in the dataset.
     """
 
     def __init__(self, check_id: str, min_count: int, severity: Severity = Severity.CRITICAL):
         """
-        Initialize a new RowCountMinCheck instance.
+        Initialize the minimum row count validation check with threshold configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            min_count (int): The minimum allowed number of rows.
-            severity (Severity, optional): The severity level to assign if the check fails.
+            check_id (str): Unique identifier for this check instance.
+            min_count (int): Minimum acceptable number of records in the dataset.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -35,17 +40,18 @@ class RowCountMinCheck(BaseAggregateCheck):
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Evaluate the row count of the given DataFrame against the defined minimum.
+        Execute the minimum row count validation against the configured threshold.
 
-        If the row count is at least `min_count`, the check passes.
-        Otherwise, it fails and the actual count is included in the result metrics.
+        Computes the total row count of the dataset and evaluates it against the
+        configured minimum threshold. The validation passes when the actual count
+        meets or exceeds the minimum requirement.
 
         Args:
-            df (DataFrame): The Spark DataFrame to evaluate.
+            df (DataFrame): The dataset to evaluate for minimum count compliance.
 
         Returns:
-            AggregateEvaluationResult: An object indicating the outcome of the check,
-            including relevant row count metrics.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and comprehensive metrics comparing actual count to minimum threshold.
         """
         actual = df.count()
         passed = actual >= self.min_count
@@ -61,13 +67,14 @@ class RowCountMinCheck(BaseAggregateCheck):
 @register_check_config(check_name="row-count-min-check")
 class RowCountMinCheckConfig(BaseAggregateCheckConfig):
     """
-    Declarative configuration model for the RowCountMinCheck.
+    Configuration schema for minimum row count validation checks.
 
-    This configuration defines a minimum row count requirement for a dataset. It ensures that the
-    ``min_count`` parameter is provided and is non-negative.
+    Defines the parameters and validation rules for configuring checks that
+    enforce minimum row count thresholds. The configuration includes logical
+    validation to ensure count parameters are positive and meaningful.
 
     Attributes:
-        min_count (int): Minimum number of rows expected in the dataset.
+        min_count (int): Minimum acceptable number of records in the dataset.
     """
 
     check_class = RowCountMinCheck
@@ -76,13 +83,18 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_min(self) -> "RowCountMinCheckConfig":
         """
-        Validate that the configured ``min_count`` is greater than 0.
+        Validate the logical consistency of the configured minimum count parameter.
+
+        Ensures that the minimum count parameter is positive and meaningful for
+        dataset validation purposes. This validation prevents configuration errors
+        that would result in nonsensical validation conditions.
 
         Returns:
-            RowCountMinCheckConfig: The validated configuration object.
+            RowCountMinCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If ``min_count`` is negative.
+            InvalidCheckConfigurationError: When the minimum count parameter is
+                zero or negative, indicating an invalid configuration.
         """
         if self.min_count <= 0:
             raise InvalidCheckConfigurationError(f"min-count ({self.min_count}) must be greater than 0")

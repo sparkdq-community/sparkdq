@@ -10,10 +10,10 @@ from sparkdq.exceptions import MissingColumnError
 
 def test_date_max_check_config_valid() -> None:
     """
-    Validates that DateMaxCheckConfig correctly instantiates a DateMaxCheck
-    when provided with valid configuration parameters.
+    Verify that DateMaxCheckConfig correctly instantiates DateMaxCheck with proper parameter mapping.
 
-    The created check should match the configured check_id, columns, and max_value.
+    The configuration should produce a check instance with all parameters correctly
+    transferred from the configuration object to the check implementation.
     """
     config = DateMaxCheckConfig(
         check_id="check_max_date",
@@ -30,9 +30,10 @@ def test_date_max_check_config_valid() -> None:
 
 def test_date_max_check_validate_correctly_flags_rows(spark: SparkSession) -> None:
     """
-    Verifies that DateMaxCheck flags rows where the date column value exceeds max_value.
+    Verify that DateMaxCheck correctly identifies records with dates exceeding maximum threshold.
 
-    A row is marked as failed if the 'record_date' is after '2023-12-31'.
+    The validation should mark records as failed when date values exceed the
+    configured maximum date boundary, using exclusive boundary semantics.
     """
     data = [
         Row(record_date="2023-12-30"),
@@ -64,9 +65,10 @@ def test_date_max_check_validate_correctly_flags_rows(spark: SparkSession) -> No
 
 def test_date_max_check_validate_inclusive_true(spark: SparkSession) -> None:
     """
-    Verifies that DateMaxCheck with inclusive=True includes the boundary date as valid.
+    Verify that DateMaxCheck correctly applies inclusive boundary semantics.
 
-    A row is marked as failed only if the 'record_date' is after '2023-12-31'.
+    The validation should treat the boundary date as valid when inclusive mode
+    is enabled, only marking records as failed when dates exceed the threshold.
     """
     data = [
         Row(record_date="2023-12-30"),
@@ -99,9 +101,10 @@ def test_date_max_check_validate_inclusive_true(spark: SparkSession) -> None:
 
 def test_date_max_check_missing_column(spark: SparkSession) -> None:
     """
-    Validates that DateMaxCheck raises MissingColumnError if a specified column does not exist.
+    Verify that DateMaxCheck raises MissingColumnError for non-existent target columns.
 
-    The check should immediately fail at runtime when accessing a missing column.
+    The validation should perform schema validation and fail immediately when
+    attempting to access columns that do not exist in the dataset schema.
     """
     df = spark.createDataFrame([(1, "Alice")], ["id", "name"])
 

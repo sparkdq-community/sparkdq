@@ -1,13 +1,14 @@
 """
-Integration tests for the full DQ pipeline using BatchDQEngine and CheckSet.
+End-to-end integration tests for the complete data quality validation pipeline.
 
-These tests simulate real-world usage:
-- Configuring checks via config dictionaries
-- Executing a validation run on sample data
-- Validating outputs (fail/warn/pass/summary)
+This test suite validates the full integration of framework components including:
+- Configuration-driven check definition through external dictionaries
+- Check instantiation and registration via CheckSet and CheckFactory
+- Complete validation execution through BatchDQEngine
+- Result processing and summary generation for validation outcomes
 
-This ensures components like CheckSet, CheckFactory, BatchCheckRunner,
-and BatchDQEngine work together as expected.
+These tests ensure that all framework components work together seamlessly
+in realistic validation scenarios, providing confidence in production deployments.
 """
 
 import pytest
@@ -30,10 +31,11 @@ def input_df(spark: SparkSession):
 
 def test_full_batch_flow_with_multiple_checks(input_df) -> None:
     """
-    Runs a full integration test:
-    - Loads checks via config dicts
-    - Executes them via BatchDQEngine
-    - Validates DataFrame annotation and summary output
+    Verify complete end-to-end validation pipeline functionality with multiple check types.
+
+    This integration test validates the entire workflow from configuration loading
+    through result generation, ensuring all framework components collaborate
+    correctly in realistic validation scenarios.
     """
     # Arrange
     config_dicts = [

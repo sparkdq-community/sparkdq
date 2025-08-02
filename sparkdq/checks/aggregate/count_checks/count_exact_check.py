@@ -11,23 +11,28 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class RowCountExactCheck(BaseAggregateCheck):
     """
-    Aggregate-level data quality check that ensures a DataFrame contains exactly a specified number of rows.
+    Dataset-level validation check that enforces exact row count requirements.
 
-    This check is useful for strict data contract validations where the row count must match a known value,
-    such as reference datasets, test snapshots, or controlled static inputs.
+    Validates that the total number of records in a dataset matches a precise
+    expected count, ensuring strict data contract compliance. This check is
+    essential for validating reference datasets, controlled test data, or
+    scenarios where exact record counts are critical for downstream processing.
+
+    The check provides comprehensive metrics comparing actual counts to expected
+    values to support detailed analysis of validation outcomes.
 
     Attributes:
-        expected_count (int): The exact number of rows expected.
+        expected_count (int): Exact number of records required in the dataset.
     """
 
     def __init__(self, check_id: str, expected_count: int, severity: Severity = Severity.CRITICAL):
         """
-        Initialize a new RowCountExactCheck instance.
+        Initialize the exact row count validation check with target count configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            expected_count (int): The required number of rows.
-            severity (Severity, optional): The severity level to assign if the check fails.
+            check_id (str): Unique identifier for this check instance.
+            expected_count (int): Exact number of records required in the dataset.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -35,17 +40,18 @@ class RowCountExactCheck(BaseAggregateCheck):
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Evaluate the row count of the given DataFrame against the exact expected count.
+        Execute the exact row count validation against the configured target count.
 
-        If the row count equals `expected_count`, the check passes.
-        Otherwise, it fails and the actual count is included in the result metrics.
+        Computes the total row count of the dataset and evaluates it against the
+        configured expected count. The validation passes only when the actual
+        count exactly matches the expected value.
 
         Args:
-            df (DataFrame): The Spark DataFrame to evaluate.
+            df (DataFrame): The dataset to evaluate for exact count compliance.
 
         Returns:
-            AggregateEvaluationResult: An object indicating the outcome of the check,
-            including relevant row count metrics.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and comprehensive metrics comparing actual count to expected value.
         """
         actual = df.count()
         passed = actual == self.expected_count
@@ -61,13 +67,14 @@ class RowCountExactCheck(BaseAggregateCheck):
 @register_check_config(check_name="row-count-exact-check")
 class RowCountExactCheckConfig(BaseAggregateCheckConfig):
     """
-    Declarative configuration model for the RowCountExactCheck.
+    Configuration schema for exact row count validation checks.
 
-    This configuration defines an exact row count requirement for a dataset. It ensures that the
-    ``expected_count`` parameter is provided and is non-negative.
+    Defines the parameters and validation rules for configuring checks that
+    enforce precise row count requirements. The configuration includes logical
+    validation to ensure count parameters are non-negative and meaningful.
 
     Attributes:
-        expected_count (int): The exact number of rows expected in the dataset.
+        expected_count (int): Exact number of records required in the dataset.
     """
 
     check_class = RowCountExactCheck
@@ -76,13 +83,18 @@ class RowCountExactCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_expected(self) -> "RowCountExactCheckConfig":
         """
-        Validate that the configured expected_count is greater than 0.
+        Validate the logical consistency of the configured expected count parameter.
+
+        Ensures that the expected count parameter is non-negative and meaningful
+        for dataset validation purposes. This validation prevents configuration
+        errors that would result in impossible validation conditions.
 
         Returns:
-            RowCountExactCheckConfig: The validated configuration object.
+            RowCountExactCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If ``expected_count`` is negative.
+            InvalidCheckConfigurationError: When the expected count parameter is
+                negative, indicating an invalid configuration.
         """
         if self.expected_count < 0:
             raise InvalidCheckConfigurationError(

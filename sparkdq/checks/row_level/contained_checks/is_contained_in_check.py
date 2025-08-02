@@ -11,12 +11,19 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class IsContainedInCheck(BaseRowCheck):
     """
-    Row-level check that verifies whether column values are contained in a predefined list of allowed values.
+    Record-level validation check that enforces value whitelist constraints.
 
-    Each specified column must only contain values listed in its associated value list.
+    Validates that values in specified columns are contained within predefined
+    allowed value lists, ensuring data integrity and business rule compliance.
+    This check is essential for validating categorical data, status codes,
+    enumerated values, or any scenario where only specific values are acceptable.
+
+    The check supports multiple columns with independent allowed value lists,
+    enabling comprehensive validation of related categorical fields.
 
     Attributes:
-        allowed_values (dict[str, list[object]]): Dictionary mapping column names to their allowed values.
+        allowed_values (dict[str, list[object]]): Mapping of column names to their
+            corresponding lists of acceptable values.
     """
 
     def __init__(
@@ -30,13 +37,19 @@ class IsContainedInCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Evaluate whether all specified columns contain only allowed values.
+        Execute the value whitelist validation logic against the configured columns.
+
+        Performs validation to ensure all configured columns contain only values
+        from their respective allowed value lists. Records fail validation when
+        any configured column contains values outside the permitted set.
 
         Args:
-            df (DataFrame): The Spark DataFrame to validate.
+            df (DataFrame): The dataset to validate for value containment compliance.
 
         Returns:
-            DataFrame: The input DataFrame extended with a column indicating pass/fail per row.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (disallowed values detected) and
+                False indicates compliance with whitelist requirements.
         """
         conditions = [F.col(column).isin(values) for column, values in self.allowed_values.items()]
 
@@ -48,12 +61,15 @@ class IsContainedInCheck(BaseRowCheck):
 @register_check_config(check_name="is-contained-in-check")
 class IsContainedInCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the IsContainedInCheck.
+    Configuration schema for value whitelist validation checks.
 
-    This config allows validation that specified columns contain only predefined values.
+    Defines the parameters and validation rules for configuring checks that
+    enforce value containment constraints. The configuration includes logical
+    validation to ensure allowed value specifications are complete and meaningful.
 
     Attributes:
-        allowed_values (dict[str, list[object]]): Mapping of column names to allowed values.
+        allowed_values (dict[str, list[object]]): Mapping of column names to their
+            corresponding lists of acceptable values.
     """
 
     check_class = IsContainedInCheck
@@ -65,13 +81,18 @@ class IsContainedInCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_allowed_values(self) -> "IsContainedInCheckConfig":
         """
-        Validate that allowed_values is not empty and properly formed.
+        Validate the logical consistency and completeness of the allowed values configuration.
+
+        Ensures that the allowed values mapping is properly structured with non-empty
+        value lists for each configured column. This validation prevents configuration
+        errors that would result in impossible or meaningless validation conditions.
 
         Returns:
-            IsContainedInCheckConfig: The validated configuration object.
+            IsContainedInCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If allowed_values is invalid.
+            InvalidCheckConfigurationError: When the allowed values configuration is
+                empty, malformed, or contains invalid value specifications.
         """
         if not self.allowed_values:
             raise InvalidCheckConfigurationError("allowed_values must not be empty.")
