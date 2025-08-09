@@ -346,16 +346,20 @@ document.write(`
                   
   <h1>Source code for sparkdq.core.base_check</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Defines abstract base classes for implementing data quality checks</span>
-<span class="sd">within the sparkdq framework.</span>
+<span class="sd">Abstract base classes for implementing data quality checks within the sparkdq framework.</span>
 
-<span class="sd">This module provides:</span>
+<span class="sd">This module establishes the foundational architecture for all data quality validations,</span>
+<span class="sd">providing standardized interfaces for both row-level and aggregate-level checks. The</span>
+<span class="sd">design ensures consistent behavior, metadata handling, and result reporting across</span>
+<span class="sd">all check implementations while maintaining extensibility for custom validation logic.</span>
 
-<span class="sd">- `BaseCheck`: The common interface and metadata structure for all checks.</span>
-<span class="sd">- `BaseRowCheck`: Specialization for row-level checks applied per record.</span>
-<span class="sd">- `BaseAggregateCheck`: Specialization for aggregate-level checks that evaluate entire datasets.</span>
+<span class="sd">The module defines three primary abstractions:</span>
+<span class="sd">- BaseCheck: Core interface and metadata management for all validation checks</span>
+<span class="sd">- BaseRowCheck: Specialized interface for record-level validation operations</span>
+<span class="sd">- BaseAggregateCheck: Specialized interface for dataset-wide validation operations</span>
 
-<span class="sd">All subclasses define the contract for validation logic and standardized reporting.</span>
+<span class="sd">Additionally, the IntegrityCheckMixin enables cross-dataset validation scenarios</span>
+<span class="sd">by providing reference dataset injection and retrieval capabilities.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
@@ -372,24 +376,30 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseCheck</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Abstract base class for data quality checks.</span>
+<span class="sd">    Abstract foundation for all data quality validation checks.</span>
 
-<span class="sd">    Provides shared metadata, parameter introspection, and reporting logic</span>
-<span class="sd">    for both row-level and aggregate-level checks.</span>
+<span class="sd">    Establishes the core contract and shared functionality for data quality validations,</span>
+<span class="sd">    including metadata management, parameter introspection, and standardized reporting.</span>
+<span class="sd">    This class serves as the common ancestor for both row-level and aggregate-level</span>
+<span class="sd">    checks, ensuring consistent behavior and interface across all validation types.</span>
+
+<span class="sd">    The class automatically extracts constructor parameters for reporting purposes</span>
+<span class="sd">    and provides standardized description formatting for debugging and audit trails.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">        severity (Severity): Severity level of the check result (e.g., CRITICAL, WARNING, INFO).</span>
+<span class="sd">        check_id (str): Unique identifier for this check instance within a validation context.</span>
+<span class="sd">        severity (Severity): Classification of check importance determining failure handling behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initializes the base check with a check ID and severity level.</span>
+<span class="sd">        Initialize the base check with essential metadata and configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check.</span>
-<span class="sd">                Defaults to Severity.CRITICAL. Determines how failed checks are categorized.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance. Must be unique within</span>
+<span class="sd">                the validation context to ensure proper result tracking and reporting.</span>
+<span class="sd">            severity (Severity, optional): Classification level determining how check failures</span>
+<span class="sd">                are handled. Defaults to Severity.CRITICAL for blocking behavior.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">severity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span> <span class="o">=</span> <span class="n">check_id</span>
@@ -397,21 +407,25 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the name of the check class.</span>
+<span class="sd">        Retrieve the canonical name of this check implementation.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Check class name.</span>
+<span class="sd">            str: The class name of this check, used for identification and reporting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extracts check parameters from constructor arguments and instance attributes.</span>
+<span class="sd">        Extract configuration parameters from the check instance for reporting purposes.</span>
 
-<span class="sd">        Used for consistent reporting, logging, and debugging.</span>
+<span class="sd">        Performs introspection on the constructor signature to identify and collect</span>
+<span class="sd">        all configuration parameters, excluding internal framework attributes. This</span>
+<span class="sd">        enables consistent parameter reporting across all check implementations</span>
+<span class="sd">        without requiring manual maintenance of parameter lists.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict[str, Any]: Mapping of parameter names to their current values.</span>
+<span class="sd">            dict[str, Any]: Configuration parameters with their current values, suitable</span>
+<span class="sd">                for serialization and audit logging.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ignore_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;check_id&quot;</span><span class="p">]</span>
         <span class="n">init_signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
@@ -425,10 +439,15 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a standardized description of the check.</span>
+<span class="sd">        Generate a comprehensive description of this check instance.</span>
+
+<span class="sd">        Produces a standardized metadata structure containing all essential information</span>
+<span class="sd">        about the check configuration, suitable for serialization, logging, and</span>
+<span class="sd">        audit trail generation.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict[str, Any]: Check metadata including name, ID, severity, and parameters.</span>
+<span class="sd">            dict[str, Any]: Complete check metadata including implementation details,</span>
+<span class="sd">                configuration parameters, and execution context.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;check&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -445,10 +464,16 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseRowCheck">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseRowCheck</span><span class="p">(</span><span class="n">BaseCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Abstract base class for row-level data quality checks.</span>
+<span class="sd">    Abstract foundation for record-level data quality validation checks.</span>
 
-<span class="sd">    Row-level checks operate on individual records and identify invalid rows directly</span>
-<span class="sd">    within the dataset. Subclasses must implement the `validate()` method.</span>
+<span class="sd">    Defines the interface for checks that evaluate individual records within a dataset,</span>
+<span class="sd">    enabling fine-grained validation at the row level. These checks typically append</span>
+<span class="sd">    boolean result columns to the input DataFrame, marking each record as valid or</span>
+<span class="sd">    invalid based on the implemented validation logic.</span>
+
+<span class="sd">    Row-level checks are particularly effective for identifying specific problematic</span>
+<span class="sd">    records, enabling downstream filtering, correction, or detailed error reporting</span>
+<span class="sd">    on a per-record basis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseRowCheck.validate">
@@ -456,13 +481,18 @@ document.write(`
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Applies the check to the input DataFrame.</span>
+<span class="sd">        Execute the validation logic against the provided dataset.</span>
+
+<span class="sd">        Implementations must apply their specific validation rules to the input DataFrame</span>
+<span class="sd">        and return an augmented version containing validation results. The returned</span>
+<span class="sd">        DataFrame should preserve all original data while adding validation markers.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): Input dataset to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate against this check&#39;s criteria.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: DataFrame with additional markers or columns indicating validation failures.</span>
+<span class="sd">            DataFrame: Enhanced dataset containing original data plus validation results,</span>
+<span class="sd">                typically as additional boolean columns indicating pass/fail status per record.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
@@ -471,17 +501,20 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseRowCheck.with_check_result_column">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">with_check_result_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds the check result as a new column to the DataFrame.</span>
+<span class="sd">        Augment the DataFrame with a validation result column.</span>
 
-<span class="sd">        The result column will be named according to the check ID and contain the boolean evaluation</span>
-<span class="sd">        for each row.</span>
+<span class="sd">        Appends a boolean column containing the validation outcome for each record,</span>
+<span class="sd">        using the check&#39;s unique identifier as the column name. This standardized</span>
+<span class="sd">        approach ensures consistent result formatting across all row-level checks.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The input Spark DataFrame.</span>
-<span class="sd">            condition (Column): The boolean Spark expression representing pass/fail per row.</span>
+<span class="sd">            df (DataFrame): The dataset to augment with validation results.</span>
+<span class="sd">            condition (Column): Boolean Spark expression evaluating to True for failed</span>
+<span class="sd">                records and False for valid records.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: The original DataFrame extended with the check result column.</span>
+<span class="sd">            DataFrame: Original dataset enhanced with a named boolean column indicating</span>
+<span class="sd">                validation status for each record.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 </div>
@@ -492,24 +525,33 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseAggregateCheck">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseAggregateCheck</span><span class="p">(</span><span class="n">BaseCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Abstract base class for aggregate-level data quality checks.</span>
+<span class="sd">    Abstract foundation for dataset-level data quality validation checks.</span>
 
-<span class="sd">    Aggregate checks evaluate entire datasets and typically calculate metrics,</span>
-<span class="sd">    apply thresholds, or return dataset-level validation results.</span>
+<span class="sd">    Defines the interface for checks that evaluate global properties of entire datasets,</span>
+<span class="sd">    such as row counts, statistical distributions, or cross-dataset relationships.</span>
+<span class="sd">    These checks produce single validation outcomes per dataset along with detailed</span>
+<span class="sd">    metrics explaining the validation results.</span>
 
-<span class="sd">    Subclasses must implement the `_evaluate_logic()` method.</span>
+<span class="sd">    Aggregate checks are essential for validating dataset-wide constraints and</span>
+<span class="sd">    business rules that cannot be evaluated at the individual record level.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the core logic for evaluating the check.</span>
+<span class="sd">        Implement the core validation logic for this aggregate check.</span>
+
+<span class="sd">        Contains the specific business logic and computational operations required</span>
+<span class="sd">        to evaluate the dataset against this check&#39;s criteria. Implementations</span>
+<span class="sd">        should perform necessary calculations and return both the validation</span>
+<span class="sd">        outcome and supporting metrics.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The input dataset to analyze.</span>
+<span class="sd">            df (DataFrame): The dataset to evaluate against this check&#39;s criteria.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateEvaluationResult: The result of the check evaluation.</span>
+<span class="sd">            AggregateEvaluationResult: Validation outcome including pass/fail status</span>
+<span class="sd">                and detailed metrics explaining the evaluation results.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 
@@ -517,16 +559,19 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseAggregateCheck.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateCheckResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluates the check and returns a structured result with metadata.</span>
+<span class="sd">        Execute the check and produce a comprehensive result with full metadata.</span>
 
-<span class="sd">        This method serves as the standard entry point for executing aggregate-level checks.</span>
-<span class="sd">        It delegates to `_evaluate_logic()` and wraps the outcome in an `AggregateCheckResult`.</span>
+<span class="sd">        Serves as the primary interface for aggregate check execution, orchestrating</span>
+<span class="sd">        the validation logic and enriching the results with complete metadata for</span>
+<span class="sd">        reporting and audit purposes. This method ensures consistent result formatting</span>
+<span class="sd">        across all aggregate check implementations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The dataset to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate against this check&#39;s criteria.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateCheckResult: The complete check result including metadata and evaluation outcome.</span>
+<span class="sd">            AggregateCheckResult: Complete validation result including check metadata,</span>
+<span class="sd">                configuration parameters, and detailed evaluation outcomes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_logic</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AggregateCheckResult</span><span class="p">(</span>
@@ -548,17 +593,20 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IntegrityCheckMixin</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A mixin that enables data quality checks to perform integrity validations</span>
-<span class="sd">    involving external reference datasets.</span>
+<span class="sd">    Mixin enabling cross-dataset integrity validation capabilities.</span>
 
-<span class="sd">    This mixin is intended for checks that compare the primary dataset with one</span>
-<span class="sd">    or more external datasets (e.g., foreign key validation, cross-dataset consistency).</span>
-<span class="sd">    It allows reference datasets to be injected once and retrieved by name during check execution.</span>
+<span class="sd">    Provides infrastructure for checks that require validation against external</span>
+<span class="sd">    reference datasets, such as foreign key constraints, referential integrity,</span>
+<span class="sd">    or cross-dataset consistency validations. The mixin handles reference dataset</span>
+<span class="sd">    lifecycle management, including injection, storage, and retrieval operations.</span>
+
+<span class="sd">    This design enables complex validation scenarios while maintaining clean</span>
+<span class="sd">    separation between the validation logic and reference data management,</span>
+<span class="sd">    supporting both simple lookups and complex multi-dataset relationships.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        _reference_datasets (ReferenceDatasetDict):</span>
-<span class="sd">            A dictionary that maps string identifiers (reference names) to Spark DataFrames</span>
-<span class="sd">            containing the corresponding reference data.</span>
+<span class="sd">        _reference_datasets (ReferenceDatasetDict): Internal registry mapping</span>
+<span class="sd">            reference dataset names to their corresponding Spark DataFrames.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_reference_datasets</span><span class="p">:</span> <span class="n">ReferenceDatasetDict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -567,13 +615,16 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin.inject_reference_datasets">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inject_reference_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasets</span><span class="p">:</span> <span class="n">ReferenceDatasetDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stores the given reference datasets for use during check execution.</span>
+<span class="sd">        Register reference datasets for use during validation execution.</span>
 
-<span class="sd">        This method is typically called by the validation engine before the check&#39;s `run(...)`</span>
-<span class="sd">        method is invoked. It allows checks to access any required external datasets by name.</span>
+<span class="sd">        Establishes the reference dataset registry that will be available during</span>
+<span class="sd">        check execution. This method is typically invoked by the validation engine</span>
+<span class="sd">        as part of the check preparation phase, ensuring all required reference</span>
+<span class="sd">        data is accessible when validation logic executes.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            datasets (ReferenceDatasetDict): A mapping from reference names to Spark DataFrames.</span>
+<span class="sd">            datasets (ReferenceDatasetDict): Registry mapping reference dataset</span>
+<span class="sd">                identifiers to their corresponding Spark DataFrames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reference_datasets</span> <span class="o">=</span> <span class="n">datasets</span></div>
 
@@ -582,19 +633,21 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.IntegrityCheckMixin.get_reference_df">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_reference_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a reference DataFrame by its assigned name.</span>
+<span class="sd">        Retrieve a reference dataset by its registered identifier.</span>
 
-<span class="sd">        This method is used by checks during execution to access the appropriate</span>
-<span class="sd">        reference dataset that was previously injected.</span>
+<span class="sd">        Provides access to previously injected reference datasets during check</span>
+<span class="sd">        execution. This method ensures type-safe access to reference data while</span>
+<span class="sd">        providing clear error handling for missing or misconfigured references.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): The name of the reference dataset to retrieve.</span>
+<span class="sd">            name (str): The identifier of the reference dataset to retrieve.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: The corresponding Spark DataFrame for the given name.</span>
+<span class="sd">            DataFrame: The Spark DataFrame associated with the specified identifier.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingReferenceDatasetError: If no dataset with the given name has been injected.</span>
+<span class="sd">            MissingReferenceDatasetError: When the requested reference dataset</span>
+<span class="sd">                identifier is not found in the current registry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference_datasets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>

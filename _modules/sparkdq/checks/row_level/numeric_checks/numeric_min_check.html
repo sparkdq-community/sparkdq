@@ -357,10 +357,15 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericMinCheck</span><span class="p">(</span><span class="n">BaseMinCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that numeric values in the specified columns</span>
-<span class="sd">    are greater than or equal to a defined minimum threshold.</span>
+<span class="sd">    Record-level validation check that enforces minimum numeric thresholds.</span>
 
-<span class="sd">    A row fails the check if **any** of the target columns contain a value below `min_value`.</span>
+<span class="sd">    Validates that numeric values in specified columns meet or exceed a configured</span>
+<span class="sd">    minimum threshold. This check is essential for enforcing business rules such</span>
+<span class="sd">    as minimum order amounts, positive balance requirements, or acceptable</span>
+<span class="sd">    measurement ranges in data quality validation scenarios.</span>
+
+<span class="sd">    The check supports both inclusive and exclusive boundary semantics, enabling</span>
+<span class="sd">    precise control over numeric validation requirements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span>  <span class="c1"># implemented via BaseMinCheck</span>
@@ -371,12 +376,16 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;numeric-min-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericMinCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NumericMinCheck.</span>
+<span class="sd">    Configuration schema for minimum numeric threshold validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that enforce minimum</span>
+<span class="sd">    numeric boundaries. This configuration enables declarative check definition</span>
+<span class="sd">    through external configuration sources while ensuring parameter validity.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The list of numeric columns to validate.</span>
-<span class="sd">        min_value (float): The minimum allowed value (inclusive).</span>
-<span class="sd">        inclusive (bool): Whether to include the minimum value.</span>
+<span class="sd">        columns (List[str]): Numeric column names that must meet minimum threshold requirements.</span>
+<span class="sd">        min_value (float | int | Decimal): Minimum acceptable numeric value for validation.</span>
+<span class="sd">        inclusive (bool): Whether the minimum threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">NumericMinCheck</span>

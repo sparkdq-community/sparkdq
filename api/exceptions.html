@@ -399,109 +399,97 @@ document.write(`
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CheckConfigurationError</span></span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#CheckConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Base class for all configuration-related errors in data quality checks.</p>
-<p>Raised when a check’s definition or setup is invalid and cannot be used
-to construct or apply the check logic, regardless of the actual dataset.</p>
+<p>Base exception for static configuration validation errors.</p>
+<p>Represents configuration issues that can be detected during check definition
+or setup, independent of any specific dataset. These errors indicate
+fundamental problems with check parameters, logical inconsistencies, or
+missing required configuration elements.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidCheckConfigurationError</span></span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#InvalidCheckConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckConfigurationError</span></code></p>
-<p>Raised when a check’s configuration is logically invalid.</p>
-<p>Examples include setting a minimum value greater than the maximum, or
-supplying conflicting or incomplete configuration parameters.</p>
-<p>In most cases, this error is raised during static validation of a config object.</p>
+<p>Exception raised for logically inconsistent check configurations.</p>
+<p>Represents configuration errors where individual parameters are valid but
+their combination creates logical contradictions or impossible conditions.
+These errors are typically detected during static configuration validation
+before any data processing begins.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSQLExpressionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#InvalidSQLExpressionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
-<p>Raised when a SQL expression is syntactically or semantically invalid.</p>
-<p>This error indicates that the provided SQL expression cannot be parsed
-or executed by PySpark, typically due to syntax errors, invalid function
-calls, or other structural issues that prevent the expression from being
-evaluated.</p>
-<dl class="simple">
-<dt>Examples include:</dt><dd><ul class="simple">
-<li><p>Malformed syntax: “age + “</p></li>
-<li><p>Unbalanced parentheses: “upper(name”</p></li>
-<li><p>Invalid function calls: “invalid_function(column)”</p></li>
-<li><p>Dangerous operations: “DROP TABLE users”</p></li>
-</ul>
-</dd>
-</dl>
-<p>This exception is used to ensure consistent error handling for SQL
-expression validation in data quality checks.</p>
+<p>Exception raised for invalid or unsafe SQL expressions in check configurations.</p>
+<p>Indicates that a SQL expression provided to a check cannot be parsed or
+executed safely by PySpark, either due to syntax errors, semantic issues,
+or security concerns. This validation prevents potentially dangerous or
+malformed expressions from being executed against datasets.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSeverityLevelError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#InvalidSeverityLevelError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckConfigurationError</span></code></p>
-<p>Raised when a provided severity level is not recognized by the framework.</p>
-<p>This error typically occurs when parsing string-based severity inputs
-(e.g. from JSON or YAML configuration files) that do not match the allowed
-levels defined in the <cite>Severity</cite> enum.</p>
-<dl class="simple">
-<dt>Examples include:</dt><dd><ul class="simple">
-<li><p>normalize_severity(“fatal”)</p></li>
-<li><p>loading a config with severity=”urgent”</p></li>
-</ul>
-</dd>
-</dl>
-<p>This exception is used to ensure consistent error handling and reporting
-for configuration-related issues.</p>
+<p>Exception raised for unrecognized severity level specifications.</p>
+<p>Indicates that a severity value provided through configuration sources
+does not match any of the defined severity levels in the framework.
+This error ensures that only valid severity classifications are accepted,
+maintaining consistency in failure handling behavior.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MissingCheckSetError</span></span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#MissingCheckSetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
-<p>Raised when a data quality engine is executed without an assigned CheckSet.</p>
-<p>This error indicates that the engine was not properly configured before use.
-Users must assign a CheckSet instance via <cite>engine.set_check_set(…)</cite>
-prior to calling any validation methods like <cite>run_batch</cite>.</p>
-<p>This is typically a programming error and should be caught early in testing.</p>
+<p>Exception raised when attempting to execute validation without configured checks.</p>
+<p>Indicates that the validation engine was invoked without a properly assigned
+CheckSet, representing a programming error in the validation setup sequence.
+This error prevents execution attempts on improperly initialized engines.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MissingCheckTypeError</span></span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#MissingCheckTypeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckConfigurationError</span></code></p>
-<p>Raised when a configuration dictionary is missing the required ‘check’ field.</p>
-<p>This field is mandatory for the framework to identify which check type
-should be instantiated via the CheckFactory.</p>
-<p>This exception is typically raised during early parsing or validation
-of configuration sources (e.g. JSON, YAML).</p>
+<p>Exception raised when check configuration lacks the required type identifier.</p>
+<p>Indicates that a configuration dictionary is missing the mandatory ‘check’
+field that specifies which check implementation should be instantiated.
+This error prevents the CheckFactory from resolving the appropriate
+check type during configuration processing.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MissingColumnError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#MissingColumnError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
-<p>Raised when a required column is not present in the DataFrame at runtime.</p>
-<p>This typically indicates a misconfiguration in the check setup, where a
-column was referenced that does not exist in the current dataset.</p>
+<p>Exception raised when a check references a non-existent column.</p>
+<p>Indicates a mismatch between the check configuration and the actual dataset
+schema, where the check expects a column that is not present in the target
+DataFrame. This typically suggests either incorrect check configuration or
+unexpected changes in the data schema.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MissingReferenceDatasetError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#MissingReferenceDatasetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeCheckConfigurationError</span></code></p>
-<p>Raised when a requested reference dataset is not available
-in the current validation context.</p>
+<p>Exception raised when a check requests an unavailable reference dataset.</p>
+<p>Indicates that a check requiring external reference data cannot locate
+the specified dataset in the current validation context, suggesting
+either missing reference data injection or incorrect dataset naming.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RuntimeCheckConfigurationError</span></span><a class="reference internal" href="../_modules/sparkdq/exceptions.html#RuntimeCheckConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Base class for runtime configuration errors in data quality checks.</p>
-<p>Raised when a check fails due to a configuration issue that can only
-be detected when the check is executed against actual data, such as
-referencing a non-existent column.</p>
+<p>Base exception for configuration errors detected during check execution.</p>
+<p>Represents configuration issues that can only be identified when checks
+are applied to actual datasets, such as column references that don’t exist
+in the target data or invalid data type assumptions. These errors indicate
+mismatches between check configuration and runtime data characteristics.</p>
 </dd></dl>
 
 </section>

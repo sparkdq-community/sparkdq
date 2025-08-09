@@ -358,11 +358,16 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericBetweenCheck</span><span class="p">(</span><span class="n">BaseBetweenCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that numeric values in the specified columns</span>
-<span class="sd">    lie between a defined minimum (`min_value`) and maximum (`max_value`) threshold.</span>
+<span class="sd">    Record-level validation check that enforces numeric range boundaries.</span>
 
-<span class="sd">    A row fails the check if **any** of the target columns contain a value below `min_value`</span>
-<span class="sd">    or above `max_value`.</span>
+<span class="sd">    Validates that numeric values in specified columns fall within a configured</span>
+<span class="sd">    numeric range, ensuring data integrity and business rule compliance. This</span>
+<span class="sd">    check is essential for validating acceptable measurement ranges, financial</span>
+<span class="sd">    limits, or operational parameters in data quality validation scenarios.</span>
+
+<span class="sd">    The check supports independent inclusivity control for both minimum and</span>
+<span class="sd">    maximum boundaries, enabling precise validation criteria for complex</span>
+<span class="sd">    numeric business requirements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span>  <span class="c1"># Fully handled by BaseBetweenCheck</span>
@@ -373,17 +378,21 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;numeric-between-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericBetweenCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NumericBetweenCheck.</span>
+<span class="sd">    Configuration schema for numeric range validation checks.</span>
 
-<span class="sd">    This configuration defines both a lower and upper bound constraint on one or more numeric columns.</span>
-<span class="sd">    It ensures that all specified columns contain only values between the configured `min_value`</span>
-<span class="sd">    and `max_value`. Violations are flagged per row.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce numeric range constraints. The configuration includes logical</span>
+<span class="sd">    validation to ensure boundary parameters are consistent and meaningful.</span>
+
+<span class="sd">    This configuration enables declarative check definition through external</span>
+<span class="sd">    configuration sources while ensuring parameter validity at configuration time.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The list of numeric columns to validate.</span>
-<span class="sd">        min_value (float | int | Decimal): The minimum allowed value (inclusive).</span>
-<span class="sd">        max_value (float | int | Decimal): The maximum allowed value (inclusive).</span>
-<span class="sd">        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.</span>
+<span class="sd">        columns (List[str]): Numeric column names that must fall within the specified range.</span>
+<span class="sd">        min_value (float | int | Decimal): Minimum acceptable numeric value for the valid range.</span>
+<span class="sd">        max_value (float | int | Decimal): Maximum acceptable numeric value for the valid range.</span>
+<span class="sd">        inclusive (tuple[bool, bool]): Inclusivity settings for minimum and maximum</span>
+<span class="sd">            boundaries respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">NumericBetweenCheck</span>
@@ -404,14 +413,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_between_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NumericBetweenCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validates that ``min_value`` and ``max_value`` are properly configured</span>
-<span class="sd">        and that ``min_value`` is not greater than ``max_value``.</span>
+<span class="sd">        Validate the logical consistency of the configured numeric range parameters.</span>
+
+<span class="sd">        Ensures that the minimum and maximum numeric parameters form a valid range</span>
+<span class="sd">        and that both values are properly ordered. This validation prevents</span>
+<span class="sd">        configuration errors that would result in impossible validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            NumericBetweenCheckConfig: The validated configuration object.</span>
+<span class="sd">            NumericBetweenCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If min_value or max_value are not set or if min_value &gt; max_value.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the numeric range parameters are</span>
+<span class="sd">                logically inconsistent or contain invalid values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_value</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span>

@@ -357,14 +357,15 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DateMaxCheck</span><span class="p">(</span><span class="n">BaseMaxCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies date values are below a defined maximum date.</span>
+<span class="sd">    Record-level validation check that enforces maximum date boundaries.</span>
 
-<span class="sd">    A row fails if any of the target columns contains a date after (or equal to, depending on `inclusive`)</span>
-<span class="sd">    `max_value`.</span>
+<span class="sd">    Validates that date values in specified columns remain within or before a</span>
+<span class="sd">    configured maximum date threshold. This check is essential for preventing</span>
+<span class="sd">    future date entries, enforcing reporting period boundaries, and maintaining</span>
+<span class="sd">    temporal data integrity across business processes.</span>
 
-<span class="sd">    Example use cases:</span>
-<span class="sd">        - Ensure that no future dates are recorded.</span>
-<span class="sd">        - Validate that invoice dates do not exceed the end of the reporting period.</span>
+<span class="sd">    The check supports both inclusive and exclusive boundary semantics, enabling</span>
+<span class="sd">    precise control over date validation requirements for different business contexts.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -376,14 +377,15 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new DateMaxCheck.</span>
+<span class="sd">        Initialize the maximum date validation check with boundary configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            columns (List[str]): List of date columns to check.</span>
-<span class="sd">            max_value (str): The maximum allowed date (inclusive), in &#39;YYYY-MM-DD&#39; format.</span>
-<span class="sd">            inclusive (bool): Whether the maximum date is inclusive.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            columns (List[str]): Date column names that must remain within the maximum threshold.</span>
+<span class="sd">            max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">            inclusive (bool): Whether the maximum date threshold includes the boundary</span>
+<span class="sd">                date itself for validation purposes.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -401,12 +403,16 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;date-max-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DateMaxCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for DateMaxCheck.</span>
+<span class="sd">    Configuration schema for maximum date validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that enforce maximum</span>
+<span class="sd">    date boundaries. This configuration enables declarative check definition</span>
+<span class="sd">    through external configuration sources while ensuring parameter validity.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): Date columns to validate.</span>
-<span class="sd">        max_value (str): The maximum allowed date in ISO format.</span>
-<span class="sd">        inclusive (bool): Whether to include the maximum date.</span>
+<span class="sd">        columns (List[str]): Date column names that must remain within the maximum threshold.</span>
+<span class="sd">        max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">        inclusive (bool): Whether the maximum date threshold includes the boundary date itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">DateMaxCheck</span>

@@ -346,16 +346,18 @@ document.write(`
                   
   <h1>Source code for sparkdq.core.base_config</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Defines the base classes for check configurations within the sparkdq framework.</span>
+<span class="sd">Base configuration classes for declarative data quality check definitions.</span>
 
-<span class="sd">Check configurations are Pydantic-based and enable:</span>
+<span class="sd">This module provides the foundational infrastructure for defining data quality checks</span>
+<span class="sd">through configuration objects rather than direct instantiation. The Pydantic-based</span>
+<span class="sd">approach enables robust parameter validation, serialization support, and seamless</span>
+<span class="sd">integration with external configuration sources such as JSON, YAML, or database records.</span>
 
-<span class="sd">- Declarative check definitions (e.g., via JSON or YAML).</span>
-<span class="sd">- Runtime validation of check parameters.</span>
-<span class="sd">- Factory-based instantiation of concrete check classes.</span>
-
-<span class="sd">Each specific check must provide its own configuration class by subclassing</span>
-<span class="sd">either `BaseRowCheckConfig` or `BaseAggregateCheckConfig`.</span>
+<span class="sd">The configuration system supports both programmatic and declarative workflows,</span>
+<span class="sd">allowing teams to define validation rules in configuration files while maintaining</span>
+<span class="sd">type safety and parameter validation. Each configuration class encapsulates the</span>
+<span class="sd">parameters required for its corresponding check implementation and provides</span>
+<span class="sd">factory methods for instantiation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span>
@@ -369,16 +371,22 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseCheckConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for check configurations.</span>
+<span class="sd">    Abstract foundation for all data quality check configurations.</span>
 
-<span class="sd">    This class defines the interface for converting a configuration object</span>
-<span class="sd">    into a concrete check instance. Subclasses specify the parameters required</span>
-<span class="sd">    for their corresponding checks and the associated check class.</span>
+<span class="sd">    Establishes the core contract for configuration-driven check instantiation,</span>
+<span class="sd">    providing standardized parameter validation and factory methods. This class</span>
+<span class="sd">    enables declarative check definitions while ensuring type safety and proper</span>
+<span class="sd">    parameter validation through Pydantic&#39;s validation framework.</span>
+
+<span class="sd">    The configuration approach decouples check definition from implementation,</span>
+<span class="sd">    enabling flexible deployment scenarios where validation rules can be</span>
+<span class="sd">    externally managed and dynamically loaded.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        check_class (ClassVar[Type[BaseCheck]]): The concrete check class to instantiate.</span>
-<span class="sd">        check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">        severity (Severity): Severity level used when the check fails.</span>
+<span class="sd">        check_class (ClassVar[Type[BaseCheck]]): The concrete check implementation</span>
+<span class="sd">            that this configuration will instantiate.</span>
+<span class="sd">        check_id (str): Unique identifier for the check instance within the validation context.</span>
+<span class="sd">        severity (Severity): Classification level determining failure handling behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseCheck</span><span class="p">]]</span>
@@ -391,22 +399,29 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the parameters required to instantiate the corresponding check.</span>
+<span class="sd">        Extract configuration parameters for check instantiation.</span>
 
-<span class="sd">        Meta-fields like &#39;check&#39; are excluded from the result.</span>
+<span class="sd">        Produces a clean parameter dictionary suitable for passing to the check</span>
+<span class="sd">        constructor, automatically excluding framework-internal fields that are</span>
+<span class="sd">        not part of the check&#39;s interface.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: Parameter names and values for check instantiation.</span>
+<span class="sd">            Dict[str, Any]: Configuration parameters ready for check instantiation,</span>
+<span class="sd">                with framework metadata filtered out.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check&quot;</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">params</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">to_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseCheck</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Instantiates the configured check.</span>
+<span class="sd">        Create a check instance from this configuration.</span>
+
+<span class="sd">        Applies the factory pattern to instantiate the appropriate check class</span>
+<span class="sd">        with the validated configuration parameters, ensuring type safety and</span>
+<span class="sd">        proper initialization.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BaseCheck: The instantiated check object.</span>
+<span class="sd">            BaseCheck: Fully configured and validated check instance ready for execution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
 
@@ -415,19 +430,28 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseRowCheckConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseRowCheckConfig</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">BaseCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for row-level check configurations.</span>
+<span class="sd">    Abstract configuration foundation for record-level data quality checks.</span>
 
-<span class="sd">    Row checks operate on individual records and typically require parameters</span>
-<span class="sd">    such as column names. Subclasses must define a `check_class` that inherits</span>
-<span class="sd">    from `BaseRowCheck`.</span>
+<span class="sd">    Specializes the base configuration interface for checks that operate on individual</span>
+<span class="sd">    records within a dataset. This class enforces that subclasses are properly</span>
+<span class="sd">    associated with row-level check implementations and provides the appropriate</span>
+<span class="sd">    validation and instantiation logic.</span>
+
+<span class="sd">    Row-level configurations typically include parameters such as column specifications,</span>
+<span class="sd">    validation thresholds, and record-specific business rules.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TypeError: If `check_class` is missing or not a subclass of `BaseRowCheck`.</span>
+<span class="sd">        TypeError: When the subclass fails to define a valid check_class or associates</span>
+<span class="sd">            with a non-row-level check implementation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validates that the subclass defines a compatible `check_class`.</span>
+<span class="sd">        Enforce proper check class association during subclass definition.</span>
+
+<span class="sd">        Validates that the configuration subclass correctly associates with a</span>
+<span class="sd">        row-level check implementation, preventing runtime errors and ensuring</span>
+<span class="sd">        type safety across the configuration system.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;check_class&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">check_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -441,19 +465,28 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.BaseAggregateCheckConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseAggregateCheckConfig</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">BaseCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for aggregate-level check configurations.</span>
+<span class="sd">    Abstract configuration foundation for dataset-level data quality checks.</span>
 
-<span class="sd">    Aggregate checks evaluate global dataset properties, such as row counts</span>
-<span class="sd">    or min/max thresholds. Subclasses must define a `check_class` that inherits</span>
-<span class="sd">    from `BaseAggregateCheck`.</span>
+<span class="sd">    Specializes the base configuration interface for checks that evaluate global</span>
+<span class="sd">    properties of entire datasets. This class enforces proper association with</span>
+<span class="sd">    aggregate-level check implementations and provides appropriate validation</span>
+<span class="sd">    and instantiation capabilities.</span>
+
+<span class="sd">    Aggregate-level configurations typically include parameters such as statistical</span>
+<span class="sd">    thresholds, count boundaries, and dataset-wide business rules.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TypeError: If `check_class` is missing or not a subclass of `BaseAggregateCheck`.</span>
+<span class="sd">        TypeError: When the subclass fails to define a valid check_class or associates</span>
+<span class="sd">            with a non-aggregate-level check implementation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validates that the subclass defines a compatible `check_class`.</span>
+<span class="sd">        Enforce proper check class association during subclass definition.</span>
+
+<span class="sd">        Validates that the configuration subclass correctly associates with an</span>
+<span class="sd">        aggregate-level check implementation, preventing runtime errors and</span>
+<span class="sd">        ensuring type safety across the configuration system.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;check_class&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">check_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

@@ -358,23 +358,28 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountExactCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aggregate-level data quality check that ensures a DataFrame contains exactly a specified number of rows.</span>
+<span class="sd">    Dataset-level validation check that enforces exact row count requirements.</span>
 
-<span class="sd">    This check is useful for strict data contract validations where the row count must match a known value,</span>
-<span class="sd">    such as reference datasets, test snapshots, or controlled static inputs.</span>
+<span class="sd">    Validates that the total number of records in a dataset matches a precise</span>
+<span class="sd">    expected count, ensuring strict data contract compliance. This check is</span>
+<span class="sd">    essential for validating reference datasets, controlled test data, or</span>
+<span class="sd">    scenarios where exact record counts are critical for downstream processing.</span>
+
+<span class="sd">    The check provides comprehensive metrics comparing actual counts to expected</span>
+<span class="sd">    values to support detailed analysis of validation outcomes.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        expected_count (int): The exact number of rows expected.</span>
+<span class="sd">        expected_count (int): Exact number of records required in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new RowCountExactCheck instance.</span>
+<span class="sd">        Initialize the exact row count validation check with target count configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            expected_count (int): The required number of rows.</span>
-<span class="sd">            severity (Severity, optional): The severity level to assign if the check fails.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            expected_count (int): Exact number of records required in the dataset.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -382,17 +387,18 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the row count of the given DataFrame against the exact expected count.</span>
+<span class="sd">        Execute the exact row count validation against the configured target count.</span>
 
-<span class="sd">        If the row count equals `expected_count`, the check passes.</span>
-<span class="sd">        Otherwise, it fails and the actual count is included in the result metrics.</span>
+<span class="sd">        Computes the total row count of the dataset and evaluates it against the</span>
+<span class="sd">        configured expected count. The validation passes only when the actual</span>
+<span class="sd">        count exactly matches the expected value.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The Spark DataFrame to evaluate.</span>
+<span class="sd">            df (DataFrame): The dataset to evaluate for exact count compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateEvaluationResult: An object indicating the outcome of the check,</span>
-<span class="sd">            including relevant row count metrics.</span>
+<span class="sd">            AggregateEvaluationResult: Validation outcome including pass/fail status</span>
+<span class="sd">                and comprehensive metrics comparing actual count to expected value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">actual</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
         <span class="n">passed</span> <span class="o">=</span> <span class="n">actual</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_count</span>
@@ -410,13 +416,14 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;row-count-exact-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountExactCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the RowCountExactCheck.</span>
+<span class="sd">    Configuration schema for exact row count validation checks.</span>
 
-<span class="sd">    This configuration defines an exact row count requirement for a dataset. It ensures that the</span>
-<span class="sd">    ``expected_count`` parameter is provided and is non-negative.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce precise row count requirements. The configuration includes logical</span>
+<span class="sd">    validation to ensure count parameters are non-negative and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        expected_count (int): The exact number of rows expected in the dataset.</span>
+<span class="sd">        expected_count (int): Exact number of records required in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">RowCountExactCheck</span>
@@ -427,13 +434,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RowCountExactCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate that the configured expected_count is greater than 0.</span>
+<span class="sd">        Validate the logical consistency of the configured expected count parameter.</span>
+
+<span class="sd">        Ensures that the expected count parameter is non-negative and meaningful</span>
+<span class="sd">        for dataset validation purposes. This validation prevents configuration</span>
+<span class="sd">        errors that would result in impossible validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RowCountExactCheckConfig: The validated configuration object.</span>
+<span class="sd">            RowCountExactCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If ``expected_count`` is negative.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the expected count parameter is</span>
+<span class="sd">                negative, indicating an invalid configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_count</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span>

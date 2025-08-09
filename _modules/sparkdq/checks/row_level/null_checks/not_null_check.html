@@ -360,28 +360,31 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NotNullCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that flags rows where any of the specified columns is *not null*.</span>
+<span class="sd">    Record-level validation check that identifies rows with unexpected non-null values.</span>
 
-<span class="sd">    This check appends a boolean result column to the input DataFrame.</span>
-<span class="sd">    Each row will be marked as a failure (True) if any of the specified columns contain a value.</span>
-<span class="sd">    This is useful in scenarios where columns are expected to remain empty (null) under normal conditions.</span>
+<span class="sd">    Validates that specified columns remain null across all records, flagging any</span>
+<span class="sd">    rows where these columns contain values. This check is particularly useful for</span>
+<span class="sd">    validating optional fields that should remain unset under normal business</span>
+<span class="sd">    conditions or for identifying data quality issues in columns that should be</span>
+<span class="sd">    consistently empty.</span>
 
-<span class="sd">    If any of the target columns do not exist in the input DataFrame, a</span>
-<span class="sd">    `MissingColumnError` is raised at runtime to signal a misconfiguration.</span>
+<span class="sd">    The check performs runtime schema validation to ensure all specified columns</span>
+<span class="sd">    exist in the target dataset, providing clear error messages for configuration</span>
+<span class="sd">    mismatches.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): List of column names to validate for null values (i.e. should remain unset).</span>
+<span class="sd">        columns (List[str]): Column names that should consistently contain null values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a NotNullCheck instance.</span>
+<span class="sd">        Initialize the not-null validation check with target columns and configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance. Used as the</span>
-<span class="sd">                name of the result column in the output DataFrame.</span>
-<span class="sd">            columns (List[str]): List of column names that are expected to be null.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance, used for</span>
+<span class="sd">                result column naming and tracking.</span>
+<span class="sd">            columns (List[str]): Column names that should consistently contain null values.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -389,20 +392,24 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the not-null check on the given DataFrame.</span>
+<span class="sd">        Execute the validation logic against the provided dataset.</span>
 
-<span class="sd">        This method appends a new boolean column (named after `check_id`) that indicates</span>
-<span class="sd">        for each row whether any of the specified columns is *not* null.</span>
+<span class="sd">        Performs schema validation to ensure all target columns exist, then applies</span>
+<span class="sd">        the not-null validation logic to identify records where any specified column</span>
+<span class="sd">        contains a value. The results are appended as a boolean column indicating</span>
+<span class="sd">        validation failures.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The input Spark DataFrame to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate against null value expectations.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: A new DataFrame with an additional boolean column where</span>
-<span class="sd">                `True` indicates a non-null value (i.e. check failed), and `False` means valid.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (unexpected non-null values) and</span>
+<span class="sd">                False indicates compliance with null value requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If any of the specified columns do not exist in the DataFrame.</span>
+<span class="sd">            MissingColumnError: When any specified column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -422,10 +429,14 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;not-null-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NotNullCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NotNullCheck.</span>
+<span class="sd">    Configuration schema for not-null validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that validate columns</span>
+<span class="sd">    expected to remain null. This configuration enables declarative check</span>
+<span class="sd">    definition through external configuration sources.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The names of the columns that should remain null.</span>
+<span class="sd">        columns (List[str]): Column names that should consistently contain null values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">NotNullCheck</span>

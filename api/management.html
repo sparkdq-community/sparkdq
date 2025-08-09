@@ -399,22 +399,29 @@ document.write(`
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CheckSet</span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Manages a collection of data quality checks.</p>
-<p>The CheckSet handles the lifecycle of data quality checks within the framework.
-It converts configurations into concrete check instances, keeps track of all
-registered checks, and provides filtered access to row-level or aggregate-level
-checks.</p>
-<p>This component decouples check definition from check execution.</p>
+<p>Centralized registry and lifecycle manager for data quality checks.</p>
+<p>Orchestrates the complete lifecycle of data quality checks from configuration
+to execution readiness, providing a unified interface for check registration,
+organization, and retrieval. The CheckSet abstracts the complexity of check
+instantiation and type management, enabling clean separation between check
+definition and execution logic.</p>
+<p>This design supports both programmatic and declarative check registration
+patterns while maintaining type safety and providing convenient filtering
+capabilities for different execution contexts.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">add_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseCheckConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CheckSet</span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.add_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Adds a single check from a validated configuration object and returns self for fluent chaining.</p>
+<dd><p>Register a single check from a validated configuration object.</p>
+<p>Instantiates the check from the provided configuration and adds it to
+the internal registry. The fluent interface enables method chaining
+for convenient multi-check registration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>BaseCheckConfig</em>) – The configuration object defining the check.</p>
+<dd class="field-odd"><p><strong>config</strong> (<em>BaseCheckConfig</em>) – Validated configuration object containing
+all parameters required for check instantiation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The current instance with the added check.</p>
+<dd class="field-even"><p>This instance to enable fluent method chaining.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>CheckSet</p>
@@ -425,15 +432,15 @@ checks.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">add_checks_from_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.add_checks_from_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Adds multiple checks from raw configuration dictionaries using the CheckFactory.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <cite>sparkdq.checks</cite> module is imported here to ensure that all available
-checks are registered in the CheckFactory before instantiation.</p>
-</div>
+<dd><p>Register multiple checks from raw configuration dictionaries.</p>
+<p>Processes a collection of configuration dictionaries through the CheckFactory,
+performing validation and instantiation for each check definition. This method
+enables bulk registration from external configuration sources such as JSON,
+YAML, or database records.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>configs</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – A list of configuration dictionaries defining the checks.</p>
+<dd class="field-odd"><p><strong>configs</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – Collection of configuration dictionaries,
+each containing the parameters required for a specific check type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -441,17 +448,26 @@ checks are registered in the CheckFactory before instantiation.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Removes all currently registered checks.</p>
-<p>Useful for resetting the CheckSet between validation runs.</p>
+<dd><p>Remove all registered checks from this CheckSet.</p>
+<p>Clears the internal check registry, returning the CheckSet to its
+initial empty state. This operation is useful for resetting between
+validation runs or when reconfiguring the check collection.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_aggregate_checks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseAggregateCheck</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.get_aggregate_checks"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Returns only the aggregate-level checks.</p>
+<dd><p>Retrieve only the dataset-level validation checks.</p>
+<p>Filters the registered checks to return only those that evaluate
+global dataset properties, enabling targeted execution for
+aggregate-level validation scenarios.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Checks that operate on DataFrame aggregates.</p>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Collection of checks that validate</dt><dd><p>dataset-wide properties and constraints.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[BaseAggregateCheck]</p>
@@ -462,10 +478,14 @@ checks are registered in the CheckFactory before instantiation.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCheck</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.get_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Returns all registered checks.</p>
+<dd><p>Retrieve the complete collection of registered checks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>All checks currently managed by this CheckSet.</p>
+<dd class="field-odd"><p><dl class="simple">
+<dt>All checks currently managed by this CheckSet,</dt><dd><p>regardless of their specific type or implementation.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[BaseCheck]</p>
@@ -476,10 +496,17 @@ checks are registered in the CheckFactory before instantiation.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_row_checks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseRowCheck</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sparkdq/management/check_set.html#CheckSet.get_row_checks"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Returns only the row-level checks.</p>
+<dd><p>Retrieve only the record-level validation checks.</p>
+<p>Filters the registered checks to return only those that operate on
+individual records, enabling targeted execution for row-level
+validation scenarios.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Checks that operate on individual rows.</p>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Collection of checks that validate individual</dt><dd><p>records within the dataset.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[BaseRowCheck]</p>

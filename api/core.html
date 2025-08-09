@@ -399,22 +399,18 @@ document.write(`
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AggregateEvaluationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/check_results.html#AggregateEvaluationResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Encapsulates the outcome of an aggregate-level data quality check.</p>
-<p>This class holds both the result (<cite>passed</cite>) and additional diagnostic <cite>metrics</cite>
-that were computed as part of the check evaluation. These metrics provide context
-for understanding why a check passed or failed, and are especially useful during
-debugging or reporting.</p>
-<p>For example, in a CountMinCheck, the metrics might include:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">actual_count</span></code>: the number of rows actually found</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">expected_min_count</span></code>: the configured minimum count threshold</p></li>
-</ul>
-<p>Such context allows users to understand the degree of deviation from expectations
-when a check fails.</p>
+<p>Immutable container for aggregate-level data quality check evaluation outcomes.</p>
+<p>Encapsulates both the binary validation result and the supporting metrics that
+explain the evaluation process. The metrics provide essential context for
+understanding validation outcomes, enabling detailed debugging and comprehensive
+reporting of data quality assessment results.</p>
+<p>The separation of validation outcome from supporting metrics enables flexible
+consumption patterns while ensuring complete traceability of the evaluation
+process and its underlying calculations.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">passed</span></span></dt>
-<dd><p>Indicates whether the check condition was satisfied.</p>
+<dd><p>Binary indicator of whether the validation criteria were satisfied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -425,9 +421,9 @@ when a check fails.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">metrics</span></span></dt>
-<dd><p>Additional computed values or diagnostic information
-relevant to the check (e.g., actual vs. expected counts, computed averages,
-standard deviations, etc.).</p>
+<dd><p>Comprehensive diagnostic information including
+computed values, thresholds, and contextual data that explain the
+validation outcome.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[str, Any]</p>
@@ -435,27 +431,19 @@ standard deviations, etc.).</p>
 </dl>
 </dd></dl>
 
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">AggregateEvaluationResult</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">... </span>        <span class="s2">&quot;actual_count&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;expected_min_count&quot;</span><span class="p">:</span> <span class="mi">100</span>
-<span class="gp">... </span>    <span class="p">}</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">passed</span>
-<span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;actual_count&quot;</span><span class="p">]</span>
-<span class="go">42</span>
-</pre></div>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sparkdq/core/check_results.html#AggregateEvaluationResult.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Serializes the evaluation result to a dictionary.</p>
+<dd><p>Convert the evaluation result to a serializable dictionary format.</p>
+<p>Produces a clean dictionary representation suitable for JSON serialization,
+logging, or integration with external reporting systems.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dictionary representation of the evaluation result.</p>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Complete evaluation result in dictionary format,</dt><dd><p>preserving all validation outcomes and diagnostic metrics.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dict[str, Any]</p>
@@ -469,22 +457,31 @@ standard deviations, etc.).</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseAggregateCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#BaseAggregateCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheck</span></code></p>
-<p>Abstract base class for aggregate-level data quality checks.</p>
-<p>Aggregate checks evaluate entire datasets and typically calculate metrics,
-apply thresholds, or return dataset-level validation results.</p>
-<p>Subclasses must implement the <cite>_evaluate_logic()</cite> method.</p>
+<p>Abstract foundation for dataset-level data quality validation checks.</p>
+<p>Defines the interface for checks that evaluate global properties of entire datasets,
+such as row counts, statistical distributions, or cross-dataset relationships.
+These checks produce single validation outcomes per dataset along with detailed
+metrics explaining the validation results.</p>
+<p>Aggregate checks are essential for validating dataset-wide constraints and
+business rules that cannot be evaluated at the individual record level.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AggregateCheckResult</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#BaseAggregateCheck.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Evaluates the check and returns a structured result with metadata.</p>
-<p>This method serves as the standard entry point for executing aggregate-level checks.
-It delegates to <cite>_evaluate_logic()</cite> and wraps the outcome in an <cite>AggregateCheckResult</cite>.</p>
+<dd><p>Execute the check and produce a comprehensive result with full metadata.</p>
+<p>Serves as the primary interface for aggregate check execution, orchestrating
+the validation logic and enriching the results with complete metadata for
+reporting and audit purposes. This method ensures consistent result formatting
+across all aggregate check implementations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – The dataset to validate.</p>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – The dataset to validate against this check’s criteria.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The complete check result including metadata and evaluation outcome.</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>Complete validation result including check metadata,</dt><dd><p>configuration parameters, and detailed evaluation outcomes.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>AggregateCheckResult</p>
@@ -498,13 +495,17 @@ It delegates to <cite>_evaluate_logic()</cite> and wraps the outcome in an <cite
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseAggregateCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/base_config.html#BaseAggregateCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheckConfig</span></code></p>
-<p>Base class for aggregate-level check configurations.</p>
-<p>Aggregate checks evaluate global dataset properties, such as row counts
-or min/max thresholds. Subclasses must define a <cite>check_class</cite> that inherits
-from <cite>BaseAggregateCheck</cite>.</p>
+<p>Abstract configuration foundation for dataset-level data quality checks.</p>
+<p>Specializes the base configuration interface for checks that evaluate global
+properties of entire datasets. This class enforces proper association with
+aggregate-level check implementations and provides appropriate validation
+and instantiation capabilities.</p>
+<p>Aggregate-level configurations typically include parameters such as statistical
+thresholds, count boundaries, and dataset-wide business rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>TypeError</strong> – If <cite>check_class</cite> is missing or not a subclass of <cite>BaseAggregateCheck</cite>.</p>
+<dd class="field-odd"><p><strong>TypeError</strong> – When the subclass fails to define a valid check_class or associates
+    with a non-aggregate-level check implementation.</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -519,19 +520,31 @@ from <cite>BaseAggregateCheck</cite>.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseRowCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#BaseRowCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheck</span></code></p>
-<p>Abstract base class for row-level data quality checks.</p>
-<p>Row-level checks operate on individual records and identify invalid rows directly
-within the dataset. Subclasses must implement the <cite>validate()</cite> method.</p>
+<p>Abstract foundation for record-level data quality validation checks.</p>
+<p>Defines the interface for checks that evaluate individual records within a dataset,
+enabling fine-grained validation at the row level. These checks typically append
+boolean result columns to the input DataFrame, marking each record as valid or
+invalid based on the implemented validation logic.</p>
+<p>Row-level checks are particularly effective for identifying specific problematic
+records, enabling downstream filtering, correction, or detailed error reporting
+on a per-record basis.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#BaseRowCheck.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Applies the check to the input DataFrame.</p>
+<dd><p>Execute the validation logic against the provided dataset.</p>
+<p>Implementations must apply their specific validation rules to the input DataFrame
+and return an augmented version containing validation results. The returned
+DataFrame should preserve all original data while adding validation markers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – Input dataset to validate.</p>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – The dataset to validate against this check’s criteria.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame with additional markers or columns indicating validation failures.</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>Enhanced dataset containing original data plus validation results,</dt><dd><p>typically as additional boolean columns indicating pass/fail status per record.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>DataFrame</p>
@@ -542,18 +555,24 @@ within the dataset. Subclasses must implement the <cite>validate()</cite> method
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">with_check_result_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Column</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#BaseRowCheck.with_check_result_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Adds the check result as a new column to the DataFrame.</p>
-<p>The result column will be named according to the check ID and contain the boolean evaluation
-for each row.</p>
+<dd><p>Augment the DataFrame with a validation result column.</p>
+<p>Appends a boolean column containing the validation outcome for each record,
+using the check’s unique identifier as the column name. This standardized
+approach ensures consistent result formatting across all row-level checks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>DataFrame</em>) – The input Spark DataFrame.</p></li>
-<li><p><strong>condition</strong> (<em>Column</em>) – The boolean Spark expression representing pass/fail per row.</p></li>
+<li><p><strong>df</strong> (<em>DataFrame</em>) – The dataset to augment with validation results.</p></li>
+<li><p><strong>condition</strong> (<em>Column</em>) – Boolean Spark expression evaluating to True for failed
+records and False for valid records.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The original DataFrame extended with the check result column.</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>Original dataset enhanced with a named boolean column indicating</dt><dd><p>validation status for each record.</p>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>DataFrame</p>
@@ -567,13 +586,17 @@ for each row.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseRowCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/base_config.html#BaseRowCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheckConfig</span></code></p>
-<p>Base class for row-level check configurations.</p>
-<p>Row checks operate on individual records and typically require parameters
-such as column names. Subclasses must define a <cite>check_class</cite> that inherits
-from <cite>BaseRowCheck</cite>.</p>
+<p>Abstract configuration foundation for record-level data quality checks.</p>
+<p>Specializes the base configuration interface for checks that operate on individual
+records within a dataset. This class enforces that subclasses are properly
+associated with row-level check implementations and provides the appropriate
+validation and instantiation logic.</p>
+<p>Row-level configurations typically include parameters such as column specifications,
+validation thresholds, and record-specific business rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>TypeError</strong> – If <cite>check_class</cite> is missing or not a subclass of <cite>BaseRowCheck</cite>.</p>
+<dd class="field-odd"><p><strong>TypeError</strong> – When the subclass fails to define a valid check_class or associates
+    with a non-row-level check implementation.</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -588,16 +611,19 @@ from <cite>BaseRowCheck</cite>.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IntegrityCheckMixin</span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A mixin that enables data quality checks to perform integrity validations
-involving external reference datasets.</p>
-<p>This mixin is intended for checks that compare the primary dataset with one
-or more external datasets (e.g., foreign key validation, cross-dataset consistency).
-It allows reference datasets to be injected once and retrieved by name during check execution.</p>
+<p>Mixin enabling cross-dataset integrity validation capabilities.</p>
+<p>Provides infrastructure for checks that require validation against external
+reference datasets, such as foreign key constraints, referential integrity,
+or cross-dataset consistency validations. The mixin handles reference dataset
+lifecycle management, including injection, storage, and retrieval operations.</p>
+<p>This design enables complex validation scenarios while maintaining clean
+separation between the validation logic and reference data management,
+supporting both simple lookups and complex multi-dataset relationships.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">_reference_datasets</span></span></dt>
-<dd><p>A dictionary that maps string identifiers (reference names) to Spark DataFrames
-containing the corresponding reference data.</p>
+<dd><p>Internal registry mapping
+reference dataset names to their corresponding Spark DataFrames.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>ReferenceDatasetDict</p>
@@ -608,21 +634,23 @@ containing the corresponding reference data.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_reference_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin.get_reference_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Retrieves a reference DataFrame by its assigned name.</p>
-<p>This method is used by checks during execution to access the appropriate
-reference dataset that was previously injected.</p>
+<dd><p>Retrieve a reference dataset by its registered identifier.</p>
+<p>Provides access to previously injected reference datasets during check
+execution. This method ensures type-safe access to reference data while
+providing clear error handling for missing or misconfigured references.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the reference dataset to retrieve.</p>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The identifier of the reference dataset to retrieve.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The corresponding Spark DataFrame for the given name.</p>
+<dd class="field-even"><p>The Spark DataFrame associated with the specified identifier.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>DataFrame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>MissingReferenceDatasetError</strong> – If no dataset with the given name has been injected.</p>
+<dd class="field-even"><p><strong>MissingReferenceDatasetError</strong> – When the requested reference dataset
+    identifier is not found in the current registry.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -630,12 +658,15 @@ reference dataset that was previously injected.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inject_reference_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sparkdq/core/base_check.html#IntegrityCheckMixin.inject_reference_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Stores the given reference datasets for use during check execution.</p>
-<p>This method is typically called by the validation engine before the check’s <cite>run(…)</cite>
-method is invoked. It allows checks to access any required external datasets by name.</p>
+<dd><p>Register reference datasets for use during validation execution.</p>
+<p>Establishes the reference dataset registry that will be available during
+check execution. This method is typically invoked by the validation engine
+as part of the check preparation phase, ensuring all required reference
+data is accessible when validation logic executes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>datasets</strong> (<em>ReferenceDatasetDict</em>) – A mapping from reference names to Spark DataFrames.</p>
+<dd class="field-odd"><p><strong>datasets</strong> (<em>ReferenceDatasetDict</em>) – Registry mapping reference dataset
+identifiers to their corresponding Spark DataFrames.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -646,16 +677,24 @@ method is invoked. It allows checks to access any required external datasets by 
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Severity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/core/severity.html#Severity"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Severity levels for data quality checks.</p>
-<p>The severity level determines how a failed check should be treated,
-particularly in automated data pipelines (e.g., fail the pipeline or log a warning).</p>
-<p><strong>Levels</strong>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>CRITICAL: The check is considered blocking if it fails.</p></li>
-<li><p>WARNING: The check is non-blocking but may trigger alerts or monitoring actions.</p></li>
-</ul>
-</div></blockquote>
+<p>Enumeration of data quality check severity classifications.</p>
+<p>Provides standardized severity levels that determine how validation failures
+are handled within data processing pipelines. The severity classification
+enables sophisticated failure handling strategies, allowing teams to implement
+nuanced responses to different types of data quality issues.</p>
+<p>The design supports both blocking and non-blocking failure modes, enabling
+flexible pipeline behavior that can adapt to different operational requirements
+and business contexts.</p>
+<dl class="simple">
+<dt>Levels:</dt><dd><dl class="simple">
+<dt>CRITICAL: Validation failures that should block pipeline execution and</dt><dd><p>require immediate attention before processing can continue.</p>
+</dd>
+<dt>WARNING: Validation failures that indicate potential issues but should</dt><dd><p>not prevent pipeline execution, typically triggering monitoring
+alerts or logging for later investigation.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

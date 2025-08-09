@@ -360,23 +360,28 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NullCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that flags null values in one or more specified columns.</span>
+<span class="sd">    Record-level validation check that identifies rows containing null values.</span>
 
-<span class="sd">    This check appends a boolean result column to the input DataFrame.</span>
-<span class="sd">    A row is marked as failed (True) if **any** of the target columns are null.</span>
+<span class="sd">    Validates that specified columns contain non-null values across all records,</span>
+<span class="sd">    flagging any rows where these columns are null. This check is essential for</span>
+<span class="sd">    enforcing data completeness requirements and identifying missing data issues</span>
+<span class="sd">    that could impact downstream processing or analysis.</span>
+
+<span class="sd">    The check uses OR-based failure logic, where any null value in the configured</span>
+<span class="sd">    columns marks the entire record as invalid.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): Names of the columns to inspect for null values.</span>
+<span class="sd">        columns (List[str]): Column names that must contain non-null values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a NullCheck instance.</span>
+<span class="sd">        Initialize the null value validation check with target columns and configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            columns (List[str]): Names of the columns to check for null values.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            columns (List[str]): Column names that must contain non-null values.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -384,20 +389,23 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the null check on the given DataFrame.</span>
+<span class="sd">        Execute the null value validation logic against the configured columns.</span>
 
-<span class="sd">        This method appends a new boolean column (named after `check_id`) that indicates</span>
-<span class="sd">        for each row whether **any** of the target columns are null.</span>
+<span class="sd">        Performs schema validation to ensure all target columns exist, then applies</span>
+<span class="sd">        null detection logic with OR-based failure semantics. Records fail validation</span>
+<span class="sd">        when any configured column contains null values.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The input Spark DataFrame to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for null value compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: A new DataFrame with an additional boolean column where</span>
-<span class="sd">                `True` indicates a null value (i.e. check failed), and `False` means valid.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (null values detected) and False</span>
+<span class="sd">                indicates compliance with non-null requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If any of the specified columns do not exist in the DataFrame.</span>
+<span class="sd">            MissingColumnError: When any configured column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -417,11 +425,15 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;null-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NullCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NullCheck.</span>
+<span class="sd">    Configuration schema for null value validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that enforce non-null</span>
+<span class="sd">    value requirements. This configuration enables declarative check definition</span>
+<span class="sd">    through external configuration sources while ensuring parameter validity.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The names of the columns to check for null values.</span>
-<span class="sd">            This is a required field and must match existing columns in the DataFrame.</span>
+<span class="sd">        columns (List[str]): Column names that must contain non-null values for</span>
+<span class="sd">            records to pass validation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">NullCheck</span>

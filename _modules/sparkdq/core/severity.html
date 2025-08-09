@@ -346,12 +346,17 @@ document.write(`
                   
   <h1>Source code for sparkdq.core.severity</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Defines the `Severity` enum for classifying the importance of data quality check results,</span>
-<span class="sd">along with a utility function for normalizing severity values.</span>
+<span class="sd">Severity classification system for data quality check results.</span>
 
-<span class="sd">Severity levels help downstream logic differentiate between critical (blocking)</span>
-<span class="sd">and warning (non-blocking) validation outcomes, enabling flexible handling</span>
-<span class="sd">of failed data quality checks.</span>
+<span class="sd">This module provides a standardized severity classification framework that enables</span>
+<span class="sd">sophisticated failure handling strategies in data quality validation pipelines.</span>
+<span class="sd">The severity system allows teams to distinguish between blocking failures that</span>
+<span class="sd">should halt processing and informational warnings that require attention but</span>
+<span class="sd">permit continued execution.</span>
+
+<span class="sd">The design supports flexible pipeline behavior where different severity levels</span>
+<span class="sd">can trigger different response strategies, from immediate pipeline termination</span>
+<span class="sd">to alert generation and monitoring notifications.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -363,15 +368,23 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.Severity">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Severity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Severity levels for data quality checks.</span>
+<span class="sd">    Enumeration of data quality check severity classifications.</span>
 
-<span class="sd">    The severity level determines how a failed check should be treated,</span>
-<span class="sd">    particularly in automated data pipelines (e.g., fail the pipeline or log a warning).</span>
+<span class="sd">    Provides standardized severity levels that determine how validation failures</span>
+<span class="sd">    are handled within data processing pipelines. The severity classification</span>
+<span class="sd">    enables sophisticated failure handling strategies, allowing teams to implement</span>
+<span class="sd">    nuanced responses to different types of data quality issues.</span>
 
-<span class="sd">    **Levels**:</span>
+<span class="sd">    The design supports both blocking and non-blocking failure modes, enabling</span>
+<span class="sd">    flexible pipeline behavior that can adapt to different operational requirements</span>
+<span class="sd">    and business contexts.</span>
 
-<span class="sd">        - CRITICAL: The check is considered blocking if it fails.</span>
-<span class="sd">        - WARNING: The check is non-blocking but may trigger alerts or monitoring actions.</span>
+<span class="sd">    Levels:</span>
+<span class="sd">        CRITICAL: Validation failures that should block pipeline execution and</span>
+<span class="sd">            require immediate attention before processing can continue.</span>
+<span class="sd">        WARNING: Validation failures that indicate potential issues but should</span>
+<span class="sd">            not prevent pipeline execution, typically triggering monitoring</span>
+<span class="sd">            alerts or logging for later investigation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">CRITICAL</span> <span class="o">=</span> <span class="s2">&quot;critical&quot;</span>
@@ -379,10 +392,11 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the string representation of the severity level.</span>
+<span class="sd">        Provide the canonical string representation of this severity level.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The lowercase severity level (e.g., &quot;critical&quot;, &quot;warning&quot;).</span>
+<span class="sd">            str: Lowercase severity identifier suitable for serialization,</span>
+<span class="sd">                logging, and external system integration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
 
@@ -390,20 +404,26 @@ document.write(`
 
 <span class="k">def</span><span class="w"> </span><span class="nf">normalize_severity</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Severity</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a severity string to a `Severity` enum instance.</span>
+<span class="sd">    Convert string representations to validated Severity enum instances.</span>
 
-<span class="sd">    This function ensures that severity values provided as strings</span>
-<span class="sd">    (e.g., from configuration files or user input) are consistently interpreted</span>
-<span class="sd">    within the framework.</span>
+<span class="sd">    Provides robust parsing of severity values from external sources such as</span>
+<span class="sd">    configuration files, user input, or API requests. The function performs</span>
+<span class="sd">    case-insensitive matching and provides clear error handling for invalid</span>
+<span class="sd">    severity specifications.</span>
+
+<span class="sd">    This normalization ensures consistent severity handling across all framework</span>
+<span class="sd">    components while providing clear feedback for configuration errors.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        value (str): Severity level as a string (case-insensitive).</span>
+<span class="sd">        value (str): String representation of the severity level, processed</span>
+<span class="sd">            case-insensitively for flexible input handling.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Severity: The corresponding `Severity` enum instance.</span>
+<span class="sd">        Severity: Validated severity enum instance corresponding to the input string.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        InvalidSeverityLevelError: If the input does not match a known severity level.</span>
+<span class="sd">        InvalidSeverityLevelError: When the input string does not match any</span>
+<span class="sd">            recognized severity level, providing clear feedback for correction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Severity</span><span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>

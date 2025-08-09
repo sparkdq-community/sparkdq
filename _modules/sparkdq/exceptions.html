@@ -349,11 +349,12 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.RuntimeCheckConfigurationError">[docs]</a>
 <span></span><span class="k">class</span><span class="w"> </span><span class="nc">RuntimeCheckConfigurationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for runtime configuration errors in data quality checks.</span>
+<span class="sd">    Base exception for configuration errors detected during check execution.</span>
 
-<span class="sd">    Raised when a check fails due to a configuration issue that can only</span>
-<span class="sd">    be detected when the check is executed against actual data, such as</span>
-<span class="sd">    referencing a non-existent column.</span>
+<span class="sd">    Represents configuration issues that can only be identified when checks</span>
+<span class="sd">    are applied to actual datasets, such as column references that don&#39;t exist</span>
+<span class="sd">    in the target data or invalid data type assumptions. These errors indicate</span>
+<span class="sd">    mismatches between check configuration and runtime data characteristics.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -362,10 +363,12 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.CheckConfigurationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckConfigurationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all configuration-related errors in data quality checks.</span>
+<span class="sd">    Base exception for static configuration validation errors.</span>
 
-<span class="sd">    Raised when a check&#39;s definition or setup is invalid and cannot be used</span>
-<span class="sd">    to construct or apply the check logic, regardless of the actual dataset.</span>
+<span class="sd">    Represents configuration issues that can be detected during check definition</span>
+<span class="sd">    or setup, independent of any specific dataset. These errors indicate</span>
+<span class="sd">    fundamental problems with check parameters, logical inconsistencies, or</span>
+<span class="sd">    missing required configuration elements.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -374,10 +377,12 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingColumnError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MissingColumnError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a required column is not present in the DataFrame at runtime.</span>
+<span class="sd">    Exception raised when a check references a non-existent column.</span>
 
-<span class="sd">    This typically indicates a misconfiguration in the check setup, where a</span>
-<span class="sd">    column was referenced that does not exist in the current dataset.</span>
+<span class="sd">    Indicates a mismatch between the check configuration and the actual dataset</span>
+<span class="sd">    schema, where the check expects a column that is not present in the target</span>
+<span class="sd">    DataFrame. This typically suggests either incorrect check configuration or</span>
+<span class="sd">    unexpected changes in the data schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">available</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
@@ -389,13 +394,11 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingCheckSetError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MissingCheckSetError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a data quality engine is executed without an assigned CheckSet.</span>
+<span class="sd">    Exception raised when attempting to execute validation without configured checks.</span>
 
-<span class="sd">    This error indicates that the engine was not properly configured before use.</span>
-<span class="sd">    Users must assign a CheckSet instance via `engine.set_check_set(...)`</span>
-<span class="sd">    prior to calling any validation methods like `run_batch`.</span>
-
-<span class="sd">    This is typically a programming error and should be caught early in testing.</span>
+<span class="sd">    Indicates that the validation engine was invoked without a properly assigned</span>
+<span class="sd">    CheckSet, representing a programming error in the validation setup sequence.</span>
+<span class="sd">    This error prevents execution attempts on improperly initialized engines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -410,12 +413,12 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidCheckConfigurationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidCheckConfigurationError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a check&#39;s configuration is logically invalid.</span>
+<span class="sd">    Exception raised for logically inconsistent check configurations.</span>
 
-<span class="sd">    Examples include setting a minimum value greater than the maximum, or</span>
-<span class="sd">    supplying conflicting or incomplete configuration parameters.</span>
-
-<span class="sd">    In most cases, this error is raised during static validation of a config object.</span>
+<span class="sd">    Represents configuration errors where individual parameters are valid but</span>
+<span class="sd">    their combination creates logical contradictions or impossible conditions.</span>
+<span class="sd">    These errors are typically detected during static configuration validation</span>
+<span class="sd">    before any data processing begins.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -424,8 +427,11 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingReferenceDatasetError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MissingReferenceDatasetError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a requested reference dataset is not available</span>
-<span class="sd">    in the current validation context.</span>
+<span class="sd">    Exception raised when a check requests an unavailable reference dataset.</span>
+
+<span class="sd">    Indicates that a check requiring external reference data cannot locate</span>
+<span class="sd">    the specified dataset in the current validation context, suggesting</span>
+<span class="sd">    either missing reference data injection or incorrect dataset naming.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -438,28 +444,20 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidSeverityLevelError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSeverityLevelError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a provided severity level is not recognized by the framework.</span>
+<span class="sd">    Exception raised for unrecognized severity level specifications.</span>
 
-<span class="sd">    This error typically occurs when parsing string-based severity inputs</span>
-<span class="sd">    (e.g. from JSON or YAML configuration files) that do not match the allowed</span>
-<span class="sd">    levels defined in the `Severity` enum.</span>
-
-<span class="sd">    Examples include:</span>
-<span class="sd">        - normalize_severity(&quot;fatal&quot;)</span>
-<span class="sd">        - loading a config with severity=&quot;urgent&quot;</span>
-
-<span class="sd">    This exception is used to ensure consistent error handling and reporting</span>
-<span class="sd">    for configuration-related issues.</span>
+<span class="sd">    Indicates that a severity value provided through configuration sources</span>
+<span class="sd">    does not match any of the defined severity levels in the framework.</span>
+<span class="sd">    This error ensures that only valid severity classifications are accepted,</span>
+<span class="sd">    maintaining consistency in failure handling behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the exception with the invalid severity value.</span>
+<span class="sd">        Initialize the exception with the invalid severity specification.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            value (str): The unrecognized severity level that triggered the error.</span>
-
-<span class="sd">        The message will include the invalid value to aid debugging and error reporting.</span>
+<span class="sd">            value (str): The unrecognized severity level that caused the error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid severity level: &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div>
@@ -470,13 +468,12 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.MissingCheckTypeError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MissingCheckTypeError</span><span class="p">(</span><span class="n">CheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a configuration dictionary is missing the required &#39;check&#39; field.</span>
+<span class="sd">    Exception raised when check configuration lacks the required type identifier.</span>
 
-<span class="sd">    This field is mandatory for the framework to identify which check type</span>
-<span class="sd">    should be instantiated via the CheckFactory.</span>
-
-<span class="sd">    This exception is typically raised during early parsing or validation</span>
-<span class="sd">    of configuration sources (e.g. JSON, YAML).</span>
+<span class="sd">    Indicates that a configuration dictionary is missing the mandatory &#39;check&#39;</span>
+<span class="sd">    field that specifies which check implementation should be instantiated.</span>
+<span class="sd">    This error prevents the CheckFactory from resolving the appropriate</span>
+<span class="sd">    check type during configuration processing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -491,33 +488,21 @@ document.write(`
 <a class="viewcode-back" href="../../api/exceptions.html#sparkdq.exceptions.InvalidSQLExpressionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidSQLExpressionError</span><span class="p">(</span><span class="n">RuntimeCheckConfigurationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when a SQL expression is syntactically or semantically invalid.</span>
+<span class="sd">    Exception raised for invalid or unsafe SQL expressions in check configurations.</span>
 
-<span class="sd">    This error indicates that the provided SQL expression cannot be parsed</span>
-<span class="sd">    or executed by PySpark, typically due to syntax errors, invalid function</span>
-<span class="sd">    calls, or other structural issues that prevent the expression from being</span>
-<span class="sd">    evaluated.</span>
-
-<span class="sd">    Examples include:</span>
-<span class="sd">        - Malformed syntax: &quot;age + &quot;</span>
-<span class="sd">        - Unbalanced parentheses: &quot;upper(name&quot;</span>
-<span class="sd">        - Invalid function calls: &quot;invalid_function(column)&quot;</span>
-<span class="sd">        - Dangerous operations: &quot;DROP TABLE users&quot;</span>
-
-<span class="sd">    This exception is used to ensure consistent error handling for SQL</span>
-<span class="sd">    expression validation in data quality checks.</span>
+<span class="sd">    Indicates that a SQL expression provided to a check cannot be parsed or</span>
+<span class="sd">    executed safely by PySpark, either due to syntax errors, semantic issues,</span>
+<span class="sd">    or security concerns. This validation prevents potentially dangerous or</span>
+<span class="sd">    malformed expressions from being executed against datasets.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the exception with the invalid expression and error details.</span>
+<span class="sd">        Initialize the exception with the problematic expression and diagnostic information.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            expression (str): The SQL expression that failed validation.</span>
-<span class="sd">            error_message (str): Detailed description of why the expression is invalid.</span>
-
-<span class="sd">        The message will include both the expression and error details to aid</span>
-<span class="sd">        debugging and error reporting.</span>
+<span class="sd">            error_message (str): Detailed explanation of the validation failure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid SQL expression &#39;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>

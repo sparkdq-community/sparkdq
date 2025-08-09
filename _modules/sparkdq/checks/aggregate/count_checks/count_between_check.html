@@ -358,26 +358,30 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountBetweenCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aggregate-level data quality check that ensures the total number of rows in a DataFrame</span>
-<span class="sd">    is within a specified inclusive range [min_count, max_count].</span>
+<span class="sd">    Dataset-level validation check that enforces row count boundaries.</span>
 
-<span class="sd">    It is evaluated once per DataFrame and produces a pass/fail result</span>
-<span class="sd">    along with row count metrics.</span>
+<span class="sd">    Validates that the total number of records in a dataset falls within a</span>
+<span class="sd">    specified inclusive range, ensuring data volume compliance with business</span>
+<span class="sd">    expectations. This check is essential for detecting data pipeline issues</span>
+<span class="sd">    such as incomplete data loads, unexpected data growth, or processing failures.</span>
+
+<span class="sd">    The check provides comprehensive metrics including actual counts and configured</span>
+<span class="sd">    thresholds to support detailed analysis of validation outcomes.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        min_count (int): The minimum acceptable number of rows.</span>
-<span class="sd">        max_count (int): The maximum acceptable number of rows.</span>
+<span class="sd">        min_count (int): Minimum acceptable number of records in the dataset.</span>
+<span class="sd">        max_count (int): Maximum acceptable number of records in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new RowCountBetweenCheck instance.</span>
+<span class="sd">        Initialize the row count boundary validation check.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            min_count (int): The minimum allowed number of rows.</span>
-<span class="sd">            max_count (int): The maximum allowed number of rows.</span>
-<span class="sd">            severity (Severity, optional): The severity level to assign if the check fails.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            min_count (int): Minimum acceptable number of records in the dataset.</span>
+<span class="sd">            max_count (int): Maximum acceptable number of records in the dataset.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -386,17 +390,18 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the row count of the given DataFrame against the defined bounds.</span>
+<span class="sd">        Execute the row count validation against the configured boundaries.</span>
 
-<span class="sd">        If the row count is within the range [min_count, max_count], the check passes.</span>
-<span class="sd">        Otherwise, it fails and the actual count is included in the result metrics.</span>
+<span class="sd">        Computes the total row count of the dataset and evaluates it against the</span>
+<span class="sd">        configured minimum and maximum thresholds. The validation passes when the</span>
+<span class="sd">        actual count falls within the inclusive range, and fails otherwise.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The Spark DataFrame to evaluate.</span>
+<span class="sd">            df (DataFrame): The dataset to evaluate for row count compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateEvaluationResult: An object indicating the outcome of the check,</span>
-<span class="sd">            including relevant row count metrics.</span>
+<span class="sd">            AggregateEvaluationResult: Validation outcome including pass/fail status</span>
+<span class="sd">                and comprehensive metrics comparing actual count to configured boundaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">actual</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
         <span class="n">passed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_count</span> <span class="o">&lt;=</span> <span class="n">actual</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_count</span>
@@ -415,18 +420,18 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;row-count-between-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountBetweenCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the RowCountBetweenCheck.</span>
+<span class="sd">    Configuration schema for row count boundary validation checks.</span>
 
-<span class="sd">    This config is used to define acceptable row count bounds in a</span>
-<span class="sd">    data validation pipeline. It ensures that:</span>
-<span class="sd">    - both `min_count` and `max_count` are provided,</span>
-<span class="sd">    - and that `min_count &lt;= max_count`.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce dataset size constraints. The configuration includes logical</span>
+<span class="sd">    validation to ensure boundary parameters are consistent and meaningful.</span>
 
-<span class="sd">    It is typically used when defining checks via JSON, YAML, or dict-based configs.</span>
+<span class="sd">    This configuration enables declarative check definition through external</span>
+<span class="sd">    configuration sources while ensuring parameter validity at configuration time.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        min_count (int): Minimum number of rows expected in the dataset.</span>
-<span class="sd">        max_count (int): Maximum number of rows allowed in the dataset.</span>
+<span class="sd">        min_count (int): Minimum acceptable number of records in the dataset.</span>
+<span class="sd">        max_count (int): Maximum acceptable number of records in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">RowCountBetweenCheck</span>
@@ -438,17 +443,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RowCountBetweenCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate the logical consistency of the configured bounds.</span>
+<span class="sd">        Validate the logical consistency of the configured boundary parameters.</span>
 
-<span class="sd">        This method ensures that ``min_count`` is not greater than ``max_count``.</span>
-<span class="sd">        If violated, a configuration-level exception is raised immediately</span>
-<span class="sd">        to prevent runtime failures.</span>
+<span class="sd">        Ensures that the minimum and maximum count parameters form a valid range</span>
+<span class="sd">        and that both values are non-negative. This validation prevents</span>
+<span class="sd">        configuration errors that would result in impossible validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RowCountBetweenCheckConfig: The validated configuration object.</span>
+<span class="sd">            RowCountBetweenCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If ``min_count &gt; max_count`` or ``min_count`` &lt; 0.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the boundary parameters are</span>
+<span class="sd">                logically inconsistent or contain invalid values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_count</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span>

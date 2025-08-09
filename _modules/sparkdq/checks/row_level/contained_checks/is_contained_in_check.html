@@ -358,12 +358,19 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">IsContainedInCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level check that verifies whether column values are contained in a predefined list of allowed values.</span>
+<span class="sd">    Record-level validation check that enforces value whitelist constraints.</span>
 
-<span class="sd">    Each specified column must only contain values listed in its associated value list.</span>
+<span class="sd">    Validates that values in specified columns are contained within predefined</span>
+<span class="sd">    allowed value lists, ensuring data integrity and business rule compliance.</span>
+<span class="sd">    This check is essential for validating categorical data, status codes,</span>
+<span class="sd">    enumerated values, or any scenario where only specific values are acceptable.</span>
+
+<span class="sd">    The check supports multiple columns with independent allowed value lists,</span>
+<span class="sd">    enabling comprehensive validation of related categorical fields.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        allowed_values (dict[str, list[object]]): Dictionary mapping column names to their allowed values.</span>
+<span class="sd">        allowed_values (dict[str, list[object]]): Mapping of column names to their</span>
+<span class="sd">            corresponding lists of acceptable values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -377,13 +384,19 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate whether all specified columns contain only allowed values.</span>
+<span class="sd">        Execute the value whitelist validation logic against the configured columns.</span>
+
+<span class="sd">        Performs validation to ensure all configured columns contain only values</span>
+<span class="sd">        from their respective allowed value lists. Records fail validation when</span>
+<span class="sd">        any configured column contains values outside the permitted set.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The Spark DataFrame to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for value containment compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: The input DataFrame extended with a column indicating pass/fail per row.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (disallowed values detected) and</span>
+<span class="sd">                False indicates compliance with whitelist requirements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">conditions</span> <span class="o">=</span> <span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">column</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_values</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 
@@ -397,12 +410,15 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;is-contained-in-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">IsContainedInCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the IsContainedInCheck.</span>
+<span class="sd">    Configuration schema for value whitelist validation checks.</span>
 
-<span class="sd">    This config allows validation that specified columns contain only predefined values.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce value containment constraints. The configuration includes logical</span>
+<span class="sd">    validation to ensure allowed value specifications are complete and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        allowed_values (dict[str, list[object]]): Mapping of column names to allowed values.</span>
+<span class="sd">        allowed_values (dict[str, list[object]]): Mapping of column names to their</span>
+<span class="sd">            corresponding lists of acceptable values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">IsContainedInCheck</span>
@@ -416,13 +432,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_allowed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;IsContainedInCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate that allowed_values is not empty and properly formed.</span>
+<span class="sd">        Validate the logical consistency and completeness of the allowed values configuration.</span>
+
+<span class="sd">        Ensures that the allowed values mapping is properly structured with non-empty</span>
+<span class="sd">        value lists for each configured column. This validation prevents configuration</span>
+<span class="sd">        errors that would result in impossible or meaningless validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            IsContainedInCheckConfig: The validated configuration object.</span>
+<span class="sd">            IsContainedInCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If allowed_values is invalid.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the allowed values configuration is</span>
+<span class="sd">                empty, malformed, or contains invalid value specifications.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_values</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span><span class="s2">&quot;allowed_values must not be empty.&quot;</span><span class="p">)</span>

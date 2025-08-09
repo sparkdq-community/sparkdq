@@ -357,12 +357,19 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ColumnPresenceCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aggregate-level data quality check that verifies that all required columns are present in the DataFrame.</span>
+<span class="sd">    Dataset-level validation check that enforces required column presence.</span>
 
-<span class="sd">    This check does not validate data types, only the presence of specified column names.</span>
+<span class="sd">    Validates that all specified columns are present in the dataset schema,</span>
+<span class="sd">    ensuring structural integrity and compatibility with downstream processing</span>
+<span class="sd">    requirements. This check is essential for detecting schema changes, missing</span>
+<span class="sd">    data sources, or configuration mismatches that could impact data processing</span>
+<span class="sd">    pipelines.</span>
+
+<span class="sd">    The check focuses solely on column name presence and does not validate</span>
+<span class="sd">    data types or column content, providing targeted schema structure validation.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        required_columns (list[str]): List of column names that must be present.</span>
+<span class="sd">        required_columns (list[str]): Column names that must be present in the dataset schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -372,12 +379,12 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new ColumnPresenceCheck instance.</span>
+<span class="sd">        Initialize the column presence validation check with required column specifications.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            required_columns (list[str]): List of required column names.</span>
-<span class="sd">            severity (Severity, optional): The severity level to assign if the check fails.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            required_columns (list[str]): Column names that must be present in the dataset schema.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -385,14 +392,18 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate whether all required columns are present in the given DataFrame.</span>
+<span class="sd">        Execute the column presence validation against the dataset schema.</span>
+
+<span class="sd">        Compares the required column list against the actual dataset schema to</span>
+<span class="sd">        identify any missing columns. The validation passes only when all required</span>
+<span class="sd">        columns are present in the dataset.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The Spark DataFrame to evaluate.</span>
+<span class="sd">            df (DataFrame): The dataset to evaluate for column presence compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateEvaluationResult: An object indicating the outcome of the check,</span>
-<span class="sd">            including a list of missing columns, if any.</span>
+<span class="sd">            AggregateEvaluationResult: Validation outcome including pass/fail status</span>
+<span class="sd">                and detailed metrics listing any missing columns.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">actual_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="n">missing_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actual_columns</span><span class="p">]</span>
@@ -411,12 +422,14 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;column-presence-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ColumnPresenceCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the ColumnPresenceCheck.</span>
+<span class="sd">    Configuration schema for column presence validation checks.</span>
 
-<span class="sd">    This config defines a set of required column names that must exist in the DataFrame.</span>
+<span class="sd">    Defines the parameters required for configuring checks that enforce required</span>
+<span class="sd">    column presence in dataset schemas. This configuration enables declarative</span>
+<span class="sd">    check definition through external configuration sources.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        required_columns (list[str]): The list of required column names.</span>
+<span class="sd">        required_columns (list[str]): Column names that must be present in the dataset schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">ColumnPresenceCheck</span>

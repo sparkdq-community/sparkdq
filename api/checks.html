@@ -581,12 +581,14 @@ If False, requires strict inequality (<cite>&lt;</cite>). Defaults to False.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ColumnPresenceCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/schema_checks/column_presence_check.html#ColumnPresenceCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
-<p>Declarative configuration model for the ColumnPresenceCheck.</p>
-<p>This config defines a set of required column names that must exist in the DataFrame.</p>
+<p>Configuration schema for column presence validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce required
+column presence in dataset schemas. This configuration enables declarative
+check definition through external configuration sources.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">required_columns</span></span></dt>
-<dd><p>The list of required column names.</p>
+<dd><p>Column names that must be present in the dataset schema.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[str]</p>
@@ -691,11 +693,14 @@ The check fails if <strong>any</strong> of the specified columns contain null va
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DateBetweenCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(False,</span> <span class="pre">False)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/date_checks/date_between_check.html#DateBetweenCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for DateBetweenCheck.</p>
+<p>Configuration schema for date range validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce date range constraints. The configuration includes logical
+validation to ensure boundary parameters are consistent and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>Date columns to validate.</p>
+<dd><p>Date column names that must fall within the specified range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -706,7 +711,7 @@ The check fails if <strong>any</strong> of the specified columns contain null va
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_value</span></span></dt>
-<dd><p>Minimum allowed date in ‘YYYY-MM-DD’ format.</p>
+<dd><p>Minimum acceptable date in ISO format (YYYY-MM-DD).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -717,7 +722,7 @@ The check fails if <strong>any</strong> of the specified columns contain null va
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_value</span></span></dt>
-<dd><p>Maximum allowed date in ‘YYYY-MM-DD’ format.</p>
+<dd><p>Maximum acceptable date in ISO format (YYYY-MM-DD).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -728,7 +733,8 @@ The check fails if <strong>any</strong> of the specified columns contain null va
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Inclusion flags for min and max boundaries.</p>
+<dd><p>Inclusivity settings for minimum and maximum
+boundaries respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple[bool, bool]</p>
@@ -751,17 +757,20 @@ The check fails if <strong>any</strong> of the specified columns contain null va
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_between_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DateBetweenCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/date_checks/date_between_check.html#DateBetweenCheckConfig.validate_between_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validates that min_value and max_value are properly configured
-and that <code class="docutils literal notranslate"><span class="pre">min_value</span></code> is not greater than <code class="docutils literal notranslate"><span class="pre">max_value</span></code>.</p>
+<dd><p>Validate the logical consistency of the configured date range parameters.</p>
+<p>Ensures that the minimum and maximum date parameters form a valid temporal
+range and that both values represent valid dates. This validation prevents
+configuration errors that would result in impossible validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>DateBetweenCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If min_value or max_value are not set or if min_value &gt; max_value.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the date range parameters are
+    logically inconsistent or contain invalid date values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -772,11 +781,14 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DateMaxCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/date_checks/date_max_check.html#DateMaxCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for DateMaxCheck.</p>
+<p>Configuration schema for maximum date validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce maximum
+date boundaries. This configuration enables declarative check definition
+through external configuration sources while ensuring parameter validity.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>Date columns to validate.</p>
+<dd><p>Date column names that must remain within the maximum threshold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -787,7 +799,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_value</span></span></dt>
-<dd><p>The maximum allowed date in ISO format.</p>
+<dd><p>Maximum acceptable date in ISO format (YYYY-MM-DD).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -798,7 +810,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Whether to include the maximum date.</p>
+<dd><p>Whether the maximum date threshold includes the boundary date itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -824,11 +836,14 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DateMinCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/date_checks/date_min_check.html#DateMinCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the DateMinCheck.</p>
+<p>Configuration schema for minimum date validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce minimum
+date boundaries. This configuration enables declarative check definition
+through external configuration sources while ensuring parameter validity.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The list of date columns to validate.</p>
+<dd><p>Date column names that must meet minimum threshold requirements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -839,7 +854,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_value</span></span></dt>
-<dd><p>The minimum allowed date (inclusive), in ‘YYYY-MM-DD’ format.</p>
+<dd><p>Minimum acceptable date in ISO format (YYYY-MM-DD).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -850,7 +865,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Whether to include the minimum date.</p>
+<dd><p>Whether the minimum date threshold includes the boundary date itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -917,11 +932,14 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ExactlyOneNotNullCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/null_checks/exactly_one_not_null_check.html#ExactlyOneNotNullCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the ExactlyOneNotNullCheck.</p>
+<p>Configuration schema for mutual exclusivity validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce exactly-one
+constraints among related columns. This configuration enables declarative
+check definition through external configuration sources.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The names of the columns where exactly one must be non-null per row.</p>
+<dd><p>Column names where exactly one must contain a non-null value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1021,12 +1039,15 @@ relative to the current time.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IsContainedInCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/contained_checks/is_contained_in_check.html#IsContainedInCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the IsContainedInCheck.</p>
-<p>This config allows validation that specified columns contain only predefined values.</p>
+<p>Configuration schema for value whitelist validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce value containment constraints. The configuration includes logical
+validation to ensure allowed value specifications are complete and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">allowed_values</span></span></dt>
-<dd><p>Mapping of column names to allowed values.</p>
+<dd><p>Mapping of column names to their
+corresponding lists of acceptable values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict[str, list[object]]</p>
@@ -1049,16 +1070,20 @@ relative to the current time.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_allowed_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">IsContainedInCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/contained_checks/is_contained_in_check.html#IsContainedInCheckConfig.validate_allowed_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that allowed_values is not empty and properly formed.</p>
+<dd><p>Validate the logical consistency and completeness of the allowed values configuration.</p>
+<p>Ensures that the allowed values mapping is properly structured with non-empty
+value lists for each configured column. This validation prevents configuration
+errors that would result in impossible or meaningless validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>IsContainedInCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If allowed_values is invalid.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the allowed values configuration is
+    empty, malformed, or contains invalid value specifications.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1117,11 +1142,14 @@ relative to the current time.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NotNullCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/null_checks/not_null_check.html#NotNullCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the NotNullCheck.</p>
+<p>Configuration schema for not-null validation checks.</p>
+<p>Defines the parameters required for configuring checks that validate columns
+expected to remain null. This configuration enables declarative check
+definition through external configuration sources.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The names of the columns that should remain null.</p>
+<dd><p>Column names that should consistently contain null values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1147,12 +1175,15 @@ relative to the current time.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NullCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/null_checks/null_check.html#NullCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the NullCheck.</p>
+<p>Configuration schema for null value validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce non-null
+value requirements. This configuration enables declarative check definition
+through external configuration sources while ensuring parameter validity.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The names of the columns to check for null values.
-This is a required field and must match existing columns in the DataFrame.</p>
+<dd><p>Column names that must contain non-null values for
+records to pass validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1178,14 +1209,16 @@ This is a required field and must match existing columns in the DataFrame.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NumericBetweenCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(False,</span> <span class="pre">False)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Decimal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Decimal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/numeric_checks/numeric_between_check.html#NumericBetweenCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the NumericBetweenCheck.</p>
-<p>This configuration defines both a lower and upper bound constraint on one or more numeric columns.
-It ensures that all specified columns contain only values between the configured <cite>min_value</cite>
-and <cite>max_value</cite>. Violations are flagged per row.</p>
+<p>Configuration schema for numeric range validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce numeric range constraints. The configuration includes logical
+validation to ensure boundary parameters are consistent and meaningful.</p>
+<p>This configuration enables declarative check definition through external
+configuration sources while ensuring parameter validity at configuration time.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The list of numeric columns to validate.</p>
+<dd><p>Numeric column names that must fall within the specified range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1196,7 +1229,7 @@ and <cite>max_value</cite>. Violations are flagged per row.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_value</span></span></dt>
-<dd><p>The minimum allowed value (inclusive).</p>
+<dd><p>Minimum acceptable numeric value for the valid range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float | int | Decimal</p>
@@ -1207,7 +1240,7 @@ and <cite>max_value</cite>. Violations are flagged per row.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_value</span></span></dt>
-<dd><p>The maximum allowed value (inclusive).</p>
+<dd><p>Maximum acceptable numeric value for the valid range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float | int | Decimal</p>
@@ -1218,7 +1251,8 @@ and <cite>max_value</cite>. Violations are flagged per row.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Inclusion flags for min and max boundaries.</p>
+<dd><p>Inclusivity settings for minimum and maximum
+boundaries respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple[bool, bool]</p>
@@ -1241,17 +1275,20 @@ and <cite>max_value</cite>. Violations are flagged per row.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_between_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NumericBetweenCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/numeric_checks/numeric_between_check.html#NumericBetweenCheckConfig.validate_between_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validates that <code class="docutils literal notranslate"><span class="pre">min_value</span></code> and <code class="docutils literal notranslate"><span class="pre">max_value</span></code> are properly configured
-and that <code class="docutils literal notranslate"><span class="pre">min_value</span></code> is not greater than <code class="docutils literal notranslate"><span class="pre">max_value</span></code>.</p>
+<dd><p>Validate the logical consistency of the configured numeric range parameters.</p>
+<p>Ensures that the minimum and maximum numeric parameters form a valid range
+and that both values are properly ordered. This validation prevents
+configuration errors that would result in impossible validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>NumericBetweenCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If min_value or max_value are not set or if min_value &gt; max_value.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the numeric range parameters are
+    logically inconsistent or contain invalid values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1262,11 +1299,14 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NumericMaxCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Decimal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/numeric_checks/numeric_max_check.html#NumericMaxCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the NumericMaxCheck.</p>
+<p>Configuration schema for maximum numeric threshold validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce maximum
+numeric boundaries. This configuration enables declarative check definition
+through external configuration sources while ensuring parameter validity.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The list of numeric columns to validate.</p>
+<dd><p>Numeric column names that must remain within the maximum threshold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1277,7 +1317,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_value</span></span></dt>
-<dd><p>The maximum allowed value (inclusive).</p>
+<dd><p>Maximum acceptable numeric value for validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float | int | Decimal</p>
@@ -1288,7 +1328,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Whether to include the maximum value.</p>
+<dd><p>Whether the maximum threshold includes the boundary value itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1314,11 +1354,14 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NumericMinCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Decimal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/numeric_checks/numeric_min_check.html#NumericMinCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Declarative configuration model for the NumericMinCheck.</p>
+<p>Configuration schema for minimum numeric threshold validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce minimum
+numeric boundaries. This configuration enables declarative check definition
+through external configuration sources while ensuring parameter validity.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">columns</span></span></dt>
-<dd><p>The list of numeric columns to validate.</p>
+<dd><p>Numeric column names that must meet minimum threshold requirements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1329,10 +1372,10 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_value</span></span></dt>
-<dd><p>The minimum allowed value (inclusive).</p>
+<dd><p>Minimum acceptable numeric value for validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>float | int | Decimal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1340,7 +1383,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>Whether to include the minimum value.</p>
+<dd><p>Whether the minimum threshold includes the boundary value itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1366,12 +1409,15 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RegexMatchCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treat_null_as_failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/string_checks/regex_match_check.html#RegexMatchCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Configuration for RegexMatchCheck.</p>
-<p>Validates that a string column matches a given regex pattern.</p>
+<p>Configuration schema for regular expression pattern validation checks.</p>
+<p>Defines the parameters required for configuring checks that enforce regular
+expression pattern matching. This configuration enables declarative check
+definition through external configuration sources while providing flexible
+matching options.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">column</span></span></dt>
-<dd><p>Column to validate.</p>
+<dd><p>String column name that must conform to the pattern.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -1382,7 +1428,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">pattern</span></span></dt>
-<dd><p>Regex pattern to use for matching.</p>
+<dd><p>Regular expression pattern for validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -1393,7 +1439,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">ignore_case</span></span></dt>
-<dd><p>If True, regex is case-insensitive (default: False).</p>
+<dd><p>Whether pattern matching should be case-insensitive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1404,7 +1450,7 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">treat_null_as_failure</span></span></dt>
-<dd><p>If True, null values are marked as failed (default: False).</p>
+<dd><p>Whether null values should be considered validation failures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1430,16 +1476,16 @@ and that <code class="docutils literal notranslate"><span class="pre">min_value<
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RowCountBetweenCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_between_check.html#RowCountBetweenCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
-<p>Declarative configuration model for the RowCountBetweenCheck.</p>
-<p>This config is used to define acceptable row count bounds in a
-data validation pipeline. It ensures that:
-- both <cite>min_count</cite> and <cite>max_count</cite> are provided,
-- and that <cite>min_count &lt;= max_count</cite>.</p>
-<p>It is typically used when defining checks via JSON, YAML, or dict-based configs.</p>
+<p>Configuration schema for row count boundary validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce dataset size constraints. The configuration includes logical
+validation to ensure boundary parameters are consistent and meaningful.</p>
+<p>This configuration enables declarative check definition through external
+configuration sources while ensuring parameter validity at configuration time.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_count</span></span></dt>
-<dd><p>Minimum number of rows expected in the dataset.</p>
+<dd><p>Minimum acceptable number of records in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1450,7 +1496,7 @@ data validation pipeline. It ensures that:
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_count</span></span></dt>
-<dd><p>Maximum number of rows allowed in the dataset.</p>
+<dd><p>Maximum acceptable number of records in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1473,19 +1519,20 @@ data validation pipeline. It ensures that:
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RowCountBetweenCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_between_check.html#RowCountBetweenCheckConfig.validate_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate the logical consistency of the configured bounds.</p>
-<p>This method ensures that <code class="docutils literal notranslate"><span class="pre">min_count</span></code> is not greater than <code class="docutils literal notranslate"><span class="pre">max_count</span></code>.
-If violated, a configuration-level exception is raised immediately
-to prevent runtime failures.</p>
+<dd><p>Validate the logical consistency of the configured boundary parameters.</p>
+<p>Ensures that the minimum and maximum count parameters form a valid range
+and that both values are non-negative. This validation prevents
+configuration errors that would result in impossible validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>RowCountBetweenCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If <code class="docutils literal notranslate"><span class="pre">min_count</span> <span class="pre">&gt;</span> <span class="pre">max_count</span></code> or <code class="docutils literal notranslate"><span class="pre">min_count</span></code> &lt; 0.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the boundary parameters are
+    logically inconsistent or contain invalid values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1496,13 +1543,14 @@ to prevent runtime failures.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RowCountExactCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_exact_check.html#RowCountExactCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
-<p>Declarative configuration model for the RowCountExactCheck.</p>
-<p>This configuration defines an exact row count requirement for a dataset. It ensures that the
-<code class="docutils literal notranslate"><span class="pre">expected_count</span></code> parameter is provided and is non-negative.</p>
+<p>Configuration schema for exact row count validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce precise row count requirements. The configuration includes logical
+validation to ensure count parameters are non-negative and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">expected_count</span></span></dt>
-<dd><p>The exact number of rows expected in the dataset.</p>
+<dd><p>Exact number of records required in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1525,16 +1573,20 @@ to prevent runtime failures.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_expected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RowCountExactCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_exact_check.html#RowCountExactCheckConfig.validate_expected"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that the configured expected_count is greater than 0.</p>
+<dd><p>Validate the logical consistency of the configured expected count parameter.</p>
+<p>Ensures that the expected count parameter is non-negative and meaningful
+for dataset validation purposes. This validation prevents configuration
+errors that would result in impossible validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>RowCountExactCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If <code class="docutils literal notranslate"><span class="pre">expected_count</span></code> is negative.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the expected count parameter is
+    negative, indicating an invalid configuration.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1545,13 +1597,14 @@ to prevent runtime failures.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RowCountMaxCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_max_check.html#RowCountMaxCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
-<p>Declarative configuration model for the RowCountMaxCheck.</p>
-<p>This configuration defines a maximum row count requirement for a dataset. It ensures that the
-<code class="docutils literal notranslate"><span class="pre">max_count</span></code> parameter is provided and has a positive value.</p>
+<p>Configuration schema for maximum row count validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce maximum row count limits. The configuration includes logical
+validation to ensure count parameters are positive and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_count</span></span></dt>
-<dd><p>Maximum number of rows allowed in the dataset.</p>
+<dd><p>Maximum acceptable number of records in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1574,16 +1627,20 @@ to prevent runtime failures.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RowCountMaxCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_max_check.html#RowCountMaxCheckConfig.validate_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that the configured <code class="docutils literal notranslate"><span class="pre">max_count</span></code> is greater than 0.</p>
+<dd><p>Validate the logical consistency of the configured maximum count parameter.</p>
+<p>Ensures that the maximum count parameter is positive and meaningful for
+dataset validation purposes. This validation prevents configuration errors
+that would result in nonsensical validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>RowCountMaxCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If <code class="docutils literal notranslate"><span class="pre">max_count</span></code> is not greater than 0.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the maximum count parameter is
+    zero or negative, indicating an invalid configuration.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1594,13 +1651,14 @@ to prevent runtime failures.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RowCountMinCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_min_check.html#RowCountMinCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAggregateCheckConfig</span></code></p>
-<p>Declarative configuration model for the RowCountMinCheck.</p>
-<p>This configuration defines a minimum row count requirement for a dataset. It ensures that the
-<code class="docutils literal notranslate"><span class="pre">min_count</span></code> parameter is provided and is non-negative.</p>
+<p>Configuration schema for minimum row count validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce minimum row count thresholds. The configuration includes logical
+validation to ensure count parameters are positive and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_count</span></span></dt>
-<dd><p>Minimum number of rows expected in the dataset.</p>
+<dd><p>Minimum acceptable number of records in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1623,16 +1681,20 @@ to prevent runtime failures.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_min</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RowCountMinCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/aggregate/count_checks/count_min_check.html#RowCountMinCheckConfig.validate_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that the configured <code class="docutils literal notranslate"><span class="pre">min_count</span></code> is greater than 0.</p>
+<dd><p>Validate the logical consistency of the configured minimum count parameter.</p>
+<p>Ensures that the minimum count parameter is positive and meaningful for
+dataset validation purposes. This validation prevents configuration errors
+that would result in nonsensical validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>RowCountMinCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If <code class="docutils literal notranslate"><span class="pre">min_count</span></code> is negative.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the minimum count parameter is
+    zero or negative, indicating an invalid configuration.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1778,12 +1840,14 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StringMaxLengthCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/string_checks/max_length_check.html#StringMaxLengthCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Configuration for StringMaxLengthCheck.</p>
-<p>Ensures that string values do not exceed the specified maximum length.</p>
+<p>Configuration schema for maximum string length validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce maximum string length constraints. The configuration includes
+logical validation to ensure length parameters are positive and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">column</span></span></dt>
-<dd><p>Column to validate.</p>
+<dd><p>String column name that must remain within the maximum length limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -1794,7 +1858,7 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">max_length</span></span></dt>
-<dd><p>Maximum allowed length (must be &gt; 0).</p>
+<dd><p>Maximum acceptable string length threshold (must be positive).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1805,7 +1869,7 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>If True, length must be &lt;= max_length. If False, strictly &lt; max_length.</p>
+<dd><p>Whether the maximum length threshold includes the boundary value itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1828,16 +1892,20 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_max_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StringMaxLengthCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/string_checks/max_length_check.html#StringMaxLengthCheckConfig.validate_max_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that max_length is greater than 0.</p>
+<dd><p>Validate the logical consistency of the configured maximum length parameter.</p>
+<p>Ensures that the maximum length parameter is positive and meaningful for
+string validation purposes. This validation prevents configuration errors
+that would result in nonsensical validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>StringMaxLengthCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If max_length &lt;= 0.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the maximum length parameter is
+    zero or negative, indicating an invalid configuration.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1848,12 +1916,14 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StringMinLengthCheckConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Severity</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.CRITICAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/string_checks/min_length_check.html#StringMinLengthCheckConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRowCheckConfig</span></code></p>
-<p>Configuration for StringMinLengthCheck.</p>
-<p>Ensures that all non-null values in the specified column have a minimum length.</p>
+<p>Configuration schema for minimum string length validation checks.</p>
+<p>Defines the parameters and validation rules for configuring checks that
+enforce minimum string length requirements. The configuration includes
+logical validation to ensure length parameters are positive and meaningful.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">column</span></span></dt>
-<dd><p>Name of the string column to validate.</p>
+<dd><p>String column name that must meet minimum length requirements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -1864,7 +1934,7 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">min_length</span></span></dt>
-<dd><p>Minimum allowed string length (must be &gt; 0).</p>
+<dd><p>Minimum acceptable string length threshold (must be positive).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1875,7 +1945,7 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">inclusive</span></span></dt>
-<dd><p>If True, allows equality (&gt;=). If False, requires strictly greater length (&gt;).</p>
+<dd><p>Whether the minimum length threshold includes the boundary value itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -1898,16 +1968,20 @@ Validates all specified types, including support for decimal(p,s) types.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">validate_min_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StringMinLengthCheckConfig</span></span></span><a class="reference internal" href="../_modules/sparkdq/checks/row_level/string_checks/min_length_check.html#StringMinLengthCheckConfig.validate_min_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Validate that the configured <cite>min_length</cite> is greater than 0.</p>
+<dd><p>Validate the logical consistency of the configured minimum length parameter.</p>
+<p>Ensures that the minimum length parameter is positive and meaningful for
+string validation purposes. This validation prevents configuration errors
+that would result in nonsensical validation conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The validated configuration object.</p>
+<dd class="field-odd"><p>The validated configuration instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>StringMinLengthCheckConfig</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – If <cite>min_length</cite> is not greater than 0.</p>
+<dd class="field-odd"><p><strong>InvalidCheckConfigurationError</strong> – When the minimum length parameter is
+    zero or negative, indicating an invalid configuration.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -356,31 +356,39 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Manages a collection of data quality checks.</span>
+<span class="sd">    Centralized registry and lifecycle manager for data quality checks.</span>
 
-<span class="sd">    The CheckSet handles the lifecycle of data quality checks within the framework.</span>
-<span class="sd">    It converts configurations into concrete check instances, keeps track of all</span>
-<span class="sd">    registered checks, and provides filtered access to row-level or aggregate-level</span>
-<span class="sd">    checks.</span>
+<span class="sd">    Orchestrates the complete lifecycle of data quality checks from configuration</span>
+<span class="sd">    to execution readiness, providing a unified interface for check registration,</span>
+<span class="sd">    organization, and retrieval. The CheckSet abstracts the complexity of check</span>
+<span class="sd">    instantiation and type management, enabling clean separation between check</span>
+<span class="sd">    definition and execution logic.</span>
 
-<span class="sd">    This component decouples check definition from check execution.</span>
+<span class="sd">    This design supports both programmatic and declarative check registration</span>
+<span class="sd">    patterns while maintaining type safety and providing convenient filtering</span>
+<span class="sd">    capabilities for different execution contexts.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty CheckSet.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an empty CheckSet ready for check registration.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseCheck</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="CheckSet.add_check">
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.add_check">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">BaseCheckConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CheckSet&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a single check from a validated configuration object and returns self for fluent chaining.</span>
+<span class="sd">        Register a single check from a validated configuration object.</span>
+
+<span class="sd">        Instantiates the check from the provided configuration and adds it to</span>
+<span class="sd">        the internal registry. The fluent interface enables method chaining</span>
+<span class="sd">        for convenient multi-check registration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config (BaseCheckConfig): The configuration object defining the check.</span>
+<span class="sd">            config (BaseCheckConfig): Validated configuration object containing</span>
+<span class="sd">                all parameters required for check instantiation.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            CheckSet: The current instance with the added check.</span>
+<span class="sd">            CheckSet: This instance to enable fluent method chaining.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">to_check</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -390,14 +398,16 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.add_checks_from_dicts">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_checks_from_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds multiple checks from raw configuration dictionaries using the CheckFactory.</span>
+<span class="sd">        Register multiple checks from raw configuration dictionaries.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            The `sparkdq.checks` module is imported here to ensure that all available</span>
-<span class="sd">            checks are registered in the CheckFactory before instantiation.</span>
+<span class="sd">        Processes a collection of configuration dictionaries through the CheckFactory,</span>
+<span class="sd">        performing validation and instantiation for each check definition. This method</span>
+<span class="sd">        enables bulk registration from external configuration sources such as JSON,</span>
+<span class="sd">        YAML, or database records.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (List[Dict[str, Any]]): A list of configuration dictionaries defining the checks.</span>
+<span class="sd">            configs (List[Dict[str, Any]]): Collection of configuration dictionaries,</span>
+<span class="sd">                each containing the parameters required for a specific check type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">CheckFactory</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">configs</span><span class="p">))</span></div>
 
@@ -406,10 +416,11 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.get_all">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseCheck</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns all registered checks.</span>
+<span class="sd">        Retrieve the complete collection of registered checks.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[BaseCheck]: All checks currently managed by this CheckSet.</span>
+<span class="sd">            List[BaseCheck]: All checks currently managed by this CheckSet,</span>
+<span class="sd">                regardless of their specific type or implementation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span></div>
 
@@ -418,10 +429,15 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.get_row_checks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_row_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseRowCheck</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns only the row-level checks.</span>
+<span class="sd">        Retrieve only the record-level validation checks.</span>
+
+<span class="sd">        Filters the registered checks to return only those that operate on</span>
+<span class="sd">        individual records, enabling targeted execution for row-level</span>
+<span class="sd">        validation scenarios.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[BaseRowCheck]: Checks that operate on individual rows.</span>
+<span class="sd">            List[BaseRowCheck]: Collection of checks that validate individual</span>
+<span class="sd">                records within the dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">check</span> <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">BaseRowCheck</span><span class="p">)]</span></div>
 
@@ -430,10 +446,15 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.get_aggregate_checks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_aggregate_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseAggregateCheck</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns only the aggregate-level checks.</span>
+<span class="sd">        Retrieve only the dataset-level validation checks.</span>
+
+<span class="sd">        Filters the registered checks to return only those that evaluate</span>
+<span class="sd">        global dataset properties, enabling targeted execution for</span>
+<span class="sd">        aggregate-level validation scenarios.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[BaseAggregateCheck]: Checks that operate on DataFrame aggregates.</span>
+<span class="sd">            List[BaseAggregateCheck]: Collection of checks that validate</span>
+<span class="sd">                dataset-wide properties and constraints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">check</span> <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">BaseAggregateCheck</span><span class="p">)]</span></div>
 
@@ -442,28 +463,36 @@ document.write(`
 <a class="viewcode-back" href="../../../api/management.html#sparkdq.management.CheckSet.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Removes all currently registered checks.</span>
+<span class="sd">        Remove all registered checks from this CheckSet.</span>
 
-<span class="sd">        Useful for resetting the CheckSet between validation runs.</span>
+<span class="sd">        Clears the internal check registry, returning the CheckSet to its</span>
+<span class="sd">        initial empty state. This operation is useful for resetting between</span>
+<span class="sd">        validation runs or when reconfiguring the check collection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a developer-friendly string representation of the CheckSet.</span>
+<span class="sd">        Generate a concise developer-oriented representation of this CheckSet.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: Representation showing the number of registered checks.</span>
+<span class="sd">            str: Summary representation indicating the total number of</span>
+<span class="sd">                registered checks for debugging and logging purposes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;CheckSet (total checks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">)</span><span class="si">}</span><span class="s2">)&gt;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a human-readable string listing the registered checks.</span>
+<span class="sd">        Generate a detailed human-readable listing of all registered checks.</span>
+
+<span class="sd">        Produces a formatted string containing the check identifiers and types</span>
+<span class="sd">        for all registered checks, providing comprehensive visibility into the</span>
+<span class="sd">        current CheckSet configuration.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: String listing all check IDs and their types.</span>
+<span class="sd">            str: Formatted listing of all registered checks with their</span>
+<span class="sd">                identifiers and implementation types.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;CheckSet: No checks registered.&quot;</span>

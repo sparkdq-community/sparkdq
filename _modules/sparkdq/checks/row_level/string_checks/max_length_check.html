@@ -358,17 +358,21 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">StringMaxLengthCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level check that flags rows where string values exceed the allowed maximum length.</span>
+<span class="sd">    Record-level validation check that enforces maximum string length constraints.</span>
 
-<span class="sd">    Non-null values in the specified column are validated against a maximum string length.</span>
-<span class="sd">    If `inclusive=True`, length must be &lt;= `max_length`; otherwise strictly &lt; `max_length`.</span>
+<span class="sd">    Validates that string values in the specified column remain within maximum</span>
+<span class="sd">    length limits, ensuring data consistency and storage efficiency. This check</span>
+<span class="sd">    is essential for validating field constraints such as database column limits,</span>
+<span class="sd">    display requirements, or data processing boundaries.</span>
 
-<span class="sd">    Null values are considered valid.</span>
+<span class="sd">    The check supports both inclusive and exclusive boundary semantics, enabling</span>
+<span class="sd">    precise control over string length validation requirements. Null values are</span>
+<span class="sd">    considered valid and do not trigger validation failures.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Column to validate.</span>
-<span class="sd">        max_length (int): Maximum allowed string length.</span>
-<span class="sd">        inclusive (bool): Whether equality (≤) is allowed. Defaults to True.</span>
+<span class="sd">        column (str): String column name that must remain within the maximum length limit.</span>
+<span class="sd">        max_length (int): Maximum acceptable string length threshold.</span>
+<span class="sd">        inclusive (bool): Whether the maximum length threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -380,14 +384,16 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a StringMaxLengthCheck instance.</span>
+<span class="sd">        Initialize the maximum string length validation check with threshold configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check.</span>
-<span class="sd">            column (str): Name of the column to validate.</span>
-<span class="sd">            max_length (int): Maximum allowed string length.</span>
-<span class="sd">            inclusive (bool, optional): If True, allows equality (&lt;=). If False, enforces strictly less (&lt;).</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check. Defaults to CRITICAL.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            column (str): String column name that must remain within the maximum length limit.</span>
+<span class="sd">            max_length (int): Maximum acceptable string length threshold.</span>
+<span class="sd">            inclusive (bool, optional): Whether the maximum length threshold includes the</span>
+<span class="sd">                boundary value itself. Defaults to True for inclusive comparison.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
+<span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
@@ -396,20 +402,23 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Applies the maximum string length check to the input DataFrame.</span>
+<span class="sd">        Execute the maximum string length validation logic against the configured column.</span>
 
-<span class="sd">        A row fails if:</span>
-<span class="sd">        - the value is not null, and</span>
-<span class="sd">        - the length exceeds the configured maximum (depending on `inclusive`)</span>
+<span class="sd">        Performs schema validation to ensure the target column exists, then applies</span>
+<span class="sd">        length validation logic to non-null string values. Records fail validation</span>
+<span class="sd">        when string values exceed the configured maximum length threshold.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): Input DataFrame.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for string length compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: Output with boolean check result column.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (excessive string length) and</span>
+<span class="sd">                False indicates compliance with length requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If the column is not present in the DataFrame.</span>
+<span class="sd">            MissingColumnError: When the configured column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -428,14 +437,16 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;string-max-length-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">StringMaxLengthCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration for StringMaxLengthCheck.</span>
+<span class="sd">    Configuration schema for maximum string length validation checks.</span>
 
-<span class="sd">    Ensures that string values do not exceed the specified maximum length.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce maximum string length constraints. The configuration includes</span>
+<span class="sd">    logical validation to ensure length parameters are positive and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Column to validate.</span>
-<span class="sd">        max_length (int): Maximum allowed length (must be &gt; 0).</span>
-<span class="sd">        inclusive (bool): If True, length must be &lt;= max_length. If False, strictly &lt; max_length.</span>
+<span class="sd">        column (str): String column name that must remain within the maximum length limit.</span>
+<span class="sd">        max_length (int): Maximum acceptable string length threshold (must be positive).</span>
+<span class="sd">        inclusive (bool): Whether the maximum length threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">StringMaxLengthCheck</span>
@@ -451,13 +462,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_max_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;StringMaxLengthCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate that max_length is greater than 0.</span>
+<span class="sd">        Validate the logical consistency of the configured maximum length parameter.</span>
+
+<span class="sd">        Ensures that the maximum length parameter is positive and meaningful for</span>
+<span class="sd">        string validation purposes. This validation prevents configuration errors</span>
+<span class="sd">        that would result in nonsensical validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            StringMaxLengthCheckConfig: The validated object.</span>
+<span class="sd">            StringMaxLengthCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If max_length &lt;= 0.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the maximum length parameter is</span>
+<span class="sd">                zero or negative, indicating an invalid configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max_length (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="si">}</span><span class="s2">) must be greater than 0&quot;</span><span class="p">)</span>

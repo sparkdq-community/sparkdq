@@ -358,15 +358,21 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">StringMinLengthCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level check that flags rows where string values are shorter than the required length.</span>
+<span class="sd">    Record-level validation check that enforces minimum string length requirements.</span>
 
-<span class="sd">    This check ensures that non-null string values in the specified column are at least `min_length`</span>
-<span class="sd">    characters long (or strictly longer, if `inclusive=False`). Null values are treated as valid.</span>
+<span class="sd">    Validates that string values in the specified column meet minimum length</span>
+<span class="sd">    criteria, ensuring data completeness and quality standards. This check is</span>
+<span class="sd">    essential for validating required fields such as names, descriptions, or</span>
+<span class="sd">    identifiers that must contain meaningful content.</span>
+
+<span class="sd">    The check supports both inclusive and exclusive boundary semantics, enabling</span>
+<span class="sd">    precise control over string length validation requirements. Null values are</span>
+<span class="sd">    considered valid and do not trigger validation failures.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Name of the string column to validate.</span>
-<span class="sd">        min_length (int): Threshold for string length.</span>
-<span class="sd">        inclusive (bool): If True, requires length &gt;= min_length. If False, requires length &gt; min_length.</span>
+<span class="sd">        column (str): String column name that must meet minimum length requirements.</span>
+<span class="sd">        min_length (int): Minimum acceptable string length threshold.</span>
+<span class="sd">        inclusive (bool): Whether the minimum length threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -378,15 +384,16 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a StringMinLengthCheck instance.</span>
+<span class="sd">        Initialize the minimum string length validation check with threshold configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check.</span>
-<span class="sd">            column (str): Name of the column to validate.</span>
-<span class="sd">            min_length (int): Minimum required string length.</span>
-<span class="sd">            inclusive (bool, optional): If True, allows equality. If False, requires strictly greater length.</span>
-<span class="sd">                Defaults to True.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result. Defaults to CRITICAL.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            column (str): String column name that must meet minimum length requirements.</span>
+<span class="sd">            min_length (int): Minimum acceptable string length threshold.</span>
+<span class="sd">            inclusive (bool, optional): Whether the minimum length threshold includes the</span>
+<span class="sd">                boundary value itself. Defaults to True for inclusive comparison.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
+<span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
@@ -395,21 +402,23 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the min-length check on the specified column.</span>
+<span class="sd">        Execute the minimum string length validation logic against the configured column.</span>
 
-<span class="sd">        A row fails if:</span>
-
-<span class="sd">        - value is not null, AND</span>
-<span class="sd">        - its length is &lt; min_length (or &lt;= min_length if inclusive=False)</span>
+<span class="sd">        Performs schema validation to ensure the target column exists, then applies</span>
+<span class="sd">        length validation logic to non-null string values. Records fail validation</span>
+<span class="sd">        when string values fall below the configured minimum length threshold.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): Input DataFrame.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for string length compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: DataFrame with an additional boolean column indicating check failures.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (insufficient string length) and</span>
+<span class="sd">                False indicates compliance with length requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If the column does not exist in the input DataFrame.</span>
+<span class="sd">            MissingColumnError: When the configured column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -428,14 +437,16 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;string-min-length-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">StringMinLengthCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration for StringMinLengthCheck.</span>
+<span class="sd">    Configuration schema for minimum string length validation checks.</span>
 
-<span class="sd">    Ensures that all non-null values in the specified column have a minimum length.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce minimum string length requirements. The configuration includes</span>
+<span class="sd">    logical validation to ensure length parameters are positive and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Name of the string column to validate.</span>
-<span class="sd">        min_length (int): Minimum allowed string length (must be &gt; 0).</span>
-<span class="sd">        inclusive (bool): If True, allows equality (&gt;=). If False, requires strictly greater length (&gt;).</span>
+<span class="sd">        column (str): String column name that must meet minimum length requirements.</span>
+<span class="sd">        min_length (int): Minimum acceptable string length threshold (must be positive).</span>
+<span class="sd">        inclusive (bool): Whether the minimum length threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">StringMinLengthCheck</span>
@@ -453,13 +464,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_min_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;StringMinLengthCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate that the configured `min_length` is greater than 0.</span>
+<span class="sd">        Validate the logical consistency of the configured minimum length parameter.</span>
+
+<span class="sd">        Ensures that the minimum length parameter is positive and meaningful for</span>
+<span class="sd">        string validation purposes. This validation prevents configuration errors</span>
+<span class="sd">        that would result in nonsensical validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            StringMinLengthCheckConfig: The validated configuration object.</span>
+<span class="sd">            StringMinLengthCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If `min_length` is not greater than 0.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the minimum length parameter is</span>
+<span class="sd">                zero or negative, indicating an invalid configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;min_length (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_length</span><span class="si">}</span><span class="s2">) must be greater than 0&quot;</span><span class="p">)</span>

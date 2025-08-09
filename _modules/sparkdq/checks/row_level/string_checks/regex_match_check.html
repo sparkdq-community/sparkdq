@@ -358,15 +358,23 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">RegexMatchCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level check that flags rows where a string column does not match a given regular expression pattern.</span>
+<span class="sd">    Record-level validation check that enforces regular expression pattern matching.</span>
 
-<span class="sd">    Null values are skipped by default. If `treat_null_as_failure` is True, nulls are treated as invalid.</span>
+<span class="sd">    Validates that string values in the specified column conform to a defined</span>
+<span class="sd">    regular expression pattern, ensuring data format consistency and business</span>
+<span class="sd">    rule compliance. This check is essential for validating structured data</span>
+<span class="sd">    such as email addresses, phone numbers, identifiers, or custom format</span>
+<span class="sd">    requirements.</span>
+
+<span class="sd">    The check provides flexible null handling and case sensitivity options,</span>
+<span class="sd">    enabling precise control over pattern matching requirements for different</span>
+<span class="sd">    validation scenarios.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Column to validate.</span>
-<span class="sd">        pattern (str): Regex pattern to match.</span>
-<span class="sd">        ignore_case (bool): Whether the match should ignore case (defaults to False).</span>
-<span class="sd">        treat_null_as_failure (bool): Whether nulls should be treated as failed (defaults to False).</span>
+<span class="sd">        column (str): String column name that must conform to the pattern.</span>
+<span class="sd">        pattern (str): Regular expression pattern for validation.</span>
+<span class="sd">        ignore_case (bool): Whether pattern matching should be case-insensitive.</span>
+<span class="sd">        treat_null_as_failure (bool): Whether null values should be considered validation failures.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -379,15 +387,17 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a RegexMatchCheck instance.</span>
+<span class="sd">        Initialize the regular expression pattern validation check with matching configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier of the check.</span>
-<span class="sd">            column (str): Name of the column to validate.</span>
-<span class="sd">            pattern (str): Regex pattern to apply.</span>
-<span class="sd">            ignore_case (bool): If True, performs case-insensitive matching.</span>
-<span class="sd">            treat_null_as_failure (bool): If True, nulls are treated as failed.</span>
-<span class="sd">            severity (Severity): Severity level of the check.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            column (str): String column name that must conform to the pattern.</span>
+<span class="sd">            pattern (str): Regular expression pattern for validation.</span>
+<span class="sd">            ignore_case (bool): Whether pattern matching should be case-insensitive.</span>
+<span class="sd">                Defaults to False for case-sensitive matching.</span>
+<span class="sd">            treat_null_as_failure (bool): Whether null values should be considered</span>
+<span class="sd">                validation failures. Defaults to False to skip null values.</span>
+<span class="sd">            severity (Severity): Classification level for validation failures.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
@@ -397,20 +407,24 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Applies the regex check on the specified column.</span>
+<span class="sd">        Execute the regular expression pattern validation logic against the configured column.</span>
 
-<span class="sd">        Rows are marked as failed if:</span>
-<span class="sd">        - the value is not null and does not match the regex</span>
-<span class="sd">        - or the value is null and `treat_null_as_failure` is True</span>
+<span class="sd">        Performs schema validation to ensure the target column exists, then applies</span>
+<span class="sd">        pattern matching logic with configurable case sensitivity and null handling.</span>
+<span class="sd">        Records fail validation when string values do not conform to the specified</span>
+<span class="sd">        regular expression pattern.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): Input Spark DataFrame.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for pattern compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: DataFrame with additional result column indicating check failures.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (pattern mismatch) and False</span>
+<span class="sd">                indicates compliance with pattern requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If the column does not exist in the DataFrame.</span>
+<span class="sd">            MissingColumnError: When the configured column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingColumnError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -432,15 +446,18 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;regex-match-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RegexMatchCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Configuration for RegexMatchCheck.</span>
+<span class="sd">    Configuration schema for regular expression pattern validation checks.</span>
 
-<span class="sd">    Validates that a string column matches a given regex pattern.</span>
+<span class="sd">    Defines the parameters required for configuring checks that enforce regular</span>
+<span class="sd">    expression pattern matching. This configuration enables declarative check</span>
+<span class="sd">    definition through external configuration sources while providing flexible</span>
+<span class="sd">    matching options.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        column (str): Column to validate.</span>
-<span class="sd">        pattern (str): Regex pattern to use for matching.</span>
-<span class="sd">        ignore_case (bool): If True, regex is case-insensitive (default: False).</span>
-<span class="sd">        treat_null_as_failure (bool): If True, null values are marked as failed (default: False).</span>
+<span class="sd">        column (str): String column name that must conform to the pattern.</span>
+<span class="sd">        pattern (str): Regular expression pattern for validation.</span>
+<span class="sd">        ignore_case (bool): Whether pattern matching should be case-insensitive.</span>
+<span class="sd">        treat_null_as_failure (bool): Whether null values should be considered validation failures.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">RegexMatchCheck</span>

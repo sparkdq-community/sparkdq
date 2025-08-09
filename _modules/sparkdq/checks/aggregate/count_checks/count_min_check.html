@@ -358,23 +358,28 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountMinCheck</span><span class="p">(</span><span class="n">BaseAggregateCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aggregate-level data quality check that ensures a DataFrame contains at least a minimum number of rows.</span>
+<span class="sd">    Dataset-level validation check that enforces minimum row count thresholds.</span>
 
-<span class="sd">    It is evaluated once per DataFrame and produces a pass/fail result</span>
-<span class="sd">    along with row count metrics.</span>
+<span class="sd">    Validates that the total number of records in a dataset meets or exceeds a</span>
+<span class="sd">    configured minimum threshold, ensuring adequate data volume for downstream</span>
+<span class="sd">    processing. This check is essential for detecting incomplete data loads,</span>
+<span class="sd">    processing failures, or insufficient data scenarios.</span>
+
+<span class="sd">    The check provides comprehensive metrics including actual counts and configured</span>
+<span class="sd">    thresholds to support detailed analysis of validation outcomes.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        min_count (int): The minimum acceptable number of rows.</span>
+<span class="sd">        min_count (int): Minimum acceptable number of records in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new RowCountMinCheck instance.</span>
+<span class="sd">        Initialize the minimum row count validation check with threshold configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            min_count (int): The minimum allowed number of rows.</span>
-<span class="sd">            severity (Severity, optional): The severity level to assign if the check fails.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            min_count (int): Minimum acceptable number of records in the dataset.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -382,17 +387,18 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the row count of the given DataFrame against the defined minimum.</span>
+<span class="sd">        Execute the minimum row count validation against the configured threshold.</span>
 
-<span class="sd">        If the row count is at least `min_count`, the check passes.</span>
-<span class="sd">        Otherwise, it fails and the actual count is included in the result metrics.</span>
+<span class="sd">        Computes the total row count of the dataset and evaluates it against the</span>
+<span class="sd">        configured minimum threshold. The validation passes when the actual count</span>
+<span class="sd">        meets or exceeds the minimum requirement.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The Spark DataFrame to evaluate.</span>
+<span class="sd">            df (DataFrame): The dataset to evaluate for minimum count compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            AggregateEvaluationResult: An object indicating the outcome of the check,</span>
-<span class="sd">            including relevant row count metrics.</span>
+<span class="sd">            AggregateEvaluationResult: Validation outcome including pass/fail status</span>
+<span class="sd">                and comprehensive metrics comparing actual count to minimum threshold.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">actual</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
         <span class="n">passed</span> <span class="o">=</span> <span class="n">actual</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_count</span>
@@ -410,13 +416,14 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;row-count-min-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RowCountMinCheckConfig</span><span class="p">(</span><span class="n">BaseAggregateCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the RowCountMinCheck.</span>
+<span class="sd">    Configuration schema for minimum row count validation checks.</span>
 
-<span class="sd">    This configuration defines a minimum row count requirement for a dataset. It ensures that the</span>
-<span class="sd">    ``min_count`` parameter is provided and is non-negative.</span>
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce minimum row count thresholds. The configuration includes logical</span>
+<span class="sd">    validation to ensure count parameters are positive and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        min_count (int): Minimum number of rows expected in the dataset.</span>
+<span class="sd">        min_count (int): Minimum acceptable number of records in the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">RowCountMinCheck</span>
@@ -427,13 +434,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RowCountMinCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate that the configured ``min_count`` is greater than 0.</span>
+<span class="sd">        Validate the logical consistency of the configured minimum count parameter.</span>
+
+<span class="sd">        Ensures that the minimum count parameter is positive and meaningful for</span>
+<span class="sd">        dataset validation purposes. This validation prevents configuration errors</span>
+<span class="sd">        that would result in nonsensical validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RowCountMinCheckConfig: The validated configuration object.</span>
+<span class="sd">            RowCountMinCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If ``min_count`` is negative.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the minimum count parameter is</span>
+<span class="sd">                zero or negative, indicating an invalid configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_count</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidCheckConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;min-count (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_count</span><span class="si">}</span><span class="s2">) must be greater than 0&quot;</span><span class="p">)</span>

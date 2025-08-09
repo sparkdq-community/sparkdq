@@ -360,28 +360,29 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ExactlyOneNotNullCheck</span><span class="p">(</span><span class="n">BaseRowCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that **exactly one** of the specified columns</span>
-<span class="sd">    is non-null in each row.</span>
+<span class="sd">    Record-level validation check that enforces mutual exclusivity constraints.</span>
 
-<span class="sd">    This check appends a boolean result column to the input DataFrame.</span>
-<span class="sd">    A row is marked as failed (True) if none or more than one of the specified columns are non-null.</span>
+<span class="sd">    Validates that exactly one column from a specified set contains a non-null</span>
+<span class="sd">    value per record, ensuring mutual exclusivity among related fields. This</span>
+<span class="sd">    check is essential for enforcing business rules where multiple options</span>
+<span class="sd">    exist but only one should be selected, such as contact methods, payment</span>
+<span class="sd">    types, or classification categories.</span>
 
-<span class="sd">    Example use cases:</span>
-<span class="sd">        - Ensure that a user has provided exactly one contact method: email, phone, or ID.</span>
-<span class="sd">        - Validate exclusivity constraints among optional fields.</span>
+<span class="sd">    The check fails when zero columns or multiple columns contain values,</span>
+<span class="sd">    ensuring strict adherence to single-choice constraints.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): Names of the columns to inspect for non-null values.</span>
+<span class="sd">        columns (List[str]): Column names where exactly one must contain a non-null value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize an ExactlyOneNotNullCheck instance.</span>
+<span class="sd">        Initialize the mutual exclusivity validation check with target columns.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            columns (List[str]): Names of the columns to validate for exclusivity.</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            columns (List[str]): Column names where exactly one must contain a non-null value.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
 <span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
@@ -389,20 +390,23 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the check on the given DataFrame.</span>
+<span class="sd">        Execute the mutual exclusivity validation logic against the configured columns.</span>
 
-<span class="sd">        This method appends a new boolean column (named after `check_id`) that indicates</span>
-<span class="sd">        for each row whether **exactly one** of the target columns is non-null.</span>
+<span class="sd">        Performs schema validation to ensure all target columns exist, then applies</span>
+<span class="sd">        counting logic to verify exactly one column contains a non-null value per</span>
+<span class="sd">        record. Records fail validation when zero or multiple columns contain values.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            df (DataFrame): The input Spark DataFrame to validate.</span>
+<span class="sd">            df (DataFrame): The dataset to validate for mutual exclusivity compliance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: A new DataFrame with an additional boolean column where</span>
-<span class="sd">                `True` indicates the row failed the check (not exactly one non-null), and `False` means valid.</span>
+<span class="sd">            DataFrame: Original dataset augmented with a boolean result column where</span>
+<span class="sd">                True indicates validation failure (not exactly one non-null value) and</span>
+<span class="sd">                False indicates compliance with exclusivity requirements.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            MissingColumnError: If any of the specified columns do not exist in the DataFrame.</span>
+<span class="sd">            MissingColumnError: When any configured column is not present in the</span>
+<span class="sd">                dataset schema, indicating a configuration mismatch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -425,10 +429,14 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;exactly-one-not-null-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExactlyOneNotNullCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the ExactlyOneNotNullCheck.</span>
+<span class="sd">    Configuration schema for mutual exclusivity validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that enforce exactly-one</span>
+<span class="sd">    constraints among related columns. This configuration enables declarative</span>
+<span class="sd">    check definition through external configuration sources.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The names of the columns where exactly one must be non-null per row.</span>
+<span class="sd">        columns (List[str]): Column names where exactly one must contain a non-null value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">ExactlyOneNotNullCheck</span>

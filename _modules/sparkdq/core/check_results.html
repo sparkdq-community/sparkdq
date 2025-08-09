@@ -346,17 +346,16 @@ document.write(`
                   
   <h1>Source code for sparkdq.core.check_results</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Defines standardized result containers for aggregate-level data quality checks</span>
-<span class="sd">within the sparkdq framework.</span>
+<span class="sd">Standardized result containers for aggregate-level data quality check outcomes.</span>
 
-<span class="sd">Includes:</span>
+<span class="sd">This module provides immutable, serializable data structures for representing</span>
+<span class="sd">the results of aggregate-level data quality validations. The design ensures</span>
+<span class="sd">consistent result formatting across all check implementations while providing</span>
+<span class="sd">rich metadata for debugging, reporting, and audit trail generation.</span>
 
-<span class="sd">- `AggregateEvaluationResult`: Represents the outcome of a single check evaluation.</span>
-<span class="sd">- `AggregateCheckResult`: Wraps the evaluation result together with metadata such as</span>
-<span class="sd">  check name, severity level, and configuration parameters.</span>
-
-<span class="sd">These dataclasses ensure consistency in how check results are represented,</span>
-<span class="sd">serialized, and consumed across the framework.</span>
+<span class="sd">The result containers separate the core evaluation outcome from the surrounding</span>
+<span class="sd">metadata, enabling flexible consumption patterns while maintaining complete</span>
+<span class="sd">traceability of validation results and their context.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
@@ -370,39 +369,22 @@ document.write(`
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AggregateEvaluationResult</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Encapsulates the outcome of an aggregate-level data quality check.</span>
+<span class="sd">    Immutable container for aggregate-level data quality check evaluation outcomes.</span>
 
-<span class="sd">    This class holds both the result (`passed`) and additional diagnostic `metrics`</span>
-<span class="sd">    that were computed as part of the check evaluation. These metrics provide context</span>
-<span class="sd">    for understanding why a check passed or failed, and are especially useful during</span>
-<span class="sd">    debugging or reporting.</span>
+<span class="sd">    Encapsulates both the binary validation result and the supporting metrics that</span>
+<span class="sd">    explain the evaluation process. The metrics provide essential context for</span>
+<span class="sd">    understanding validation outcomes, enabling detailed debugging and comprehensive</span>
+<span class="sd">    reporting of data quality assessment results.</span>
 
-<span class="sd">    For example, in a CountMinCheck, the metrics might include:</span>
-
-<span class="sd">    - ``actual_count``: the number of rows actually found</span>
-<span class="sd">    - ``expected_min_count``: the configured minimum count threshold</span>
-
-<span class="sd">    Such context allows users to understand the degree of deviation from expectations</span>
-<span class="sd">    when a check fails.</span>
+<span class="sd">    The separation of validation outcome from supporting metrics enables flexible</span>
+<span class="sd">    consumption patterns while ensuring complete traceability of the evaluation</span>
+<span class="sd">    process and its underlying calculations.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        passed (bool): Indicates whether the check condition was satisfied.</span>
-<span class="sd">        metrics (Dict[str, Any]): Additional computed values or diagnostic information</span>
-<span class="sd">            relevant to the check (e.g., actual vs. expected counts, computed averages,</span>
-<span class="sd">            standard deviations, etc.).</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; result = AggregateEvaluationResult(</span>
-<span class="sd">        ...     passed=False,</span>
-<span class="sd">        ...     metrics={</span>
-<span class="sd">        ...         &quot;actual_count&quot;: 42,</span>
-<span class="sd">        ...         &quot;expected_min_count&quot;: 100</span>
-<span class="sd">        ...     }</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; result.passed</span>
-<span class="sd">        False</span>
-<span class="sd">        &gt;&gt;&gt; result.metrics[&quot;actual_count&quot;]</span>
-<span class="sd">        42</span>
+<span class="sd">        passed (bool): Binary indicator of whether the validation criteria were satisfied.</span>
+<span class="sd">        metrics (Dict[str, Any]): Comprehensive diagnostic information including</span>
+<span class="sd">            computed values, thresholds, and contextual data that explain the</span>
+<span class="sd">            validation outcome.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span>
@@ -412,10 +394,14 @@ document.write(`
 <a class="viewcode-back" href="../../../api/core.html#sparkdq.core.AggregateEvaluationResult.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Serializes the evaluation result to a dictionary.</span>
+<span class="sd">        Convert the evaluation result to a serializable dictionary format.</span>
+
+<span class="sd">        Produces a clean dictionary representation suitable for JSON serialization,</span>
+<span class="sd">        logging, or integration with external reporting systems.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: Dictionary representation of the evaluation result.</span>
+<span class="sd">            Dict[str, Any]: Complete evaluation result in dictionary format,</span>
+<span class="sd">                preserving all validation outcomes and diagnostic metrics.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
@@ -425,17 +411,22 @@ document.write(`
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AggregateCheckResult</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Encapsulates the full result of an aggregate-level data quality check.</span>
+<span class="sd">    Comprehensive container for complete aggregate-level data quality check results.</span>
 
-<span class="sd">    Combines the evaluation outcome with metadata such as the check name, severity,</span>
-<span class="sd">    configuration parameters, and the result of the check evaluation.</span>
+<span class="sd">    Combines the core evaluation outcome with complete metadata including check</span>
+<span class="sd">    identification, configuration parameters, and execution context. This design</span>
+<span class="sd">    provides full traceability and context for each validation result, supporting</span>
+<span class="sd">    detailed audit trails and comprehensive reporting requirements.</span>
+
+<span class="sd">    The immutable structure ensures result integrity while providing convenient</span>
+<span class="sd">    access to both high-level outcomes and detailed diagnostic information.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        check (str): Name of the check (e.g., &quot;row-count-between&quot;).</span>
-<span class="sd">        check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">        severity (Severity): Severity level of the check result (e.g., &quot;CRITICAL&quot;, &quot;WARNING&quot;).</span>
-<span class="sd">        parameters (Dict[str, Any]): Configuration parameters used for this check.</span>
-<span class="sd">        result (AggregateEvaluationResult): The outcome of the check evaluation.</span>
+<span class="sd">        check (str): Canonical name of the check implementation.</span>
+<span class="sd">        check_id (str): Unique identifier for this specific check instance.</span>
+<span class="sd">        severity (Severity): Classification level determining failure handling behavior.</span>
+<span class="sd">        parameters (Dict[str, Any]): Complete configuration parameters used during execution.</span>
+<span class="sd">        result (AggregateEvaluationResult): Detailed evaluation outcome with supporting metrics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check</span><span class="p">:</span> <span class="nb">str</span>
@@ -446,12 +437,15 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Serializes the complete check result to a dictionary.</span>
+<span class="sd">        Convert the complete check result to a serializable dictionary format.</span>
 
-<span class="sd">        Converts enums (e.g., severity) to strings and includes the serialized evaluation result.</span>
+<span class="sd">        Produces a comprehensive dictionary representation with proper serialization</span>
+<span class="sd">        of complex types, suitable for JSON export, logging, or integration with</span>
+<span class="sd">        external monitoring and reporting systems.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: Dictionary containing check metadata and evaluation outcome.</span>
+<span class="sd">            Dict[str, Any]: Complete check result including metadata and evaluation</span>
+<span class="sd">                outcome, with all complex types properly serialized.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;check&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">,</span>
@@ -464,24 +458,28 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">passed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Indicates whether the check passed.</span>
+<span class="sd">        Retrieve the binary validation outcome for this check.</span>
 
-<span class="sd">        Shortcut to access the `passed` status from the embedded result.</span>
+<span class="sd">        Provides convenient access to the core validation result without requiring</span>
+<span class="sd">        navigation through the nested result structure.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the check passed, False otherwise.</span>
+<span class="sd">            bool: True if the validation criteria were satisfied, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">passed</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Provides access to the evaluation metrics.</span>
+<span class="sd">        Retrieve the diagnostic metrics from the evaluation process.</span>
 
-<span class="sd">        Shortcut to access the `metrics` from the embedded result.</span>
+<span class="sd">        Provides convenient access to the detailed metrics that explain the</span>
+<span class="sd">        validation outcome without requiring navigation through the nested</span>
+<span class="sd">        result structure.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: Metrics produced during the check evaluation.</span>
+<span class="sd">            Dict[str, Any]: Comprehensive diagnostic metrics including computed</span>
+<span class="sd">                values, thresholds, and contextual information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">metrics</span>
 </pre></div>

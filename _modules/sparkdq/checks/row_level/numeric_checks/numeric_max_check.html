@@ -357,10 +357,15 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericMaxCheck</span><span class="p">(</span><span class="n">BaseMaxCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that numeric values in the specified columns</span>
-<span class="sd">    are less than or equal to a defined maximum threshold.</span>
+<span class="sd">    Record-level validation check that enforces maximum numeric thresholds.</span>
 
-<span class="sd">    A row fails the check if **any** of the target columns contain a value above `max_value`.</span>
+<span class="sd">    Validates that numeric values in specified columns remain within or below a</span>
+<span class="sd">    configured maximum threshold. This check is essential for enforcing business</span>
+<span class="sd">    rules such as maximum transaction limits, capacity constraints, or acceptable</span>
+<span class="sd">    measurement ranges in data quality validation scenarios.</span>
+
+<span class="sd">    The check supports both inclusive and exclusive boundary semantics, enabling</span>
+<span class="sd">    precise control over numeric validation requirements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span>  <span class="c1"># implemented via BaseMaxCheck</span>
@@ -371,12 +376,16 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;numeric-max-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NumericMaxCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for the NumericMaxCheck.</span>
+<span class="sd">    Configuration schema for maximum numeric threshold validation checks.</span>
+
+<span class="sd">    Defines the parameters required for configuring checks that enforce maximum</span>
+<span class="sd">    numeric boundaries. This configuration enables declarative check definition</span>
+<span class="sd">    through external configuration sources while ensuring parameter validity.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): The list of numeric columns to validate.</span>
-<span class="sd">        max_value (float | int | Decimal): The maximum allowed value (inclusive).</span>
-<span class="sd">        inclusive (bool): Whether to include the maximum value.</span>
+<span class="sd">        columns (List[str]): Numeric column names that must remain within the maximum threshold.</span>
+<span class="sd">        max_value (float | int | Decimal): Maximum acceptable numeric value for validation.</span>
+<span class="sd">        inclusive (bool): Whether the maximum threshold includes the boundary value itself.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">NumericMaxCheck</span>

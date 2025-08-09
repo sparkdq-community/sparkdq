@@ -392,12 +392,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-examples">Quickstart Examples</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-approach">Python-Native Approach</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-approach">Declarative Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-examples">Quickstart Examples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-local-development-standalone-clusters">For Local Development / Standalone Clusters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-databricks-managed-platforms">For Databricks / Managed Platforms</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-sparkdq">Why SparkDQ?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-use-cases">Typical Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lets-build-better-data-together">Let’s Build Better Data Together</a></li>
@@ -418,34 +418,7 @@ document.write(`
 <p><strong>SparkDQ</strong> takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you’re validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.</p>
 <section id="quickstart-examples">
 <h2>Quickstart Examples<a class="headerlink" href="#quickstart-examples" title="Link to this heading">#</a></h2>
-<p>SparkDQ lets you define checks either using a <strong>Python-native</strong> interface or via <strong>declarative configuration</strong> (e.g. YAML, JSON, or database-driven). Regardless of how you define them, all checks are added to a <code class="docutils literal notranslate"><span class="pre">CheckSet</span></code> — which you pass to the validation engine. That’s it! Choose the style that fits your use case, and SparkDQ takes care of the rest.</p>
-<section id="python-native-approach">
-<h3>Python-Native Approach<a class="headerlink" href="#python-native-approach" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchDQEngine</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
-
-<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
-    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bob&quot;</span><span class="p">},</span>
-<span class="p">])</span>
-
-<span class="c1"># Define checks using the Python-native interface (no external config needed)</span>
-<span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
-<span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span><span class="n">NullCheckConfig</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">BatchDQEngine</span><span class="p">(</span><span class="n">check_set</span><span class="p">)</span><span class="o">.</span><span class="n">run_batch</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
-</pre></div>
-</div>
-</section>
-<section id="declarative-approach">
-<h3>Declarative Approach<a class="headerlink" href="#declarative-approach" title="Link to this heading">#</a></h3>
+<p>Define checks as dictionaries that can be loaded from YAML/JSON files, stored in databases, or generated by APIs — perfect for CI/CD pipelines and data contracts.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchDQEngine</span>
@@ -473,26 +446,26 @@ document.write(`
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>SparkDQ is designed to integrate seamlessly into real-world systems. Instead of relying on a custom DSL or
-rigid schemas, it accepts plain Python dictionaries for check definitions. This makes it easy to load checks
-from YAML or JSON files, configuration tables in databases, or even remote APIs — enabling smooth integration
-into orchestration tools, CI pipelines, and data contract workflows.</p>
-</section>
+<p><strong>Prefer Python-native development?</strong>
+Alternatively, you can define checks using Python classes for full type safety, IDE autocompletion, and compile-time validation. <a class="reference external" href="https://sparkdq-community.github.io/sparkdq/">See docs</a> for examples of both approaches.</p>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<p>Install the latest stable version using pip:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sparkdq</span>
+<section id="for-local-development-standalone-clusters">
+<h3>For Local Development / Standalone Clusters<a class="headerlink" href="#for-local-development-standalone-clusters" title="Link to this heading">#</a></h3>
+<p>Install with PySpark included:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>sparkdq<span class="o">[</span>spark<span class="o">]</span>
 </pre></div>
 </div>
-<p>Alternatively, if you’re using uv, a fast and modern Python package manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uv</span> <span class="n">add</span> <span class="n">sparkdq</span>
+</section>
+<section id="for-databricks-managed-platforms">
+<h3>For Databricks / Managed Platforms<a class="headerlink" href="#for-databricks-managed-platforms" title="Link to this heading">#</a></h3>
+<p>Install without PySpark (runtime provided by platform):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>sparkdq
 </pre></div>
 </div>
-<p>The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. If you’re running SparkDQ outside
-of managed platforms like Databricks, AWS Glue, or EMR, make sure Spark is installed and properly
-configured on your system. You can install it via your package manager or by following the official
-<a class="reference external" href="https://spark.apache.org/docs/latest/api/python/getting_started/install.html">Installation Guide</a>.</p>
+<p>The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.</p>
+</section>
 </section>
 <section id="why-sparkdq">
 <h2>Why SparkDQ?<a class="headerlink" href="#why-sparkdq" title="Link to this heading">#</a></h2>
@@ -509,15 +482,11 @@ configured on your system. You can install it via your package manager or by fol
 <h2>Typical Use Cases<a class="headerlink" href="#typical-use-cases" title="Link to this heading">#</a></h2>
 <p>SparkDQ is built for modern data platforms that demand trust, transparency, and resilience.
 It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.</p>
-<p>Whether you’re building a real-time ingestion pipeline or curating a data product for thousands of downstream users,
-SparkDQ lets you define and execute checks that are precise, scalable, and easy to maintain.</p>
-<p><strong>Common Scenarios</strong>:</p>
 <ul class="simple">
-<li><p>✅ Validating raw ingestion data</p></li>
-<li><p>✅ Enforcing schema and content rules before persisting to a lakehouse (Delta, Iceberg, Hudi)</p></li>
-<li><p>✅ Asserting quality conditions before analytics or ML training jobs</p></li>
-<li><p>✅ Flagging critical violations in batch pipelines via structured summaries and alerts</p></li>
-<li><p>✅ Driving Data Contracts: Use declarative checks in CI pipelines to catch issues before deployment</p></li>
+<li><p><strong>Data Ingestion</strong>: Validate raw data as it enters your platform with schema validation, completeness detection, format validation, and early failure detection</p></li>
+<li><p><strong>Lakehouse Quality</strong>: Enforce rules before persisting to storage including Delta/Iceberg/Hudi table validation, partition checks, and data freshness validation</p></li>
+<li><p><strong>ML &amp; Analytics</strong>: Assert conditions before model training with feature quality checks, training data validation, bias detection, and model I/O validation</p></li>
+<li><p><strong>Pipeline Monitoring</strong>: Flag violations in production workflows through real-time alerts, SLA compliance monitoring, data drift detection, and automated incident response</p></li>
 </ul>
 </section>
 <section id="lets-build-better-data-together">
@@ -572,12 +541,12 @@ SparkDQ lets you define and execute checks that are precise, scalable, and easy 
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-examples">Quickstart Examples</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-native-approach">Python-Native Approach</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#declarative-approach">Declarative Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-examples">Quickstart Examples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-local-development-standalone-clusters">For Local Development / Standalone Clusters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-databricks-managed-platforms">For Databricks / Managed Platforms</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-sparkdq">Why SparkDQ?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-use-cases">Typical Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lets-build-better-data-together">Let’s Build Better Data Together</a></li>

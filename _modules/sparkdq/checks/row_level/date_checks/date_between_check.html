@@ -358,10 +358,16 @@ document.write(`
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DateBetweenCheck</span><span class="p">(</span><span class="n">BaseBetweenCheck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Row-level data quality check that verifies that date values fall within a specified date range.</span>
+<span class="sd">    Record-level validation check that enforces date range boundaries.</span>
 
-<span class="sd">    A row fails the check if any of the target columns contain a date before `min_value` or after `max_value`,</span>
-<span class="sd">    depending on the configured inclusivity.</span>
+<span class="sd">    Validates that date values in specified columns fall within a configured</span>
+<span class="sd">    date range, ensuring temporal data integrity and business rule compliance.</span>
+<span class="sd">    This check is essential for validating reporting periods, operational</span>
+<span class="sd">    timeframes, and historical data constraints.</span>
+
+<span class="sd">    The check supports independent inclusivity control for both minimum and</span>
+<span class="sd">    maximum boundaries, enabling precise validation criteria for complex</span>
+<span class="sd">    temporal business requirements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -374,15 +380,17 @@ document.write(`
         <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a new DateBetweenCheck.</span>
+<span class="sd">        Initialize the date range validation check with boundary configuration.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            check_id (str): Unique identifier for the check instance.</span>
-<span class="sd">            columns (List[str]): List of date columns to check.</span>
-<span class="sd">            min_value (str): Minimum allowed date in &#39;YYYY-MM-DD&#39; format.</span>
-<span class="sd">            max_value (str): Maximum allowed date in &#39;YYYY-MM-DD&#39; format.</span>
-<span class="sd">            inclusive (tuple[bool, bool], optional): Inclusion flags for (min_value, max_value).</span>
-<span class="sd">            severity (Severity, optional): Severity level of the check result. Defaults to Severity.CRITICAL.</span>
+<span class="sd">            check_id (str): Unique identifier for this check instance.</span>
+<span class="sd">            columns (List[str]): Date column names that must fall within the specified range.</span>
+<span class="sd">            min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">            max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">            inclusive (tuple[bool, bool], optional): Inclusivity settings for minimum and</span>
+<span class="sd">                maximum boundaries respectively. Defaults to (False, False) for exclusive bounds.</span>
+<span class="sd">            severity (Severity, optional): Classification level for validation failures.</span>
+<span class="sd">                Defaults to Severity.CRITICAL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">check_id</span><span class="o">=</span><span class="n">check_id</span><span class="p">,</span>
@@ -400,13 +408,18 @@ document.write(`
 <span class="nd">@register_check_config</span><span class="p">(</span><span class="n">check_name</span><span class="o">=</span><span class="s2">&quot;date-between-check&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DateBetweenCheckConfig</span><span class="p">(</span><span class="n">BaseRowCheckConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Declarative configuration model for DateBetweenCheck.</span>
+<span class="sd">    Configuration schema for date range validation checks.</span>
+
+<span class="sd">    Defines the parameters and validation rules for configuring checks that</span>
+<span class="sd">    enforce date range constraints. The configuration includes logical</span>
+<span class="sd">    validation to ensure boundary parameters are consistent and meaningful.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        columns (List[str]): Date columns to validate.</span>
-<span class="sd">        min_value (str): Minimum allowed date in &#39;YYYY-MM-DD&#39; format.</span>
-<span class="sd">        max_value (str): Maximum allowed date in &#39;YYYY-MM-DD&#39; format.</span>
-<span class="sd">        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.</span>
+<span class="sd">        columns (List[str]): Date column names that must fall within the specified range.</span>
+<span class="sd">        min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">        max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).</span>
+<span class="sd">        inclusive (tuple[bool, bool]): Inclusivity settings for minimum and maximum</span>
+<span class="sd">            boundaries respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">check_class</span> <span class="o">=</span> <span class="n">DateBetweenCheck</span>
@@ -423,14 +436,18 @@ document.write(`
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_between_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DateBetweenCheckConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validates that min_value and max_value are properly configured</span>
-<span class="sd">        and that ``min_value`` is not greater than ``max_value``.</span>
+<span class="sd">        Validate the logical consistency of the configured date range parameters.</span>
+
+<span class="sd">        Ensures that the minimum and maximum date parameters form a valid temporal</span>
+<span class="sd">        range and that both values represent valid dates. This validation prevents</span>
+<span class="sd">        configuration errors that would result in impossible validation conditions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DateBetweenCheckConfig: The validated configuration object.</span>
+<span class="sd">            DateBetweenCheckConfig: The validated configuration instance.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            InvalidCheckConfigurationError: If min_value or max_value are not set or if min_value &gt; max_value.</span>
+<span class="sd">            InvalidCheckConfigurationError: When the date range parameters are</span>
+<span class="sd">                logically inconsistent or contain invalid date values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Additional safety check if wanted (basic string comparison works for ISO dates)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_value</span><span class="p">:</span>
