@@ -91,13 +91,13 @@ The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. Spar
 SparkDQ is built for modern data platforms that demand trust, transparency, and resilience.
 It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.
 
-- 🔄 **Data Ingestion**: Validate raw data as it enters your platform with schema validation, completeness detection, format validation, and early failure detection
+- **Data Ingestion**: Validate raw data as it enters your platform with schema validation, completeness detection, format validation, and early failure detection
 
-- 🏠 **Lakehouse Quality**: Enforce rules before persisting to storage including Delta/Iceberg/Hudi table validation, partition checks, and data freshness validation
+- **Lakehouse Quality**: Enforce rules before persisting to storage including Delta/Iceberg/Hudi table validation, partition checks, and data freshness validation
 
-- 🤖 **ML & Analytics**: Assert conditions before model training with feature quality checks, training data validation, bias detection, and model I/O validation
+- **ML & Analytics**: Assert conditions before model training with feature quality checks, training data validation, bias detection, and model I/O validation
 
-- � **Pipeline Monitoring**: Flag violations in production workflows through real-time alerts, SLA compliance monitoring, data drift detection, and automated incident response
+- **Pipeline Monitoring**: Flag violations in production workflows through real-time alerts, SLA compliance monitoring, data drift detection, and automated incident response
 
 ## Let’s Build Better Data Together
 
