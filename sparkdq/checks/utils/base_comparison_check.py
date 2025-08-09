@@ -14,15 +14,21 @@ SupportsComparison = Union[int, float, Decimal, str]
 
 class BaseComparisonCheck(BaseRowCheck, ABC):
     """
-    Abstract base class for comparison-based row-level checks like Min, Max, Between, Exact.
+    Abstract foundation for comparison-based record-level validation checks.
 
-    Subclasses must implement the `comparison_condition` method, which defines the
-    boolean expression for a single column. Multiple columns are combined with OR logic:
-    if any column fails the check, the row is considered invalid.
+    Provides a unified framework for implementing checks that compare column values
+    against thresholds, ranges, or other criteria. The design supports multiple
+    column validation with OR-based failure logic, where any failing column marks
+    the entire record as invalid.
+
+    The class handles optional type casting to ensure proper comparison semantics
+    across different data types, and provides a consistent interface for all
+    comparison-based validation scenarios.
 
     Attributes:
-        columns (List[str]): The list of columns to apply the comparison on.
-        cast_type (Optional[str]): Optional Spark SQL type for casting columns (e.g., 'date', 'timestamp').
+        columns (List[str]): Column names to which the comparison logic will be applied.
+        cast_type (Optional[str]): Optional Spark SQL type specification for column
+            casting before comparison operations.
     """
 
     def __init__(
@@ -33,13 +39,15 @@ class BaseComparisonCheck(BaseRowCheck, ABC):
         cast_type: Optional[str] = None,
     ):
         """
-        Initialize the BaseComparisonCheck.
+        Initialize the comparison-based validation check with target columns and configuration.
 
         Args:
-            check_id (str): Unique identifier for the check.
-            columns (List[str]): Column names to which the check is applied.
-            severity (Severity, optional): Severity level of the check. Defaults to CRITICAL.
-            cast_type (Optional[str], optional): Optional Spark SQL data type to cast the columns.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names that will be subject to comparison validation.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
+            cast_type (Optional[str], optional): Spark SQL type for column casting before
+                comparison operations, enabling proper type semantics.
         """
         super().__init__(check_id=check_id, severity=severity)
         self.columns = columns
@@ -48,33 +56,39 @@ class BaseComparisonCheck(BaseRowCheck, ABC):
     @abstractmethod
     def comparison_condition(self, column: Column) -> Column:
         """
-        Define the condition that determines whether a value is invalid.
+        Define the comparison logic that identifies invalid values.
 
-        This method must be implemented by all subclasses.
+        Subclasses must implement this method to specify their particular comparison
+        criteria. The returned expression should evaluate to True for values that
+        fail the validation check.
 
         Args:
-            column (Column): The Spark column expression (casted if applicable).
+            column (Column): Spark column expression, potentially type-cast according
+                to the check configuration.
 
         Returns:
-            Column: A boolean expression where True indicates a failure.
+            Column: Boolean expression where True indicates validation failure.
         """
         ...
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Apply the comparison check to the specified columns.
+        Execute the comparison validation logic against the configured columns.
 
-        The check fails for a row if **any** of the columns violates the comparison condition.
+        Performs schema validation to ensure all target columns exist, then applies
+        the comparison logic with OR-based failure semantics. Records fail validation
+        when any configured column violates the comparison criteria.
 
         Args:
-            df (DataFrame): The input DataFrame to validate.
+            df (DataFrame): The dataset to validate against comparison criteria.
 
         Returns:
-            DataFrame: The DataFrame with an additional boolean column (named after `check_id`),
-                       where True indicates a failed check.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure and False indicates compliance.
 
         Raises:
-            MissingColumnError: If any of the specified columns do not exist in the DataFrame.
+            MissingColumnError: When any configured column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         for column in self.columns:
             if column not in df.columns:
@@ -90,27 +104,37 @@ class BaseComparisonCheck(BaseRowCheck, ABC):
 
     def _apply_cast(self, column: Column) -> Column:
         """
-        Cast the column to the specified type if `cast_type` is set.
+        Apply optional type casting to the column expression.
+
+        Performs type casting when a cast_type is configured, ensuring proper
+        type semantics for comparison operations. This is particularly important
+        for date, timestamp, and numeric comparisons where type consistency
+        is critical for accurate validation results.
 
         Args:
-            column (Column): The original Spark column.
+            column (Column): The original Spark column expression.
 
         Returns:
-            Column: The (optionally) casted column.
+            Column: The column expression with optional type casting applied.
         """
         return column.cast(self.cast_type) if self.cast_type else column
 
 
 class BaseMinCheck(BaseComparisonCheck):
     """
-    Abstract base class for all minimum bound checks.
+    Abstract foundation for minimum threshold validation checks.
 
-    This check flags rows where **any** of the specified columns fall **below** a defined minimum value.
-    The comparison condition can be inclusive (>=) or exclusive (>), depending on the configuration.
+    Provides specialized comparison logic for validating that column values meet
+    or exceed minimum threshold requirements. The check supports both inclusive
+    and exclusive boundary semantics, enabling precise control over validation
+    criteria for different business requirements.
+
+    Records fail validation when any configured column falls below the specified
+    minimum threshold according to the configured inclusivity rules.
 
     Attributes:
-        min_value (SupportsRichComparison): The lower bound for the comparison.
-        inclusive (bool, optional): Whether the minimum is inclusive (>=) or exclusive (>).
+        min_value (SupportsComparison): The minimum acceptable value for comparison operations.
+        inclusive (bool): Whether the minimum threshold is inclusive (>=) or exclusive (>).
     """
 
     def __init__(
@@ -123,15 +147,18 @@ class BaseMinCheck(BaseComparisonCheck):
         cast_type: str | None = None,
     ):
         """
-        Initialize the base minimum check.
+        Initialize the minimum threshold validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): Columns to which the minimum condition applies.
-            min_value (SupportsRichComparison): The lower bound for the comparison.
-            inclusive (bool, optional): Whether the minimum is inclusive (>=) or exclusive (>).
-            severity (Severity, optional): Severity level of the check result.
-            cast_type (str | None, optional): Optional type to cast columns to before comparison.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names that must meet minimum threshold requirements.
+            min_value (SupportsComparison): The minimum acceptable value for validation.
+            inclusive (bool, optional): Whether the minimum threshold includes the boundary
+                value itself. Defaults to False for exclusive comparison.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
+            cast_type (str | None, optional): Optional Spark SQL type for column casting
+                before comparison operations.
         """
         super().__init__(check_id=check_id, columns=columns, severity=severity, cast_type=cast_type)
         self.min_value = min_value
@@ -139,13 +166,17 @@ class BaseMinCheck(BaseComparisonCheck):
 
     def comparison_condition(self, column: Column) -> Column:
         """
-        Defines the comparison condition that flags values below the minimum.
+        Generate the comparison expression for minimum threshold validation.
+
+        Creates the appropriate comparison logic based on the configured inclusivity
+        setting, ensuring values are properly validated against the minimum threshold.
 
         Args:
-            column (Column): The Spark column to evaluate.
+            column (Column): The Spark column expression to evaluate against the threshold.
 
         Returns:
-            Column: Boolean expression that returns True when the value fails the check.
+            Column: Boolean expression that evaluates to True when values fail to
+                meet the minimum threshold requirements.
         """
         if self.inclusive:
             return column < F.lit(self.min_value)
@@ -155,13 +186,19 @@ class BaseMinCheck(BaseComparisonCheck):
 
 class BaseMaxCheck(BaseComparisonCheck):
     """
-    Abstract base class for all maximum bound checks.
+    Abstract foundation for maximum threshold validation checks.
 
-    This check flags rows where **any** of the specified columns exceed a defined maximum value.
-    The comparison condition can be inclusive (<=) or exclusive (<), depending on the configuration.
+    Provides specialized comparison logic for validating that column values remain
+    within or below maximum threshold requirements. The check supports both inclusive
+    and exclusive boundary semantics, enabling precise control over validation
+    criteria for different business requirements.
+
+    Records fail validation when any configured column exceeds the specified
+    maximum threshold according to the configured inclusivity rules.
 
     Attributes:
-        max_value (SupportsComparison): The upper bound for the comparison.
+        max_value (SupportsComparison): The maximum acceptable value for comparison operations.
+        inclusive (bool): Whether the maximum threshold is inclusive (<=) or exclusive (<).
     """
 
     def __init__(
@@ -174,15 +211,18 @@ class BaseMaxCheck(BaseComparisonCheck):
         cast_type: str | None = None,
     ):
         """
-        Initialize the base maximum check.
+        Initialize the maximum threshold validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): Columns to which the maximum condition applies.
-            max_value (SupportsComparison): The upper bound for the comparison.
-            inclusive (bool, optional): Whether the maximum is inclusive (<=) or exclusive (<).
-            severity (Severity, optional): Severity level of the check result.
-            cast_type (str | None, optional): Optional type to cast columns to before comparison.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names that must remain within maximum threshold limits.
+            max_value (SupportsComparison): The maximum acceptable value for validation.
+            inclusive (bool, optional): Whether the maximum threshold includes the boundary
+                value itself. Defaults to False for exclusive comparison.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
+            cast_type (str | None, optional): Optional Spark SQL type for column casting
+                before comparison operations.
         """
         super().__init__(check_id=check_id, columns=columns, severity=severity, cast_type=cast_type)
         self.max_value = max_value
@@ -190,13 +230,17 @@ class BaseMaxCheck(BaseComparisonCheck):
 
     def comparison_condition(self, column: Column) -> Column:
         """
-        Defines the comparison condition that flags values above the maximum.
+        Generate the comparison expression for maximum threshold validation.
+
+        Creates the appropriate comparison logic based on the configured inclusivity
+        setting, ensuring values are properly validated against the maximum threshold.
 
         Args:
-            column (Column): The Spark column to evaluate.
+            column (Column): The Spark column expression to evaluate against the threshold.
 
         Returns:
-            Column: Boolean expression that returns True when the value fails the check.
+            Column: Boolean expression that evaluates to True when values exceed
+                the maximum threshold requirements.
         """
         if self.inclusive:
             return column > F.lit(self.max_value)
@@ -206,15 +250,21 @@ class BaseMaxCheck(BaseComparisonCheck):
 
 class BaseBetweenCheck(BaseComparisonCheck):
     """
-    Abstract base class for all range-bound checks.
+    Abstract foundation for range-based validation checks.
 
-    This check flags rows where **any** of the specified columns lie outside the defined range.
-    The comparison condition supports control over inclusivity on both bounds.
+    Provides specialized comparison logic for validating that column values fall
+    within specified ranges. The check supports independent inclusivity control
+    for both minimum and maximum boundaries, enabling precise validation criteria
+    for complex business requirements.
+
+    Records fail validation when any configured column falls outside the specified
+    range according to the configured inclusivity rules for both boundaries.
 
     Attributes:
-        min_value (SupportsComparison): The lower bound.
-        max_value (SupportsComparison): The upper bound.
-        inclusive (Tuple[bool, bool]): Whether to include min and/or max in the valid range.
+        min_value (SupportsComparison): The minimum acceptable value for the valid range.
+        max_value (SupportsComparison): The maximum acceptable value for the valid range.
+        inclusive (Tuple[bool, bool]): Inclusivity settings for minimum and maximum
+            boundaries respectively.
     """
 
     def __init__(
@@ -228,16 +278,19 @@ class BaseBetweenCheck(BaseComparisonCheck):
         cast_type: str | None = None,
     ):
         """
-        Initialize the base range check.
+        Initialize the range validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): Columns to which the range condition applies.
-            min_value (SupportsComparison): The lower bound of the valid range.
-            max_value (SupportsComparison): The upper bound of the valid range.
-            inclusive (Tuple[bool, bool], optional): Tuple controlling inclusivity for min and max bounds.
-            severity (Severity, optional): Severity level of the check result.
-            cast_type (str | None, optional): Optional type to cast columns to before comparison.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names that must fall within the specified range.
+            min_value (SupportsComparison): The minimum acceptable value for the valid range.
+            max_value (SupportsComparison): The maximum acceptable value for the valid range.
+            inclusive (Tuple[bool, bool], optional): Inclusivity settings for minimum and
+                maximum boundaries respectively. Defaults to (False, False) for exclusive bounds.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
+            cast_type (str | None, optional): Optional Spark SQL type for column casting
+                before comparison operations.
         """
         super().__init__(check_id=check_id, columns=columns, severity=severity, cast_type=cast_type)
         self.min_value = min_value
@@ -246,13 +299,18 @@ class BaseBetweenCheck(BaseComparisonCheck):
 
     def comparison_condition(self, column: Column) -> Column:
         """
-        Defines the comparison condition that flags values outside the valid range.
+        Generate the comparison expression for range validation.
+
+        Creates the appropriate comparison logic based on the configured inclusivity
+        settings for both boundaries, ensuring values are properly validated against
+        the specified range requirements.
 
         Args:
-            column (Column): The Spark column to evaluate.
+            column (Column): The Spark column expression to evaluate against the range.
 
         Returns:
-            Column: Boolean expression that returns True when the value fails the check.
+            Column: Boolean expression that evaluates to True when values fall
+                outside the acceptable range boundaries.
         """
         min_cmp = column < F.lit(self.min_value) if self.inclusive[0] else column <= F.lit(self.min_value)
         max_cmp = column > F.lit(self.max_value) if self.inclusive[1] else column >= F.lit(self.max_value)

@@ -2067,10 +2067,14 @@ wheels = [
 
 [[package]]
 name = "sparkdq"
-version = "0.9.0"
+version = "0.10.0"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
+]
+
+[package.optional-dependencies]
+spark = [
     { name = "pyspark" },
 ]
 
@@ -2096,6 +2100,7 @@ test = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyarrow" },
+    { name = "pyspark" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-mock" },
@@ -2104,8 +2109,9 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "pydantic", specifier = ">=2.8.0,<3.0.0" },
-    { name = "pyspark", specifier = ">=3.5.0,<4.0.0" },
+    { name = "pyspark", marker = "extra == 'spark'", specifier = ">=3.5.0,<4.0.0" },
 ]
+provides-extras = ["spark"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pre-commit", specifier = ">=4.2.0,<5.0.0" }]
@@ -2127,6 +2133,7 @@ test = [
     { name = "numpy", specifier = "<2.0.0" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pyarrow", specifier = ">=19.0.0,<20.0.0" },
+    { name = "pyspark", specifier = ">=3.5.0,<4.0.0" },
     { name = "pytest", specifier = ">=8.3.5,<9.0.0" },
     { name = "pytest-cov", specifier = ">=6.1.0,<7.0.0" },
     { name = "pytest-mock", specifier = ">=3.14.0" },

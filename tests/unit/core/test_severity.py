@@ -6,12 +6,11 @@ from sparkdq.exceptions import InvalidSeverityLevelError
 
 def test_normalize_severity_from_valid_string() -> None:
     """
-    Validates that string representations of severity levels are correctly converted to enum values.
+    Verify that normalize_severity correctly converts valid string inputs to Severity enums.
 
-    Given valid string inputs (case-insensitive) like "critical" or "WARNING",
-    the function should normalize them to the corresponding Severity enum.
-
-    This ensures consistent severity handling in config-driven workflows.
+    The normalization should handle case-insensitive string inputs and produce
+    the appropriate enum values, ensuring consistent severity handling across
+    configuration-driven validation workflows.
     """
     # Arrange: Define input values and their expected normalized enum
     inputs = {
@@ -29,12 +28,11 @@ def test_normalize_severity_from_valid_string() -> None:
 
 def test_normalize_severity_invalid_string() -> None:
     """
-    Validates that an unknown severity string raises an InvalidSeverityLevelError.
+    Verify that normalize_severity raises InvalidSeverityLevelError for unrecognized inputs.
 
-    Given an invalid string such as "fatal",
-    the function should raise an InvalidSeverityLevelError with a helpful message.
-
-    This test ensures that incorrect user input is caught early and explicitly.
+    The normalization should perform input validation and provide clear error
+    messages when encountering invalid severity specifications, enabling early
+    detection of configuration errors.
     """
     # Arrange: Define an invalid input string
     invalid_input = "fatal"

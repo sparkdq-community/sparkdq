@@ -4,7 +4,13 @@ from pyspark.sql import SparkSession
 
 @pytest.fixture(scope="session")
 def spark():
-    """Creates a spark session that is optimized for unit tests."""
+    """
+    Provide a Spark session optimized for unit testing environments.
+
+    Configures a local Spark session with minimal resource allocation and
+    reduced parallelism to ensure fast, deterministic test execution while
+    maintaining compatibility with PySpark testing utilities.
+    """
     spark = (
         SparkSession.builder.master("local[1]")
         .appName("local-tests")

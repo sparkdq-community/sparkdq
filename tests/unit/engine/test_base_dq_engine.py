@@ -1,13 +1,13 @@
 """
-Unit tests for BaseDQEngine functionality.
+Unit tests for BaseDQEngine, the abstract foundation for data quality validation engines.
 
-These tests ensure that:
-- `get_checks()` returns an empty list by default
-- A CheckManager (CheckSet) can be assigned using `set_check_manager()`
-- Once assigned, the engine delegates check retrieval to the manager
+This test suite validates the core engine functionality including:
+- Default behavior for check retrieval when no CheckSet is configured
+- Proper delegation to CheckSet instances for check management
+- Consistent behavior patterns that must be maintained across all engine implementations
 
-BaseDQEngine serves as the shared logic foundation for batch and streaming engines,
-so these behaviors must be consistent across all derived implementations.
+BaseDQEngine provides the shared architectural foundation for both batch and streaming
+validation engines, ensuring consistent check management behavior across execution paradigms.
 """
 
 from typing import List
@@ -38,8 +38,10 @@ class DummyCheckSet(CheckSet):
 
 def test_get_checks_without_check_manager() -> None:
     """
-    Validates that get_checks() returns an empty list
-    if no CheckManager has been assigned.
+    Verify that get_checks returns an empty list when no CheckSet is configured.
+
+    The engine should provide predictable default behavior when operating
+    without a configured check collection, enabling safe initialization patterns.
     """
     # Arrange
     engine = DummyEngine()
@@ -53,9 +55,10 @@ def test_get_checks_without_check_manager() -> None:
 
 def test_get_checks_with_check_manager() -> None:
     """
-    Validates that get_checks() returns the checks provided by the assigned CheckManager.
+    Verify that get_checks correctly delegates to the configured CheckSet instance.
 
-    This confirms that set_check_manager() overrides the internal check list.
+    The engine should properly integrate with CheckSet instances, providing
+    access to all registered checks through the standard retrieval interface.
     """
     # Arrange
     engine = DummyEngine(DummyCheckSet())

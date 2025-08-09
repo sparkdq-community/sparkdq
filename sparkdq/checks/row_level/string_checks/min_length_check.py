@@ -11,15 +11,21 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class StringMinLengthCheck(BaseRowCheck):
     """
-    Row-level check that flags rows where string values are shorter than the required length.
+    Record-level validation check that enforces minimum string length requirements.
 
-    This check ensures that non-null string values in the specified column are at least `min_length`
-    characters long (or strictly longer, if `inclusive=False`). Null values are treated as valid.
+    Validates that string values in the specified column meet minimum length
+    criteria, ensuring data completeness and quality standards. This check is
+    essential for validating required fields such as names, descriptions, or
+    identifiers that must contain meaningful content.
+
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over string length validation requirements. Null values are
+    considered valid and do not trigger validation failures.
 
     Attributes:
-        column (str): Name of the string column to validate.
-        min_length (int): Threshold for string length.
-        inclusive (bool): If True, requires length >= min_length. If False, requires length > min_length.
+        column (str): String column name that must meet minimum length requirements.
+        min_length (int): Minimum acceptable string length threshold.
+        inclusive (bool): Whether the minimum length threshold includes the boundary value itself.
     """
 
     def __init__(
@@ -31,15 +37,16 @@ class StringMinLengthCheck(BaseRowCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a StringMinLengthCheck instance.
+        Initialize the minimum string length validation check with threshold configuration.
 
         Args:
-            check_id (str): Unique identifier for the check.
-            column (str): Name of the column to validate.
-            min_length (int): Minimum required string length.
-            inclusive (bool, optional): If True, allows equality. If False, requires strictly greater length.
-                Defaults to True.
-            severity (Severity, optional): Severity level of the check result. Defaults to CRITICAL.
+            check_id (str): Unique identifier for this check instance.
+            column (str): String column name that must meet minimum length requirements.
+            min_length (int): Minimum acceptable string length threshold.
+            inclusive (bool, optional): Whether the minimum length threshold includes the
+                boundary value itself. Defaults to True for inclusive comparison.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
         self.column = column
@@ -48,21 +55,23 @@ class StringMinLengthCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Execute the min-length check on the specified column.
+        Execute the minimum string length validation logic against the configured column.
 
-        A row fails if:
-
-        - value is not null, AND
-        - its length is < min_length (or <= min_length if inclusive=False)
+        Performs schema validation to ensure the target column exists, then applies
+        length validation logic to non-null string values. Records fail validation
+        when string values fall below the configured minimum length threshold.
 
         Args:
-            df (DataFrame): Input DataFrame.
+            df (DataFrame): The dataset to validate for string length compliance.
 
         Returns:
-            DataFrame: DataFrame with an additional boolean column indicating check failures.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (insufficient string length) and
+                False indicates compliance with length requirements.
 
         Raises:
-            MissingColumnError: If the column does not exist in the input DataFrame.
+            MissingColumnError: When the configured column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         if self.column not in df.columns:
             raise MissingColumnError(self.column, df.columns)
@@ -79,14 +88,16 @@ class StringMinLengthCheck(BaseRowCheck):
 @register_check_config(check_name="string-min-length-check")
 class StringMinLengthCheckConfig(BaseRowCheckConfig):
     """
-    Configuration for StringMinLengthCheck.
+    Configuration schema for minimum string length validation checks.
 
-    Ensures that all non-null values in the specified column have a minimum length.
+    Defines the parameters and validation rules for configuring checks that
+    enforce minimum string length requirements. The configuration includes
+    logical validation to ensure length parameters are positive and meaningful.
 
     Attributes:
-        column (str): Name of the string column to validate.
-        min_length (int): Minimum allowed string length (must be > 0).
-        inclusive (bool): If True, allows equality (>=). If False, requires strictly greater length (>).
+        column (str): String column name that must meet minimum length requirements.
+        min_length (int): Minimum acceptable string length threshold (must be positive).
+        inclusive (bool): Whether the minimum length threshold includes the boundary value itself.
     """
 
     check_class = StringMinLengthCheck
@@ -102,13 +113,18 @@ class StringMinLengthCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_min_length(self) -> "StringMinLengthCheckConfig":
         """
-        Validate that the configured `min_length` is greater than 0.
+        Validate the logical consistency of the configured minimum length parameter.
+
+        Ensures that the minimum length parameter is positive and meaningful for
+        string validation purposes. This validation prevents configuration errors
+        that would result in nonsensical validation conditions.
 
         Returns:
-            StringMinLengthCheckConfig: The validated configuration object.
+            StringMinLengthCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If `min_length` is not greater than 0.
+            InvalidCheckConfigurationError: When the minimum length parameter is
+                zero or negative, indicating an invalid configuration.
         """
         if self.min_length <= 0:
             raise InvalidCheckConfigurationError(f"min_length ({self.min_length}) must be greater than 0")

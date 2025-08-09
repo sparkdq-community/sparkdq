@@ -11,11 +11,16 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class NumericBetweenCheck(BaseBetweenCheck):
     """
-    Row-level data quality check that verifies that numeric values in the specified columns
-    lie between a defined minimum (`min_value`) and maximum (`max_value`) threshold.
+    Record-level validation check that enforces numeric range boundaries.
 
-    A row fails the check if **any** of the target columns contain a value below `min_value`
-    or above `max_value`.
+    Validates that numeric values in specified columns fall within a configured
+    numeric range, ensuring data integrity and business rule compliance. This
+    check is essential for validating acceptable measurement ranges, financial
+    limits, or operational parameters in data quality validation scenarios.
+
+    The check supports independent inclusivity control for both minimum and
+    maximum boundaries, enabling precise validation criteria for complex
+    numeric business requirements.
     """
 
     pass  # Fully handled by BaseBetweenCheck
@@ -24,17 +29,21 @@ class NumericBetweenCheck(BaseBetweenCheck):
 @register_check_config(check_name="numeric-between-check")
 class NumericBetweenCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the NumericBetweenCheck.
+    Configuration schema for numeric range validation checks.
 
-    This configuration defines both a lower and upper bound constraint on one or more numeric columns.
-    It ensures that all specified columns contain only values between the configured `min_value`
-    and `max_value`. Violations are flagged per row.
+    Defines the parameters and validation rules for configuring checks that
+    enforce numeric range constraints. The configuration includes logical
+    validation to ensure boundary parameters are consistent and meaningful.
+
+    This configuration enables declarative check definition through external
+    configuration sources while ensuring parameter validity at configuration time.
 
     Attributes:
-        columns (List[str]): The list of numeric columns to validate.
-        min_value (float | int | Decimal): The minimum allowed value (inclusive).
-        max_value (float | int | Decimal): The maximum allowed value (inclusive).
-        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.
+        columns (List[str]): Numeric column names that must fall within the specified range.
+        min_value (float | int | Decimal): Minimum acceptable numeric value for the valid range.
+        max_value (float | int | Decimal): Maximum acceptable numeric value for the valid range.
+        inclusive (tuple[bool, bool]): Inclusivity settings for minimum and maximum
+            boundaries respectively.
     """
 
     check_class = NumericBetweenCheck
@@ -53,14 +62,18 @@ class NumericBetweenCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_between_values(self) -> "NumericBetweenCheckConfig":
         """
-        Validates that ``min_value`` and ``max_value`` are properly configured
-        and that ``min_value`` is not greater than ``max_value``.
+        Validate the logical consistency of the configured numeric range parameters.
+
+        Ensures that the minimum and maximum numeric parameters form a valid range
+        and that both values are properly ordered. This validation prevents
+        configuration errors that would result in impossible validation conditions.
 
         Returns:
-            NumericBetweenCheckConfig: The validated configuration object.
+            NumericBetweenCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If min_value or max_value are not set or if min_value > max_value.
+            InvalidCheckConfigurationError: When the numeric range parameters are
+                logically inconsistent or contain invalid values.
         """
         if self.min_value > self.max_value:
             raise InvalidCheckConfigurationError(

@@ -11,17 +11,21 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class StringMaxLengthCheck(BaseRowCheck):
     """
-    Row-level check that flags rows where string values exceed the allowed maximum length.
+    Record-level validation check that enforces maximum string length constraints.
 
-    Non-null values in the specified column are validated against a maximum string length.
-    If `inclusive=True`, length must be <= `max_length`; otherwise strictly < `max_length`.
+    Validates that string values in the specified column remain within maximum
+    length limits, ensuring data consistency and storage efficiency. This check
+    is essential for validating field constraints such as database column limits,
+    display requirements, or data processing boundaries.
 
-    Null values are considered valid.
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over string length validation requirements. Null values are
+    considered valid and do not trigger validation failures.
 
     Attributes:
-        column (str): Column to validate.
-        max_length (int): Maximum allowed string length.
-        inclusive (bool): Whether equality (≤) is allowed. Defaults to True.
+        column (str): String column name that must remain within the maximum length limit.
+        max_length (int): Maximum acceptable string length threshold.
+        inclusive (bool): Whether the maximum length threshold includes the boundary value itself.
     """
 
     def __init__(
@@ -33,14 +37,16 @@ class StringMaxLengthCheck(BaseRowCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a StringMaxLengthCheck instance.
+        Initialize the maximum string length validation check with threshold configuration.
 
         Args:
-            check_id (str): Unique identifier for the check.
-            column (str): Name of the column to validate.
-            max_length (int): Maximum allowed string length.
-            inclusive (bool, optional): If True, allows equality (<=). If False, enforces strictly less (<).
-            severity (Severity, optional): Severity level of the check. Defaults to CRITICAL.
+            check_id (str): Unique identifier for this check instance.
+            column (str): String column name that must remain within the maximum length limit.
+            max_length (int): Maximum acceptable string length threshold.
+            inclusive (bool, optional): Whether the maximum length threshold includes the
+                boundary value itself. Defaults to True for inclusive comparison.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
         self.column = column
@@ -49,20 +55,23 @@ class StringMaxLengthCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Applies the maximum string length check to the input DataFrame.
+        Execute the maximum string length validation logic against the configured column.
 
-        A row fails if:
-        - the value is not null, and
-        - the length exceeds the configured maximum (depending on `inclusive`)
+        Performs schema validation to ensure the target column exists, then applies
+        length validation logic to non-null string values. Records fail validation
+        when string values exceed the configured maximum length threshold.
 
         Args:
-            df (DataFrame): Input DataFrame.
+            df (DataFrame): The dataset to validate for string length compliance.
 
         Returns:
-            DataFrame: Output with boolean check result column.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (excessive string length) and
+                False indicates compliance with length requirements.
 
         Raises:
-            MissingColumnError: If the column is not present in the DataFrame.
+            MissingColumnError: When the configured column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         if self.column not in df.columns:
             raise MissingColumnError(self.column, df.columns)
@@ -79,14 +88,16 @@ class StringMaxLengthCheck(BaseRowCheck):
 @register_check_config(check_name="string-max-length-check")
 class StringMaxLengthCheckConfig(BaseRowCheckConfig):
     """
-    Configuration for StringMaxLengthCheck.
+    Configuration schema for maximum string length validation checks.
 
-    Ensures that string values do not exceed the specified maximum length.
+    Defines the parameters and validation rules for configuring checks that
+    enforce maximum string length constraints. The configuration includes
+    logical validation to ensure length parameters are positive and meaningful.
 
     Attributes:
-        column (str): Column to validate.
-        max_length (int): Maximum allowed length (must be > 0).
-        inclusive (bool): If True, length must be <= max_length. If False, strictly < max_length.
+        column (str): String column name that must remain within the maximum length limit.
+        max_length (int): Maximum acceptable string length threshold (must be positive).
+        inclusive (bool): Whether the maximum length threshold includes the boundary value itself.
     """
 
     check_class = StringMaxLengthCheck
@@ -100,13 +111,18 @@ class StringMaxLengthCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_max_length(self) -> "StringMaxLengthCheckConfig":
         """
-        Validate that max_length is greater than 0.
+        Validate the logical consistency of the configured maximum length parameter.
+
+        Ensures that the maximum length parameter is positive and meaningful for
+        string validation purposes. This validation prevents configuration errors
+        that would result in nonsensical validation conditions.
 
         Returns:
-            StringMaxLengthCheckConfig: The validated object.
+            StringMaxLengthCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If max_length <= 0.
+            InvalidCheckConfigurationError: When the maximum length parameter is
+                zero or negative, indicating an invalid configuration.
         """
         if self.max_length <= 0:
             raise InvalidCheckConfigurationError(f"max_length ({self.max_length}) must be greater than 0")

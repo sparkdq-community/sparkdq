@@ -1,14 +1,16 @@
 """
-Defines the base classes for check configurations within the sparkdq framework.
+Base configuration classes for declarative data quality check definitions.
 
-Check configurations are Pydantic-based and enable:
+This module provides the foundational infrastructure for defining data quality checks
+through configuration objects rather than direct instantiation. The Pydantic-based
+approach enables robust parameter validation, serialization support, and seamless
+integration with external configuration sources such as JSON, YAML, or database records.
 
-- Declarative check definitions (e.g., via JSON or YAML).
-- Runtime validation of check parameters.
-- Factory-based instantiation of concrete check classes.
-
-Each specific check must provide its own configuration class by subclassing
-either `BaseRowCheckConfig` or `BaseAggregateCheckConfig`.
+The configuration system supports both programmatic and declarative workflows,
+allowing teams to define validation rules in configuration files while maintaining
+type safety and parameter validation. Each configuration class encapsulates the
+parameters required for its corresponding check implementation and provides
+factory methods for instantiation.
 """
 
 from abc import ABC
@@ -22,16 +24,22 @@ from .severity import Severity
 
 class BaseCheckConfig(BaseModel):
     """
-    Base class for check configurations.
+    Abstract foundation for all data quality check configurations.
 
-    This class defines the interface for converting a configuration object
-    into a concrete check instance. Subclasses specify the parameters required
-    for their corresponding checks and the associated check class.
+    Establishes the core contract for configuration-driven check instantiation,
+    providing standardized parameter validation and factory methods. This class
+    enables declarative check definitions while ensuring type safety and proper
+    parameter validation through Pydantic's validation framework.
+
+    The configuration approach decouples check definition from implementation,
+    enabling flexible deployment scenarios where validation rules can be
+    externally managed and dynamically loaded.
 
     Attributes:
-        check_class (ClassVar[Type[BaseCheck]]): The concrete check class to instantiate.
-        check_id (str): Unique identifier for the check instance.
-        severity (Severity): Severity level used when the check fails.
+        check_class (ClassVar[Type[BaseCheck]]): The concrete check implementation
+            that this configuration will instantiate.
+        check_id (str): Unique identifier for the check instance within the validation context.
+        severity (Severity): Classification level determining failure handling behavior.
     """
 
     check_class: ClassVar[Type[BaseCheck]]
@@ -44,41 +52,57 @@ class BaseCheckConfig(BaseModel):
 
     def parameters(self) -> Dict[str, Any]:
         """
-        Returns the parameters required to instantiate the corresponding check.
+        Extract configuration parameters for check instantiation.
 
-        Meta-fields like 'check' are excluded from the result.
+        Produces a clean parameter dictionary suitable for passing to the check
+        constructor, automatically excluding framework-internal fields that are
+        not part of the check's interface.
 
         Returns:
-            Dict[str, Any]: Parameter names and values for check instantiation.
+            Dict[str, Any]: Configuration parameters ready for check instantiation,
+                with framework metadata filtered out.
         """
         params = self.model_dump(exclude={"check"})
         return params
 
     def to_check(self) -> BaseCheck:
         """
-        Instantiates the configured check.
+        Create a check instance from this configuration.
+
+        Applies the factory pattern to instantiate the appropriate check class
+        with the validated configuration parameters, ensuring type safety and
+        proper initialization.
 
         Returns:
-            BaseCheck: The instantiated check object.
+            BaseCheck: Fully configured and validated check instance ready for execution.
         """
         return self.check_class(**self.parameters())
 
 
 class BaseRowCheckConfig(ABC, BaseCheckConfig):
     """
-    Base class for row-level check configurations.
+    Abstract configuration foundation for record-level data quality checks.
 
-    Row checks operate on individual records and typically require parameters
-    such as column names. Subclasses must define a `check_class` that inherits
-    from `BaseRowCheck`.
+    Specializes the base configuration interface for checks that operate on individual
+    records within a dataset. This class enforces that subclasses are properly
+    associated with row-level check implementations and provides the appropriate
+    validation and instantiation logic.
+
+    Row-level configurations typically include parameters such as column specifications,
+    validation thresholds, and record-specific business rules.
 
     Raises:
-        TypeError: If `check_class` is missing or not a subclass of `BaseRowCheck`.
+        TypeError: When the subclass fails to define a valid check_class or associates
+            with a non-row-level check implementation.
     """
 
     def __init_subclass__(cls) -> None:
         """
-        Validates that the subclass defines a compatible `check_class`.
+        Enforce proper check class association during subclass definition.
+
+        Validates that the configuration subclass correctly associates with a
+        row-level check implementation, preventing runtime errors and ensuring
+        type safety across the configuration system.
         """
         super().__init_subclass__()
         if not hasattr(cls, "check_class") or cls.check_class is None:
@@ -89,19 +113,28 @@ class BaseRowCheckConfig(ABC, BaseCheckConfig):
 
 class BaseAggregateCheckConfig(ABC, BaseCheckConfig):
     """
-    Base class for aggregate-level check configurations.
+    Abstract configuration foundation for dataset-level data quality checks.
 
-    Aggregate checks evaluate global dataset properties, such as row counts
-    or min/max thresholds. Subclasses must define a `check_class` that inherits
-    from `BaseAggregateCheck`.
+    Specializes the base configuration interface for checks that evaluate global
+    properties of entire datasets. This class enforces proper association with
+    aggregate-level check implementations and provides appropriate validation
+    and instantiation capabilities.
+
+    Aggregate-level configurations typically include parameters such as statistical
+    thresholds, count boundaries, and dataset-wide business rules.
 
     Raises:
-        TypeError: If `check_class` is missing or not a subclass of `BaseAggregateCheck`.
+        TypeError: When the subclass fails to define a valid check_class or associates
+            with a non-aggregate-level check implementation.
     """
 
     def __init_subclass__(cls) -> None:
         """
-        Validates that the subclass defines a compatible `check_class`.
+        Enforce proper check class association during subclass definition.
+
+        Validates that the configuration subclass correctly associates with an
+        aggregate-level check implementation, preventing runtime errors and
+        ensuring type safety across the configuration system.
         """
         super().__init_subclass__()
         if not hasattr(cls, "check_class") or cls.check_class is None:

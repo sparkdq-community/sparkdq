@@ -9,9 +9,10 @@ from sparkdq.exceptions import MissingColumnError
 
 def test_null_check_validate_single_column(spark: SparkSession) -> None:
     """
-    Validates that NullCheck flags rows with null values in a single specified column.
+    Verify that NullCheck correctly identifies records with null values in a single target column.
 
-    A row is marked as failed if the 'name' column is null.
+    The validation should mark records as failed when the specified column contains
+    null values, while passing records with non-null values in the target column.
     """
     # Arrange: Create a sample DataFrame with null and non-null values in column 'name'
     df = spark.createDataFrame([(1, "John"), (2, None)], ["id", "name"])
@@ -27,9 +28,10 @@ def test_null_check_validate_single_column(spark: SparkSession) -> None:
 
 def test_null_check_validate_multiple_columns(spark: SparkSession) -> None:
     """
-    Validates that NullCheck fails if any of the specified columns are null.
+    Verify that NullCheck correctly applies OR-based failure logic across multiple target columns.
 
-    A row is marked as failed if either 'name' or 'email' is null.
+    The validation should mark records as failed when any of the specified columns
+    contains null values, implementing the expected multi-column validation semantics.
     """
     # Arrange: Create a DataFrame with some nulls in 'name' and 'email'
     df = spark.createDataFrame(
@@ -61,9 +63,10 @@ def test_null_check_validate_multiple_columns(spark: SparkSession) -> None:
 
 def test_null_check_missing_column(spark: SparkSession) -> None:
     """
-    Validates that NullCheck raises MissingColumnError if a specified column is not present.
+    Verify that NullCheck raises MissingColumnError for non-existent target columns.
 
-    The check should immediately fail at runtime when accessing a missing column.
+    The validation should perform schema validation and fail immediately when
+    attempting to access columns that do not exist in the dataset schema.
     """
     # Arrange: Create DataFrame missing the column 'missing'
     df = spark.createDataFrame([(1, "Alice")], ["id", "name"])
@@ -76,7 +79,10 @@ def test_null_check_missing_column(spark: SparkSession) -> None:
 
 def test_null_check_config_to_check_instantiates_correct_check() -> None:
     """
-    Validates that NullCheckConfig creates a proper NullCheck instance via to_check().
+    Verify that NullCheckConfig correctly instantiates NullCheck with proper parameter mapping.
+
+    The configuration should produce a check instance with all parameters correctly
+    transferred from the configuration object to the check implementation.
     """
     # Arrange: Create config object with two target columns
     config = NullCheckConfig(

@@ -10,10 +10,15 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class DateMinCheck(BaseMinCheck):
     """
-    Row-level data quality check that verifies that date values in the specified columns
-    are greater than or equal to a defined minimum date.
+    Record-level validation check that enforces minimum date boundaries.
 
-    A row fails the check if **any** of the target columns contain a date before `min_value`.
+    Validates that date values in specified columns meet or exceed a configured
+    minimum date threshold. This check is essential for preventing historical
+    date entries beyond acceptable limits, enforcing data retention policies,
+    and maintaining temporal data integrity across business processes.
+
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over date validation requirements for different business contexts.
     """
 
     def __init__(
@@ -25,14 +30,15 @@ class DateMinCheck(BaseMinCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a new DateMinCheck.
+        Initialize the minimum date validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): List of date columns to check.
-            min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.
-            inclusive (bool): Whether the minimum date is inclusive.
-            severity (Severity, optional): Severity level of the check result.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Date column names that must meet minimum threshold requirements.
+            min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).
+            inclusive (bool): Whether the minimum date threshold includes the boundary
+                date itself for validation purposes.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(
@@ -48,12 +54,16 @@ class DateMinCheck(BaseMinCheck):
 @register_check_config(check_name="date-min-check")
 class DateMinCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the DateMinCheck.
+    Configuration schema for minimum date validation checks.
+
+    Defines the parameters required for configuring checks that enforce minimum
+    date boundaries. This configuration enables declarative check definition
+    through external configuration sources while ensuring parameter validity.
 
     Attributes:
-        columns (List[str]): The list of date columns to validate.
-        min_value (str): The minimum allowed date (inclusive), in 'YYYY-MM-DD' format.
-        inclusive (bool): Whether to include the minimum date.
+        columns (List[str]): Date column names that must meet minimum threshold requirements.
+        min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).
+        inclusive (bool): Whether the minimum date threshold includes the boundary date itself.
     """
 
     check_class = DateMinCheck

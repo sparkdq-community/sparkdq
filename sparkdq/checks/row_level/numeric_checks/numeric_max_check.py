@@ -10,10 +10,15 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class NumericMaxCheck(BaseMaxCheck):
     """
-    Row-level data quality check that verifies that numeric values in the specified columns
-    are less than or equal to a defined maximum threshold.
+    Record-level validation check that enforces maximum numeric thresholds.
 
-    A row fails the check if **any** of the target columns contain a value above `max_value`.
+    Validates that numeric values in specified columns remain within or below a
+    configured maximum threshold. This check is essential for enforcing business
+    rules such as maximum transaction limits, capacity constraints, or acceptable
+    measurement ranges in data quality validation scenarios.
+
+    The check supports both inclusive and exclusive boundary semantics, enabling
+    precise control over numeric validation requirements.
     """
 
     pass  # implemented via BaseMaxCheck
@@ -22,12 +27,16 @@ class NumericMaxCheck(BaseMaxCheck):
 @register_check_config(check_name="numeric-max-check")
 class NumericMaxCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the NumericMaxCheck.
+    Configuration schema for maximum numeric threshold validation checks.
+
+    Defines the parameters required for configuring checks that enforce maximum
+    numeric boundaries. This configuration enables declarative check definition
+    through external configuration sources while ensuring parameter validity.
 
     Attributes:
-        columns (List[str]): The list of numeric columns to validate.
-        max_value (float | int | Decimal): The maximum allowed value (inclusive).
-        inclusive (bool): Whether to include the maximum value.
+        columns (List[str]): Numeric column names that must remain within the maximum threshold.
+        max_value (float | int | Decimal): Maximum acceptable numeric value for validation.
+        inclusive (bool): Whether the maximum threshold includes the boundary value itself.
     """
 
     check_class = NumericMaxCheck

@@ -1,28 +1,33 @@
 class RuntimeCheckConfigurationError(Exception):
     """
-    Base class for runtime configuration errors in data quality checks.
+    Base exception for configuration errors detected during check execution.
 
-    Raised when a check fails due to a configuration issue that can only
-    be detected when the check is executed against actual data, such as
-    referencing a non-existent column.
+    Represents configuration issues that can only be identified when checks
+    are applied to actual datasets, such as column references that don't exist
+    in the target data or invalid data type assumptions. These errors indicate
+    mismatches between check configuration and runtime data characteristics.
     """
 
 
 class CheckConfigurationError(Exception):
     """
-    Base class for all configuration-related errors in data quality checks.
+    Base exception for static configuration validation errors.
 
-    Raised when a check's definition or setup is invalid and cannot be used
-    to construct or apply the check logic, regardless of the actual dataset.
+    Represents configuration issues that can be detected during check definition
+    or setup, independent of any specific dataset. These errors indicate
+    fundamental problems with check parameters, logical inconsistencies, or
+    missing required configuration elements.
     """
 
 
 class MissingColumnError(RuntimeCheckConfigurationError):
     """
-    Raised when a required column is not present in the DataFrame at runtime.
+    Exception raised when a check references a non-existent column.
 
-    This typically indicates a misconfiguration in the check setup, where a
-    column was referenced that does not exist in the current dataset.
+    Indicates a mismatch between the check configuration and the actual dataset
+    schema, where the check expects a column that is not present in the target
+    DataFrame. This typically suggests either incorrect check configuration or
+    unexpected changes in the data schema.
     """
 
     def __init__(self, column: str, available: list[str]):
@@ -31,13 +36,11 @@ class MissingColumnError(RuntimeCheckConfigurationError):
 
 class MissingCheckSetError(RuntimeCheckConfigurationError):
     """
-    Raised when a data quality engine is executed without an assigned CheckSet.
+    Exception raised when attempting to execute validation without configured checks.
 
-    This error indicates that the engine was not properly configured before use.
-    Users must assign a CheckSet instance via `engine.set_check_set(...)`
-    prior to calling any validation methods like `run_batch`.
-
-    This is typically a programming error and should be caught early in testing.
+    Indicates that the validation engine was invoked without a properly assigned
+    CheckSet, representing a programming error in the validation setup sequence.
+    This error prevents execution attempts on improperly initialized engines.
     """
 
     def __init__(self) -> None:
@@ -49,19 +52,22 @@ class MissingCheckSetError(RuntimeCheckConfigurationError):
 
 class InvalidCheckConfigurationError(CheckConfigurationError):
     """
-    Raised when a check's configuration is logically invalid.
+    Exception raised for logically inconsistent check configurations.
 
-    Examples include setting a minimum value greater than the maximum, or
-    supplying conflicting or incomplete configuration parameters.
-
-    In most cases, this error is raised during static validation of a config object.
+    Represents configuration errors where individual parameters are valid but
+    their combination creates logical contradictions or impossible conditions.
+    These errors are typically detected during static configuration validation
+    before any data processing begins.
     """
 
 
 class MissingReferenceDatasetError(RuntimeCheckConfigurationError):
     """
-    Raised when a requested reference dataset is not available
-    in the current validation context.
+    Exception raised when a check requests an unavailable reference dataset.
+
+    Indicates that a check requiring external reference data cannot locate
+    the specified dataset in the current validation context, suggesting
+    either missing reference data injection or incorrect dataset naming.
     """
 
     def __init__(self, name: str) -> None:
@@ -71,28 +77,20 @@ class MissingReferenceDatasetError(RuntimeCheckConfigurationError):
 
 class InvalidSeverityLevelError(CheckConfigurationError):
     """
-    Raised when a provided severity level is not recognized by the framework.
+    Exception raised for unrecognized severity level specifications.
 
-    This error typically occurs when parsing string-based severity inputs
-    (e.g. from JSON or YAML configuration files) that do not match the allowed
-    levels defined in the `Severity` enum.
-
-    Examples include:
-        - normalize_severity("fatal")
-        - loading a config with severity="urgent"
-
-    This exception is used to ensure consistent error handling and reporting
-    for configuration-related issues.
+    Indicates that a severity value provided through configuration sources
+    does not match any of the defined severity levels in the framework.
+    This error ensures that only valid severity classifications are accepted,
+    maintaining consistency in failure handling behavior.
     """
 
     def __init__(self, value: str) -> None:
         """
-        Initialize the exception with the invalid severity value.
+        Initialize the exception with the invalid severity specification.
 
         Args:
-            value (str): The unrecognized severity level that triggered the error.
-
-        The message will include the invalid value to aid debugging and error reporting.
+            value (str): The unrecognized severity level that caused the error.
         """
         super().__init__(f"Invalid severity level: '{value}'")
         self.value = value
@@ -100,13 +98,12 @@ class InvalidSeverityLevelError(CheckConfigurationError):
 
 class MissingCheckTypeError(CheckConfigurationError):
     """
-    Raised when a configuration dictionary is missing the required 'check' field.
+    Exception raised when check configuration lacks the required type identifier.
 
-    This field is mandatory for the framework to identify which check type
-    should be instantiated via the CheckFactory.
-
-    This exception is typically raised during early parsing or validation
-    of configuration sources (e.g. JSON, YAML).
+    Indicates that a configuration dictionary is missing the mandatory 'check'
+    field that specifies which check implementation should be instantiated.
+    This error prevents the CheckFactory from resolving the appropriate
+    check type during configuration processing.
     """
 
     def __init__(self) -> None:
@@ -118,33 +115,21 @@ class MissingCheckTypeError(CheckConfigurationError):
 
 class InvalidSQLExpressionError(RuntimeCheckConfigurationError):
     """
-    Raised when a SQL expression is syntactically or semantically invalid.
+    Exception raised for invalid or unsafe SQL expressions in check configurations.
 
-    This error indicates that the provided SQL expression cannot be parsed
-    or executed by PySpark, typically due to syntax errors, invalid function
-    calls, or other structural issues that prevent the expression from being
-    evaluated.
-
-    Examples include:
-        - Malformed syntax: "age + "
-        - Unbalanced parentheses: "upper(name"
-        - Invalid function calls: "invalid_function(column)"
-        - Dangerous operations: "DROP TABLE users"
-
-    This exception is used to ensure consistent error handling for SQL
-    expression validation in data quality checks.
+    Indicates that a SQL expression provided to a check cannot be parsed or
+    executed safely by PySpark, either due to syntax errors, semantic issues,
+    or security concerns. This validation prevents potentially dangerous or
+    malformed expressions from being executed against datasets.
     """
 
     def __init__(self, expression: str, error_message: str):
         """
-        Initialize the exception with the invalid expression and error details.
+        Initialize the exception with the problematic expression and diagnostic information.
 
         Args:
             expression (str): The SQL expression that failed validation.
-            error_message (str): Detailed description of why the expression is invalid.
-
-        The message will include both the expression and error details to aid
-        debugging and error reporting.
+            error_message (str): Detailed explanation of the validation failure.
         """
         super().__init__(f"Invalid SQL expression '{expression}':\n{error_message}")
         self.expression = expression

@@ -10,12 +10,19 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class ColumnPresenceCheck(BaseAggregateCheck):
     """
-    Aggregate-level data quality check that verifies that all required columns are present in the DataFrame.
+    Dataset-level validation check that enforces required column presence.
 
-    This check does not validate data types, only the presence of specified column names.
+    Validates that all specified columns are present in the dataset schema,
+    ensuring structural integrity and compatibility with downstream processing
+    requirements. This check is essential for detecting schema changes, missing
+    data sources, or configuration mismatches that could impact data processing
+    pipelines.
+
+    The check focuses solely on column name presence and does not validate
+    data types or column content, providing targeted schema structure validation.
 
     Attributes:
-        required_columns (list[str]): List of column names that must be present.
+        required_columns (list[str]): Column names that must be present in the dataset schema.
     """
 
     def __init__(
@@ -25,12 +32,12 @@ class ColumnPresenceCheck(BaseAggregateCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a new ColumnPresenceCheck instance.
+        Initialize the column presence validation check with required column specifications.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            required_columns (list[str]): List of required column names.
-            severity (Severity, optional): The severity level to assign if the check fails.
+            check_id (str): Unique identifier for this check instance.
+            required_columns (list[str]): Column names that must be present in the dataset schema.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -38,14 +45,18 @@ class ColumnPresenceCheck(BaseAggregateCheck):
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Evaluate whether all required columns are present in the given DataFrame.
+        Execute the column presence validation against the dataset schema.
+
+        Compares the required column list against the actual dataset schema to
+        identify any missing columns. The validation passes only when all required
+        columns are present in the dataset.
 
         Args:
-            df (DataFrame): The Spark DataFrame to evaluate.
+            df (DataFrame): The dataset to evaluate for column presence compliance.
 
         Returns:
-            AggregateEvaluationResult: An object indicating the outcome of the check,
-            including a list of missing columns, if any.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and detailed metrics listing any missing columns.
         """
         actual_columns = set(df.columns)
         missing_columns = [col for col in self.required_columns if col not in actual_columns]
@@ -62,12 +73,14 @@ class ColumnPresenceCheck(BaseAggregateCheck):
 @register_check_config(check_name="column-presence-check")
 class ColumnPresenceCheckConfig(BaseAggregateCheckConfig):
     """
-    Declarative configuration model for the ColumnPresenceCheck.
+    Configuration schema for column presence validation checks.
 
-    This config defines a set of required column names that must exist in the DataFrame.
+    Defines the parameters required for configuring checks that enforce required
+    column presence in dataset schemas. This configuration enables declarative
+    check definition through external configuration sources.
 
     Attributes:
-        required_columns (list[str]): The list of required column names.
+        required_columns (list[str]): Column names that must be present in the dataset schema.
     """
 
     check_class = ColumnPresenceCheck

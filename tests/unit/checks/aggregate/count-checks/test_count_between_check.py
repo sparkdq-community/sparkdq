@@ -10,10 +10,10 @@ from sparkdq.exceptions import InvalidCheckConfigurationError
 
 def test_row_count_between_passes(spark: SparkSession) -> None:
     """
-    Validates that RowCountBetweenCheck passes when the DataFrame row count is within the specified bounds.
+    Verify that RowCountBetweenCheck passes when dataset size falls within configured boundaries.
 
-    Given a DataFrame with 3 rows, and a configured range of [2, 5],
-    the check should pass and return the correct actual row count.
+    The validation should succeed when the actual row count meets the range criteria,
+    returning comprehensive metrics for successful validation outcomes.
     """
     # Arrange: Create a DataFrame with 3 rows
     df = spark.range(3)
@@ -29,10 +29,10 @@ def test_row_count_between_passes(spark: SparkSession) -> None:
 
 def test_row_count_too_few_rows(spark: SparkSession) -> None:
     """
-    Validates that RowCountBetweenCheck fails when the DataFrame has fewer rows than min_count.
+    Verify that RowCountBetweenCheck fails when dataset size falls below minimum threshold.
 
-    Given a DataFrame with 2 rows, and a configured range of [3, 5],
-    the check should fail and return the correct actual row count.
+    The validation should fail when the actual row count is insufficient, returning
+    detailed metrics that explain the validation failure and actual count values.
     """
     # Arrange: Create a DataFrame with 2 rows and configure the check
     df = spark.range(2)
@@ -48,10 +48,10 @@ def test_row_count_too_few_rows(spark: SparkSession) -> None:
 
 def test_row_count_too_many_rows(spark: SparkSession) -> None:
     """
-    Validates that RowCountBetweenCheck fails when the DataFrame has more rows than max_count.
+    Verify that RowCountBetweenCheck fails when dataset size exceeds maximum threshold.
 
-    Given a DataFrame with 6 rows, and a configured range of [1, 5],
-    the check should fail and return the correct actual row count.
+    The validation should fail when the actual row count is excessive, returning
+    detailed metrics that explain the validation failure and actual count values.
     """
     # Arrange: Create a DataFrame with 6 rows and configure the check
     df = spark.range(6)
@@ -67,10 +67,10 @@ def test_row_count_too_many_rows(spark: SparkSession) -> None:
 
 def test_row_count_between_config_valid() -> None:
     """
-    Validates that a RowCountBetweenCheckConfig is created successfully when min_count <= max_count.
+    Verify that RowCountBetweenCheckConfig accepts valid range parameters during instantiation.
 
-    Given min_count=5 and max_count=10,
-    the config object should be instantiated with correct values and linked to the correct check class.
+    The configuration should successfully initialize with logically consistent boundary
+    parameters and maintain proper associations with the corresponding check class.
     """
     # Arrange & Act: Create a valid configuration
     config = RowCountBetweenCheckConfig(check_id="test", min_count=5, max_count=10)
@@ -83,10 +83,10 @@ def test_row_count_between_config_valid() -> None:
 
 def test_row_count_between_config_invalid_range() -> None:
     """
-    Validates that RowCountBetweenCheckConfig raises an error when min_count > max_count.
+    Verify that RowCountBetweenCheckConfig rejects logically inconsistent range parameters.
 
-    Given min_count=10 and max_count=5, an InvalidCheckConfigurationError should be
-    raised during instantiation.
+    The configuration should perform validation during instantiation and raise
+    appropriate exceptions when boundary parameters create impossible conditions.
     """
     # Arrange & Act & Assert: Instantiating config with invalid range should raise an error
     with pytest.raises(InvalidCheckConfigurationError):
@@ -95,10 +95,10 @@ def test_row_count_between_config_invalid_range() -> None:
 
 def test_config_rejects_negative_min_count():
     """
-    Validates that RowCountBetweenCheckConfig raises an error when min_count is negative.
+    Verify that RowCountBetweenCheckConfig rejects negative minimum count parameters.
 
-    Given min_count=-1 and max_count=10, an InvalidCheckConfigurationError should be
-    raised during instantiation.
+    The configuration should validate parameter ranges during instantiation and
+    prevent the creation of checks with meaningless negative count thresholds.
     """
     # Arrange & Act & Assert: Instantiating config with negative min_count should raise an error
     with pytest.raises(InvalidCheckConfigurationError):

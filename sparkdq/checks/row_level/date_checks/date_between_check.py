@@ -11,10 +11,16 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class DateBetweenCheck(BaseBetweenCheck):
     """
-    Row-level data quality check that verifies that date values fall within a specified date range.
+    Record-level validation check that enforces date range boundaries.
 
-    A row fails the check if any of the target columns contain a date before `min_value` or after `max_value`,
-    depending on the configured inclusivity.
+    Validates that date values in specified columns fall within a configured
+    date range, ensuring temporal data integrity and business rule compliance.
+    This check is essential for validating reporting periods, operational
+    timeframes, and historical data constraints.
+
+    The check supports independent inclusivity control for both minimum and
+    maximum boundaries, enabling precise validation criteria for complex
+    temporal business requirements.
     """
 
     def __init__(
@@ -27,15 +33,17 @@ class DateBetweenCheck(BaseBetweenCheck):
         severity: Severity = Severity.CRITICAL,
     ):
         """
-        Initialize a new DateBetweenCheck.
+        Initialize the date range validation check with boundary configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): List of date columns to check.
-            min_value (str): Minimum allowed date in 'YYYY-MM-DD' format.
-            max_value (str): Maximum allowed date in 'YYYY-MM-DD' format.
-            inclusive (tuple[bool, bool], optional): Inclusion flags for (min_value, max_value).
-            severity (Severity, optional): Severity level of the check result. Defaults to Severity.CRITICAL.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Date column names that must fall within the specified range.
+            min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).
+            max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).
+            inclusive (tuple[bool, bool], optional): Inclusivity settings for minimum and
+                maximum boundaries respectively. Defaults to (False, False) for exclusive bounds.
+            severity (Severity, optional): Classification level for validation failures.
+                Defaults to Severity.CRITICAL.
         """
         super().__init__(
             check_id=check_id,
@@ -51,13 +59,18 @@ class DateBetweenCheck(BaseBetweenCheck):
 @register_check_config(check_name="date-between-check")
 class DateBetweenCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for DateBetweenCheck.
+    Configuration schema for date range validation checks.
+
+    Defines the parameters and validation rules for configuring checks that
+    enforce date range constraints. The configuration includes logical
+    validation to ensure boundary parameters are consistent and meaningful.
 
     Attributes:
-        columns (List[str]): Date columns to validate.
-        min_value (str): Minimum allowed date in 'YYYY-MM-DD' format.
-        max_value (str): Maximum allowed date in 'YYYY-MM-DD' format.
-        inclusive (tuple[bool, bool]): Inclusion flags for min and max boundaries.
+        columns (List[str]): Date column names that must fall within the specified range.
+        min_value (str): Minimum acceptable date in ISO format (YYYY-MM-DD).
+        max_value (str): Maximum acceptable date in ISO format (YYYY-MM-DD).
+        inclusive (tuple[bool, bool]): Inclusivity settings for minimum and maximum
+            boundaries respectively.
     """
 
     check_class = DateBetweenCheck
@@ -72,14 +85,18 @@ class DateBetweenCheckConfig(BaseRowCheckConfig):
     @model_validator(mode="after")
     def validate_between_values(self) -> "DateBetweenCheckConfig":
         """
-        Validates that min_value and max_value are properly configured
-        and that ``min_value`` is not greater than ``max_value``.
+        Validate the logical consistency of the configured date range parameters.
+
+        Ensures that the minimum and maximum date parameters form a valid temporal
+        range and that both values represent valid dates. This validation prevents
+        configuration errors that would result in impossible validation conditions.
 
         Returns:
-            DateBetweenCheckConfig: The validated configuration object.
+            DateBetweenCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If min_value or max_value are not set or if min_value > max_value.
+            InvalidCheckConfigurationError: When the date range parameters are
+                logically inconsistent or contain invalid date values.
         """
         # Additional safety check if wanted (basic string comparison works for ISO dates)
         if self.min_value > self.max_value:

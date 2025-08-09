@@ -13,23 +13,28 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class NullCheck(BaseRowCheck):
     """
-    Row-level data quality check that flags null values in one or more specified columns.
+    Record-level validation check that identifies rows containing null values.
 
-    This check appends a boolean result column to the input DataFrame.
-    A row is marked as failed (True) if **any** of the target columns are null.
+    Validates that specified columns contain non-null values across all records,
+    flagging any rows where these columns are null. This check is essential for
+    enforcing data completeness requirements and identifying missing data issues
+    that could impact downstream processing or analysis.
+
+    The check uses OR-based failure logic, where any null value in the configured
+    columns marks the entire record as invalid.
 
     Attributes:
-        columns (List[str]): Names of the columns to inspect for null values.
+        columns (List[str]): Column names that must contain non-null values.
     """
 
     def __init__(self, check_id: str, columns: List[str], severity: Severity = Severity.CRITICAL):
         """
-        Initialize a NullCheck instance.
+        Initialize the null value validation check with target columns and configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): Names of the columns to check for null values.
-            severity (Severity, optional): Severity level of the check result.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names that must contain non-null values.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -37,20 +42,23 @@ class NullCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Execute the null check on the given DataFrame.
+        Execute the null value validation logic against the configured columns.
 
-        This method appends a new boolean column (named after `check_id`) that indicates
-        for each row whether **any** of the target columns are null.
+        Performs schema validation to ensure all target columns exist, then applies
+        null detection logic with OR-based failure semantics. Records fail validation
+        when any configured column contains null values.
 
         Args:
-            df (DataFrame): The input Spark DataFrame to validate.
+            df (DataFrame): The dataset to validate for null value compliance.
 
         Returns:
-            DataFrame: A new DataFrame with an additional boolean column where
-                `True` indicates a null value (i.e. check failed), and `False` means valid.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (null values detected) and False
+                indicates compliance with non-null requirements.
 
         Raises:
-            MissingColumnError: If any of the specified columns do not exist in the DataFrame.
+            MissingColumnError: When any configured column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         for column in self.columns:
             if column not in df.columns:
@@ -68,11 +76,15 @@ class NullCheck(BaseRowCheck):
 @register_check_config(check_name="null-check")
 class NullCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the NullCheck.
+    Configuration schema for null value validation checks.
+
+    Defines the parameters required for configuring checks that enforce non-null
+    value requirements. This configuration enables declarative check definition
+    through external configuration sources while ensuring parameter validity.
 
     Attributes:
-        columns (List[str]): The names of the columns to check for null values.
-            This is a required field and must match existing columns in the DataFrame.
+        columns (List[str]): Column names that must contain non-null values for
+            records to pass validation.
     """
 
     check_class = NullCheck

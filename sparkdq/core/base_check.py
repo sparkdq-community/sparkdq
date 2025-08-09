@@ -1,14 +1,18 @@
 """
-Defines abstract base classes for implementing data quality checks
-within the sparkdq framework.
+Abstract base classes for implementing data quality checks within the sparkdq framework.
 
-This module provides:
+This module establishes the foundational architecture for all data quality validations,
+providing standardized interfaces for both row-level and aggregate-level checks. The
+design ensures consistent behavior, metadata handling, and result reporting across
+all check implementations while maintaining extensibility for custom validation logic.
 
-- `BaseCheck`: The common interface and metadata structure for all checks.
-- `BaseRowCheck`: Specialization for row-level checks applied per record.
-- `BaseAggregateCheck`: Specialization for aggregate-level checks that evaluate entire datasets.
+The module defines three primary abstractions:
+- BaseCheck: Core interface and metadata management for all validation checks
+- BaseRowCheck: Specialized interface for record-level validation operations
+- BaseAggregateCheck: Specialized interface for dataset-wide validation operations
 
-All subclasses define the contract for validation logic and standardized reporting.
+Additionally, the IntegrityCheckMixin enables cross-dataset validation scenarios
+by providing reference dataset injection and retrieval capabilities.
 """
 
 import inspect
@@ -25,24 +29,30 @@ from .severity import Severity
 
 class BaseCheck(ABC):
     """
-    Abstract base class for data quality checks.
+    Abstract foundation for all data quality validation checks.
 
-    Provides shared metadata, parameter introspection, and reporting logic
-    for both row-level and aggregate-level checks.
+    Establishes the core contract and shared functionality for data quality validations,
+    including metadata management, parameter introspection, and standardized reporting.
+    This class serves as the common ancestor for both row-level and aggregate-level
+    checks, ensuring consistent behavior and interface across all validation types.
+
+    The class automatically extracts constructor parameters for reporting purposes
+    and provides standardized description formatting for debugging and audit trails.
 
     Attributes:
-        check_id (str): Unique identifier for the check instance.
-        severity (Severity): Severity level of the check result (e.g., CRITICAL, WARNING, INFO).
+        check_id (str): Unique identifier for this check instance within a validation context.
+        severity (Severity): Classification of check importance determining failure handling behavior.
     """
 
     def __init__(self, check_id: str, severity: Severity = Severity.CRITICAL):
         """
-        Initializes the base check with a check ID and severity level.
+        Initialize the base check with essential metadata and configuration.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            severity (Severity, optional): Severity level of the check.
-                Defaults to Severity.CRITICAL. Determines how failed checks are categorized.
+            check_id (str): Unique identifier for this check instance. Must be unique within
+                the validation context to ensure proper result tracking and reporting.
+            severity (Severity, optional): Classification level determining how check failures
+                are handled. Defaults to Severity.CRITICAL for blocking behavior.
         """
         self.severity = severity
         self.check_id = check_id
@@ -50,21 +60,25 @@ class BaseCheck(ABC):
     @property
     def name(self) -> str:
         """
-        Returns the name of the check class.
+        Retrieve the canonical name of this check implementation.
 
         Returns:
-            str: Check class name.
+            str: The class name of this check, used for identification and reporting.
         """
         return self.__class__.__name__
 
     def _parameters(self) -> dict[str, Any]:
         """
-        Extracts check parameters from constructor arguments and instance attributes.
+        Extract configuration parameters from the check instance for reporting purposes.
 
-        Used for consistent reporting, logging, and debugging.
+        Performs introspection on the constructor signature to identify and collect
+        all configuration parameters, excluding internal framework attributes. This
+        enables consistent parameter reporting across all check implementations
+        without requiring manual maintenance of parameter lists.
 
         Returns:
-            dict[str, Any]: Mapping of parameter names to their current values.
+            dict[str, Any]: Configuration parameters with their current values, suitable
+                for serialization and audit logging.
         """
         ignore_parameters = ["self", "check_id"]
         init_signature = inspect.signature(type(self).__init__)
@@ -78,10 +92,15 @@ class BaseCheck(ABC):
 
     def description(self) -> dict[str, Any]:
         """
-        Returns a standardized description of the check.
+        Generate a comprehensive description of this check instance.
+
+        Produces a standardized metadata structure containing all essential information
+        about the check configuration, suitable for serialization, logging, and
+        audit trail generation.
 
         Returns:
-            dict[str, Any]: Check metadata including name, ID, severity, and parameters.
+            dict[str, Any]: Complete check metadata including implementation details,
+                configuration parameters, and execution context.
         """
         return {
             "check": self.name,
@@ -96,77 +115,103 @@ class BaseCheck(ABC):
 
 class BaseRowCheck(BaseCheck):
     """
-    Abstract base class for row-level data quality checks.
+    Abstract foundation for record-level data quality validation checks.
 
-    Row-level checks operate on individual records and identify invalid rows directly
-    within the dataset. Subclasses must implement the `validate()` method.
+    Defines the interface for checks that evaluate individual records within a dataset,
+    enabling fine-grained validation at the row level. These checks typically append
+    boolean result columns to the input DataFrame, marking each record as valid or
+    invalid based on the implemented validation logic.
+
+    Row-level checks are particularly effective for identifying specific problematic
+    records, enabling downstream filtering, correction, or detailed error reporting
+    on a per-record basis.
     """
 
     @abstractmethod
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Applies the check to the input DataFrame.
+        Execute the validation logic against the provided dataset.
+
+        Implementations must apply their specific validation rules to the input DataFrame
+        and return an augmented version containing validation results. The returned
+        DataFrame should preserve all original data while adding validation markers.
 
         Args:
-            df (DataFrame): Input dataset to validate.
+            df (DataFrame): The dataset to validate against this check's criteria.
 
         Returns:
-            DataFrame: DataFrame with additional markers or columns indicating validation failures.
+            DataFrame: Enhanced dataset containing original data plus validation results,
+                typically as additional boolean columns indicating pass/fail status per record.
         """
         ...
 
     def with_check_result_column(self, df: DataFrame, condition: Column) -> DataFrame:
         """
-        Adds the check result as a new column to the DataFrame.
+        Augment the DataFrame with a validation result column.
 
-        The result column will be named according to the check ID and contain the boolean evaluation
-        for each row.
+        Appends a boolean column containing the validation outcome for each record,
+        using the check's unique identifier as the column name. This standardized
+        approach ensures consistent result formatting across all row-level checks.
 
         Args:
-            df (DataFrame): The input Spark DataFrame.
-            condition (Column): The boolean Spark expression representing pass/fail per row.
+            df (DataFrame): The dataset to augment with validation results.
+            condition (Column): Boolean Spark expression evaluating to True for failed
+                records and False for valid records.
 
         Returns:
-            DataFrame: The original DataFrame extended with the check result column.
+            DataFrame: Original dataset enhanced with a named boolean column indicating
+                validation status for each record.
         """
         return df.withColumn(self.check_id, condition)
 
 
 class BaseAggregateCheck(BaseCheck):
     """
-    Abstract base class for aggregate-level data quality checks.
+    Abstract foundation for dataset-level data quality validation checks.
 
-    Aggregate checks evaluate entire datasets and typically calculate metrics,
-    apply thresholds, or return dataset-level validation results.
+    Defines the interface for checks that evaluate global properties of entire datasets,
+    such as row counts, statistical distributions, or cross-dataset relationships.
+    These checks produce single validation outcomes per dataset along with detailed
+    metrics explaining the validation results.
 
-    Subclasses must implement the `_evaluate_logic()` method.
+    Aggregate checks are essential for validating dataset-wide constraints and
+    business rules that cannot be evaluated at the individual record level.
     """
 
     @abstractmethod
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Defines the core logic for evaluating the check.
+        Implement the core validation logic for this aggregate check.
+
+        Contains the specific business logic and computational operations required
+        to evaluate the dataset against this check's criteria. Implementations
+        should perform necessary calculations and return both the validation
+        outcome and supporting metrics.
 
         Args:
-            df (DataFrame): The input dataset to analyze.
+            df (DataFrame): The dataset to evaluate against this check's criteria.
 
         Returns:
-            AggregateEvaluationResult: The result of the check evaluation.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and detailed metrics explaining the evaluation results.
         """
         ...
 
     def evaluate(self, df: DataFrame) -> AggregateCheckResult:
         """
-        Evaluates the check and returns a structured result with metadata.
+        Execute the check and produce a comprehensive result with full metadata.
 
-        This method serves as the standard entry point for executing aggregate-level checks.
-        It delegates to `_evaluate_logic()` and wraps the outcome in an `AggregateCheckResult`.
+        Serves as the primary interface for aggregate check execution, orchestrating
+        the validation logic and enriching the results with complete metadata for
+        reporting and audit purposes. This method ensures consistent result formatting
+        across all aggregate check implementations.
 
         Args:
-            df (DataFrame): The dataset to validate.
+            df (DataFrame): The dataset to validate against this check's criteria.
 
         Returns:
-            AggregateCheckResult: The complete check result including metadata and evaluation outcome.
+            AggregateCheckResult: Complete validation result including check metadata,
+                configuration parameters, and detailed evaluation outcomes.
         """
         result = self._evaluate_logic(df)
         return AggregateCheckResult(
@@ -184,48 +229,56 @@ ReferenceDatasetDict = dict[str, DataFrame]
 
 class IntegrityCheckMixin:
     """
-    A mixin that enables data quality checks to perform integrity validations
-    involving external reference datasets.
+    Mixin enabling cross-dataset integrity validation capabilities.
 
-    This mixin is intended for checks that compare the primary dataset with one
-    or more external datasets (e.g., foreign key validation, cross-dataset consistency).
-    It allows reference datasets to be injected once and retrieved by name during check execution.
+    Provides infrastructure for checks that require validation against external
+    reference datasets, such as foreign key constraints, referential integrity,
+    or cross-dataset consistency validations. The mixin handles reference dataset
+    lifecycle management, including injection, storage, and retrieval operations.
+
+    This design enables complex validation scenarios while maintaining clean
+    separation between the validation logic and reference data management,
+    supporting both simple lookups and complex multi-dataset relationships.
 
     Attributes:
-        _reference_datasets (ReferenceDatasetDict):
-            A dictionary that maps string identifiers (reference names) to Spark DataFrames
-            containing the corresponding reference data.
+        _reference_datasets (ReferenceDatasetDict): Internal registry mapping
+            reference dataset names to their corresponding Spark DataFrames.
     """
 
     _reference_datasets: ReferenceDatasetDict = {}
 
     def inject_reference_datasets(self, datasets: ReferenceDatasetDict) -> None:
         """
-        Stores the given reference datasets for use during check execution.
+        Register reference datasets for use during validation execution.
 
-        This method is typically called by the validation engine before the check's `run(...)`
-        method is invoked. It allows checks to access any required external datasets by name.
+        Establishes the reference dataset registry that will be available during
+        check execution. This method is typically invoked by the validation engine
+        as part of the check preparation phase, ensuring all required reference
+        data is accessible when validation logic executes.
 
         Args:
-            datasets (ReferenceDatasetDict): A mapping from reference names to Spark DataFrames.
+            datasets (ReferenceDatasetDict): Registry mapping reference dataset
+                identifiers to their corresponding Spark DataFrames.
         """
         self._reference_datasets = datasets
 
     def get_reference_df(self, name: str) -> DataFrame:
         """
-        Retrieves a reference DataFrame by its assigned name.
+        Retrieve a reference dataset by its registered identifier.
 
-        This method is used by checks during execution to access the appropriate
-        reference dataset that was previously injected.
+        Provides access to previously injected reference datasets during check
+        execution. This method ensures type-safe access to reference data while
+        providing clear error handling for missing or misconfigured references.
 
         Args:
-            name (str): The name of the reference dataset to retrieve.
+            name (str): The identifier of the reference dataset to retrieve.
 
         Returns:
-            DataFrame: The corresponding Spark DataFrame for the given name.
+            DataFrame: The Spark DataFrame associated with the specified identifier.
 
         Raises:
-            MissingReferenceDatasetError: If no dataset with the given name has been injected.
+            MissingReferenceDatasetError: When the requested reference dataset
+                identifier is not found in the current registry.
         """
         try:
             return self._reference_datasets[name]

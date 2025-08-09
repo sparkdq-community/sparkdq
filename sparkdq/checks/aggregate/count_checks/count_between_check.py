@@ -11,26 +11,30 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class RowCountBetweenCheck(BaseAggregateCheck):
     """
-    Aggregate-level data quality check that ensures the total number of rows in a DataFrame
-    is within a specified inclusive range [min_count, max_count].
+    Dataset-level validation check that enforces row count boundaries.
 
-    It is evaluated once per DataFrame and produces a pass/fail result
-    along with row count metrics.
+    Validates that the total number of records in a dataset falls within a
+    specified inclusive range, ensuring data volume compliance with business
+    expectations. This check is essential for detecting data pipeline issues
+    such as incomplete data loads, unexpected data growth, or processing failures.
+
+    The check provides comprehensive metrics including actual counts and configured
+    thresholds to support detailed analysis of validation outcomes.
 
     Attributes:
-        min_count (int): The minimum acceptable number of rows.
-        max_count (int): The maximum acceptable number of rows.
+        min_count (int): Minimum acceptable number of records in the dataset.
+        max_count (int): Maximum acceptable number of records in the dataset.
     """
 
     def __init__(self, check_id: str, min_count: int, max_count: int, severity: Severity = Severity.CRITICAL):
         """
-        Initialize a new RowCountBetweenCheck instance.
+        Initialize the row count boundary validation check.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            min_count (int): The minimum allowed number of rows.
-            max_count (int): The maximum allowed number of rows.
-            severity (Severity, optional): The severity level to assign if the check fails.
+            check_id (str): Unique identifier for this check instance.
+            min_count (int): Minimum acceptable number of records in the dataset.
+            max_count (int): Maximum acceptable number of records in the dataset.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -39,17 +43,18 @@ class RowCountBetweenCheck(BaseAggregateCheck):
 
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
-        Evaluate the row count of the given DataFrame against the defined bounds.
+        Execute the row count validation against the configured boundaries.
 
-        If the row count is within the range [min_count, max_count], the check passes.
-        Otherwise, it fails and the actual count is included in the result metrics.
+        Computes the total row count of the dataset and evaluates it against the
+        configured minimum and maximum thresholds. The validation passes when the
+        actual count falls within the inclusive range, and fails otherwise.
 
         Args:
-            df (DataFrame): The Spark DataFrame to evaluate.
+            df (DataFrame): The dataset to evaluate for row count compliance.
 
         Returns:
-            AggregateEvaluationResult: An object indicating the outcome of the check,
-            including relevant row count metrics.
+            AggregateEvaluationResult: Validation outcome including pass/fail status
+                and comprehensive metrics comparing actual count to configured boundaries.
         """
         actual = df.count()
         passed = self.min_count <= actual <= self.max_count
@@ -66,18 +71,18 @@ class RowCountBetweenCheck(BaseAggregateCheck):
 @register_check_config(check_name="row-count-between-check")
 class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
     """
-    Declarative configuration model for the RowCountBetweenCheck.
+    Configuration schema for row count boundary validation checks.
 
-    This config is used to define acceptable row count bounds in a
-    data validation pipeline. It ensures that:
-    - both `min_count` and `max_count` are provided,
-    - and that `min_count <= max_count`.
+    Defines the parameters and validation rules for configuring checks that
+    enforce dataset size constraints. The configuration includes logical
+    validation to ensure boundary parameters are consistent and meaningful.
 
-    It is typically used when defining checks via JSON, YAML, or dict-based configs.
+    This configuration enables declarative check definition through external
+    configuration sources while ensuring parameter validity at configuration time.
 
     Attributes:
-        min_count (int): Minimum number of rows expected in the dataset.
-        max_count (int): Maximum number of rows allowed in the dataset.
+        min_count (int): Minimum acceptable number of records in the dataset.
+        max_count (int): Maximum acceptable number of records in the dataset.
     """
 
     check_class = RowCountBetweenCheck
@@ -87,17 +92,18 @@ class RowCountBetweenCheckConfig(BaseAggregateCheckConfig):
     @model_validator(mode="after")
     def validate_range(self) -> "RowCountBetweenCheckConfig":
         """
-        Validate the logical consistency of the configured bounds.
+        Validate the logical consistency of the configured boundary parameters.
 
-        This method ensures that ``min_count`` is not greater than ``max_count``.
-        If violated, a configuration-level exception is raised immediately
-        to prevent runtime failures.
+        Ensures that the minimum and maximum count parameters form a valid range
+        and that both values are non-negative. This validation prevents
+        configuration errors that would result in impossible validation conditions.
 
         Returns:
-            RowCountBetweenCheckConfig: The validated configuration object.
+            RowCountBetweenCheckConfig: The validated configuration instance.
 
         Raises:
-            InvalidCheckConfigurationError: If ``min_count > max_count`` or ``min_count`` < 0.
+            InvalidCheckConfigurationError: When the boundary parameters are
+                logically inconsistent or contain invalid values.
         """
         if self.min_count < 0:
             raise InvalidCheckConfigurationError(

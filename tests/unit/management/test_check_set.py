@@ -1,15 +1,15 @@
 """
-Unit tests for the CheckSet, which manages and organizes all checks in a validation session.
+Unit tests for CheckSet, the centralized registry and lifecycle manager for data quality checks.
 
-These tests verify:
-- Correct registration and instantiation of row and aggregate checks via configuration classes
-- Support for dynamic loading from configuration dictionaries via CheckFactory
-- Filtering capabilities to separate row-level and aggregate-level checks
-- Cleanup behavior using clear()
-- Support for method chaining through the fluent API of add_check() and add_checks_from_dicts()
+This test suite validates the complete check management functionality including:
+- Check registration and instantiation from configuration objects
+- Dynamic check loading from external configuration sources via CheckFactory integration
+- Type-based filtering capabilities for row-level and aggregate-level checks
+- Registry cleanup and reset operations
+- Fluent API support for method chaining in configuration workflows
 
-CheckSet serves as the centralized definition layer for validation pipelines and is
-designed to be flexible, extendable, and chainable for fluent configuration.
+CheckSet serves as the foundational component for declarative validation pipeline
+configuration, providing flexible and extensible check management capabilities.
 """
 
 from typing import ClassVar, Type
@@ -48,9 +48,10 @@ class DummyAggregateCheckConfig(BaseAggregateCheckConfig):
 
 def test_add_check_adds_row_check_instance() -> None:
     """
-    Validates that add_check() correctly instantiates and stores a row-level check.
+    Verify that add_check correctly instantiates and registers row-level checks.
 
-    Given a DummyRowCheckConfig, the resulting CheckSet should contain a single DummyRowCheck.
+    The method should convert configuration objects to concrete check instances
+    and maintain proper type categorization within the internal registry.
     """
     check_set = CheckSet()
     config = DummyRowCheckConfig(check_id="test", column="foo", severity=Severity.WARNING)
@@ -67,9 +68,10 @@ def test_add_check_adds_row_check_instance() -> None:
 
 def test_add_check_adds_aggregate_check_instance() -> None:
     """
-    Validates that add_check() correctly instantiates and stores an aggregate-level check.
+    Verify that add_check correctly instantiates and registers aggregate-level checks.
 
-    Given a DummyAggregateCheckConfig, the resulting CheckSet should contain a single DummyAggregateCheck.
+    The method should convert configuration objects to concrete check instances
+    and maintain proper type categorization within the internal registry.
     """
     check_set = CheckSet()
     config = DummyAggregateCheckConfig(check_id="test", threshold=10)
@@ -86,9 +88,10 @@ def test_add_check_adds_aggregate_check_instance() -> None:
 
 def test_add_checks_from_dicts_creates_multiple_checks(monkeypatch) -> None:
     """
-    Validates that add_checks_from_dicts() correctly builds check instances from config dicts.
+    Verify that add_checks_from_dicts correctly processes external configuration sources.
 
-    Given mocked CheckFactory output, the CheckSet should contain all returned checks.
+    The method should integrate with CheckFactory to convert raw configuration
+    dictionaries into concrete check instances for bulk registration.
     """
     check_set = CheckSet()
     dummy_check = DummyRowCheck(check_id="test", column="test", severity=Severity.CRITICAL)
@@ -107,9 +110,10 @@ def test_add_checks_from_dicts_creates_multiple_checks(monkeypatch) -> None:
 
 def test_clear_removes_all_checks() -> None:
     """
-    Validates that clear() removes all previously registered checks.
+    Verify that clear correctly resets the CheckSet to its initial empty state.
 
-    After calling clear(), the CheckSet should be empty across all categories.
+    The operation should remove all registered checks across all categories,
+    enabling clean reinitialization for subsequent validation configurations.
     """
     check_set = CheckSet()
     check_set.add_check(DummyRowCheckConfig(check_id="test1", column="foo"))
@@ -124,9 +128,10 @@ def test_clear_removes_all_checks() -> None:
 
 def test_method_chaining_with_add_check() -> None:
     """
-    Validates that add_check() supports method chaining via the fluent API.
+    Verify that add_check supports fluent API patterns through method chaining.
 
-    Given two configurations, the chained call should return a CheckSet containing both checks.
+    The method should return the CheckSet instance to enable chained configuration
+    calls, supporting concise and readable validation pipeline definitions.
     """
     check_set = (
         CheckSet()

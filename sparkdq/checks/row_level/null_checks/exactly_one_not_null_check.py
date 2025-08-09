@@ -13,28 +13,29 @@ from sparkdq.plugin.check_config_registry import register_check_config
 
 class ExactlyOneNotNullCheck(BaseRowCheck):
     """
-    Row-level data quality check that verifies that **exactly one** of the specified columns
-    is non-null in each row.
+    Record-level validation check that enforces mutual exclusivity constraints.
 
-    This check appends a boolean result column to the input DataFrame.
-    A row is marked as failed (True) if none or more than one of the specified columns are non-null.
+    Validates that exactly one column from a specified set contains a non-null
+    value per record, ensuring mutual exclusivity among related fields. This
+    check is essential for enforcing business rules where multiple options
+    exist but only one should be selected, such as contact methods, payment
+    types, or classification categories.
 
-    Example use cases:
-        - Ensure that a user has provided exactly one contact method: email, phone, or ID.
-        - Validate exclusivity constraints among optional fields.
+    The check fails when zero columns or multiple columns contain values,
+    ensuring strict adherence to single-choice constraints.
 
     Attributes:
-        columns (List[str]): Names of the columns to inspect for non-null values.
+        columns (List[str]): Column names where exactly one must contain a non-null value.
     """
 
     def __init__(self, check_id: str, columns: List[str], severity: Severity = Severity.CRITICAL):
         """
-        Initialize an ExactlyOneNotNullCheck instance.
+        Initialize the mutual exclusivity validation check with target columns.
 
         Args:
-            check_id (str): Unique identifier for the check instance.
-            columns (List[str]): Names of the columns to validate for exclusivity.
-            severity (Severity, optional): Severity level of the check result.
+            check_id (str): Unique identifier for this check instance.
+            columns (List[str]): Column names where exactly one must contain a non-null value.
+            severity (Severity, optional): Classification level for validation failures.
                 Defaults to Severity.CRITICAL.
         """
         super().__init__(check_id=check_id, severity=severity)
@@ -42,20 +43,23 @@ class ExactlyOneNotNullCheck(BaseRowCheck):
 
     def validate(self, df: DataFrame) -> DataFrame:
         """
-        Execute the check on the given DataFrame.
+        Execute the mutual exclusivity validation logic against the configured columns.
 
-        This method appends a new boolean column (named after `check_id`) that indicates
-        for each row whether **exactly one** of the target columns is non-null.
+        Performs schema validation to ensure all target columns exist, then applies
+        counting logic to verify exactly one column contains a non-null value per
+        record. Records fail validation when zero or multiple columns contain values.
 
         Args:
-            df (DataFrame): The input Spark DataFrame to validate.
+            df (DataFrame): The dataset to validate for mutual exclusivity compliance.
 
         Returns:
-            DataFrame: A new DataFrame with an additional boolean column where
-                `True` indicates the row failed the check (not exactly one non-null), and `False` means valid.
+            DataFrame: Original dataset augmented with a boolean result column where
+                True indicates validation failure (not exactly one non-null value) and
+                False indicates compliance with exclusivity requirements.
 
         Raises:
-            MissingColumnError: If any of the specified columns do not exist in the DataFrame.
+            MissingColumnError: When any configured column is not present in the
+                dataset schema, indicating a configuration mismatch.
         """
         for column in self.columns:
             if column not in df.columns:
@@ -76,10 +80,14 @@ class ExactlyOneNotNullCheck(BaseRowCheck):
 @register_check_config(check_name="exactly-one-not-null-check")
 class ExactlyOneNotNullCheckConfig(BaseRowCheckConfig):
     """
-    Declarative configuration model for the ExactlyOneNotNullCheck.
+    Configuration schema for mutual exclusivity validation checks.
+
+    Defines the parameters required for configuring checks that enforce exactly-one
+    constraints among related columns. This configuration enables declarative
+    check definition through external configuration sources.
 
     Attributes:
-        columns (List[str]): The names of the columns where exactly one must be non-null per row.
+        columns (List[str]): Column names where exactly one must contain a non-null value.
     """
 
     check_class = ExactlyOneNotNullCheck

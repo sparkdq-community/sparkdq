@@ -7,96 +7,125 @@ from sparkdq.plugin.check_factory import CheckFactory
 
 class CheckSet:
     """
-    Manages a collection of data quality checks.
+    Centralized registry and lifecycle manager for data quality checks.
 
-    The CheckSet handles the lifecycle of data quality checks within the framework.
-    It converts configurations into concrete check instances, keeps track of all
-    registered checks, and provides filtered access to row-level or aggregate-level
-    checks.
+    Orchestrates the complete lifecycle of data quality checks from configuration
+    to execution readiness, providing a unified interface for check registration,
+    organization, and retrieval. The CheckSet abstracts the complexity of check
+    instantiation and type management, enabling clean separation between check
+    definition and execution logic.
 
-    This component decouples check definition from check execution.
+    This design supports both programmatic and declarative check registration
+    patterns while maintaining type safety and providing convenient filtering
+    capabilities for different execution contexts.
     """
 
     def __init__(self) -> None:
-        """Initializes an empty CheckSet."""
+        """Initialize an empty CheckSet ready for check registration."""
         self._checks: List[BaseCheck] = []
 
     def add_check(self, config: BaseCheckConfig) -> "CheckSet":
         """
-        Adds a single check from a validated configuration object and returns self for fluent chaining.
+        Register a single check from a validated configuration object.
+
+        Instantiates the check from the provided configuration and adds it to
+        the internal registry. The fluent interface enables method chaining
+        for convenient multi-check registration.
 
         Args:
-            config (BaseCheckConfig): The configuration object defining the check.
+            config (BaseCheckConfig): Validated configuration object containing
+                all parameters required for check instantiation.
 
         Returns:
-            CheckSet: The current instance with the added check.
+            CheckSet: This instance to enable fluent method chaining.
         """
         self._checks.append(config.to_check())
         return self
 
     def add_checks_from_dicts(self, configs: List[Dict[str, Any]]) -> None:
         """
-        Adds multiple checks from raw configuration dictionaries using the CheckFactory.
+        Register multiple checks from raw configuration dictionaries.
 
-        Note:
-            The `sparkdq.checks` module is imported here to ensure that all available
-            checks are registered in the CheckFactory before instantiation.
+        Processes a collection of configuration dictionaries through the CheckFactory,
+        performing validation and instantiation for each check definition. This method
+        enables bulk registration from external configuration sources such as JSON,
+        YAML, or database records.
 
         Args:
-            configs (List[Dict[str, Any]]): A list of configuration dictionaries defining the checks.
+            configs (List[Dict[str, Any]]): Collection of configuration dictionaries,
+                each containing the parameters required for a specific check type.
         """
         self._checks.extend(CheckFactory.from_list(configs))
 
     def get_all(self) -> List[BaseCheck]:
         """
-        Returns all registered checks.
+        Retrieve the complete collection of registered checks.
 
         Returns:
-            List[BaseCheck]: All checks currently managed by this CheckSet.
+            List[BaseCheck]: All checks currently managed by this CheckSet,
+                regardless of their specific type or implementation.
         """
         return self._checks
 
     def get_row_checks(self) -> List[BaseRowCheck]:
         """
-        Returns only the row-level checks.
+        Retrieve only the record-level validation checks.
+
+        Filters the registered checks to return only those that operate on
+        individual records, enabling targeted execution for row-level
+        validation scenarios.
 
         Returns:
-            List[BaseRowCheck]: Checks that operate on individual rows.
+            List[BaseRowCheck]: Collection of checks that validate individual
+                records within the dataset.
         """
         return [check for check in self._checks if isinstance(check, BaseRowCheck)]
 
     def get_aggregate_checks(self) -> List[BaseAggregateCheck]:
         """
-        Returns only the aggregate-level checks.
+        Retrieve only the dataset-level validation checks.
+
+        Filters the registered checks to return only those that evaluate
+        global dataset properties, enabling targeted execution for
+        aggregate-level validation scenarios.
 
         Returns:
-            List[BaseAggregateCheck]: Checks that operate on DataFrame aggregates.
+            List[BaseAggregateCheck]: Collection of checks that validate
+                dataset-wide properties and constraints.
         """
         return [check for check in self._checks if isinstance(check, BaseAggregateCheck)]
 
     def clear(self) -> None:
         """
-        Removes all currently registered checks.
+        Remove all registered checks from this CheckSet.
 
-        Useful for resetting the CheckSet between validation runs.
+        Clears the internal check registry, returning the CheckSet to its
+        initial empty state. This operation is useful for resetting between
+        validation runs or when reconfiguring the check collection.
         """
         self._checks.clear()
 
     def __repr__(self) -> str:
         """
-        Returns a developer-friendly string representation of the CheckSet.
+        Generate a concise developer-oriented representation of this CheckSet.
 
         Returns:
-            str: Representation showing the number of registered checks.
+            str: Summary representation indicating the total number of
+                registered checks for debugging and logging purposes.
         """
         return f"<CheckSet (total checks: {len(self._checks)})>"
 
     def __str__(self) -> str:
         """
-        Returns a human-readable string listing the registered checks.
+        Generate a detailed human-readable listing of all registered checks.
+
+        Produces a formatted string containing the check identifiers and types
+        for all registered checks, providing comprehensive visibility into the
+        current CheckSet configuration.
 
         Returns:
-            str: String listing all check IDs and their types.
+            str: Formatted listing of all registered checks with their
+                identifiers and implementation types.
         """
         if not self._checks:
             return "CheckSet: No checks registered."
