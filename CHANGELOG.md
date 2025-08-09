@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.11.0 (2025-08-09)
+
+### Features
+
+- Make pyspark an optional dependency for Databricks compatibility & update docstrings
+  ([#55](https://github.com/sparkdq-community/sparkdq/pull/55),
+  [`5c8c030`](https://github.com/sparkdq-community/sparkdq/commit/5c8c03019a30ed82ce4afcd3eff28f5dd7f30585))
+
+
 ## v0.10.0 (2025-06-01)
 
 ### Features
