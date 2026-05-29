@@ -28,7 +28,11 @@ This ensures that the check is properly registered in the validation result and 
 Minimal Example
 ^^^^^^^^^^^^^^^
 
-In this example, the check passes if the given column contains a positive value.
+In this example, the check fails if the given column does not contain a positive value.
+
+.. note::
+   The condition passed to ``with_check_result_column(...)`` must evaluate to ``True`` for **failing** rows
+   and ``False`` for passing rows. This is consistent with all built-in checks.
 
 .. code-block:: python
 
@@ -38,13 +42,13 @@ In this example, the check passes if the given column contains a positive value.
    from sparkdq.core import BaseRowCheck, Severity
 
    class PositiveValueCheck(BaseRowCheck):
-       
+
        def __init__(self, check_id: str, column: str, severity: Severity = Severity.CRITICAL):
            super().__init__(check_id=check_id, severity=severity)
            self.column = column
 
        def validate(self, df: DataFrame) -> DataFrame:
-           condition = F.col(self.column) > 0
+           condition = F.col(self.column) <= 0
            return self.with_check_result_column(df, condition)
 
 Defining the Configuration class
