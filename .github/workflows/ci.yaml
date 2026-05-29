@@ -92,6 +92,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
+          changelog: true
 
       - name: Publish | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v10.5.3
