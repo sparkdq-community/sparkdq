@@ -10,7 +10,7 @@
 
 **SparkDQ** is a lightweight data quality framework built specifically for PySpark. Define checks declaratively or in Python, run them directly inside your Spark pipelines, and catch data issues before they reach production.
 
-**No wrappers. No heavy dependencies. Just Python and Spark.**
+**No wrappers. No connectors. No bloat. Just data quality checks — nothing else.**
 
 
 ## Quickstart
