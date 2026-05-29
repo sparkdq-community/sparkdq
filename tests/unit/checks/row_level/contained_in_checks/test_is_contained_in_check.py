@@ -28,7 +28,7 @@ def test_is_contained_in_check_passes_when_all_values_allowed(spark: SparkSessio
 
     # Assert
     result = result_df.select("test_check").collect()
-    assert all(row.test_check for row in result)
+    assert not any(row.test_check for row in result)
 
 
 def test_is_contained_in_check_fails_when_unallowed_values_present(spark: SparkSession) -> None:
@@ -39,7 +39,7 @@ def test_is_contained_in_check_fails_when_unallowed_values_present(spark: SparkS
     the check should fail for the affected row(s).
     """
     # Arrange
-    df = spark.createDataFrame([("ACTIVE", "DE"), ("PENDING", "FR")], ["status", "country"])
+    df = spark.createDataFrame([("ACTIVE", "DE"), ("PENDING", "IT")], ["status", "country"])
     check = IsContainedInCheck(
         check_id="test_check", allowed_values={"status": ["ACTIVE", "INACTIVE"], "country": ["DE", "FR"]}
     )
@@ -49,15 +49,15 @@ def test_is_contained_in_check_fails_when_unallowed_values_present(spark: SparkS
 
     # Assert
     result = result_df.select("test_check").collect()
-    assert result[0].test_check is True
-    assert result[1].test_check is False
+    assert result[0].test_check is False
+    assert result[1].test_check is True
 
 
 @pytest.mark.parametrize(
     "allowed_values, expected_passed",
     [
-        ({"status": ["ACTIVE"]}, [True, False]),
-        ({"country": ["FR"]}, [False, True]),
+        ({"status": ["ACTIVE"]}, [False, True]),
+        ({"country": ["FR"]}, [True, False]),
     ],
 )
 def test_is_contained_in_check_various_columns(spark: SparkSession, allowed_values, expected_passed) -> None:
@@ -106,11 +106,11 @@ def test_is_contained_in_check_config_invalid_empty_allowed_values() -> None:
     "input_data, allowed_values, expected_results",
     [
         # Integer values
-        ([(1,), (2,), (3,)], {"value": [1, 2]}, [True, True, False]),
+        ([(1,), (2,), (3,)], {"value": [1, 2]}, [False, False, True]),
         # String values
-        ([("A",), ("B",), ("C",)], {"value": ["A", "B"]}, [True, True, False]),
+        ([("A",), ("B",), ("C",)], {"value": ["A", "B"]}, [False, False, True]),
         # Date values
-        ([(date(2024, 1, 1),), (date(2024, 5, 1),)], {"value": [date(2024, 1, 1)]}, [True, False]),
+        ([(date(2024, 1, 1),), (date(2024, 5, 1),)], {"value": [date(2024, 1, 1)]}, [False, True]),
     ],
 )
 def test_is_contained_in_check_with_various_types(

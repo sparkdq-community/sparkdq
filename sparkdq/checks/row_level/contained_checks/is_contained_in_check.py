@@ -51,7 +51,7 @@ class IsContainedInCheck(BaseRowCheck):
                 True indicates validation failure (disallowed values detected) and
                 False indicates compliance with whitelist requirements.
         """
-        conditions = [F.col(column).isin(values) for column, values in self.allowed_values.items()]
+        conditions = [~F.col(column).isin(values) for column, values in self.allowed_values.items()]
 
         overall_condition = F.aggregate(F.array(*conditions), F.lit(True), lambda acc, x: acc & x)
 
