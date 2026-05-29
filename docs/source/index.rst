@@ -9,11 +9,6 @@ SparkDQ — Data Quality Validation
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
    :start-after: Apache Spark
-   :end-before: <!-- doc-link-start -->
-
-.. include:: ../../README.md
-   :parser: myst_parser.sphinx_
-   :start-after: <!-- doc-link-end -->
 
 .. toctree::
    :maxdepth: 2
