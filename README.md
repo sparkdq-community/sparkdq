@@ -15,7 +15,7 @@
 
 ## Quickstart
 
-**Declarative** — define checks as dicts and load them from YAML, JSON, or any external system:
+**Declarative** — checks are passed as dicts, loaded from anywhere: YAML files, JSON, databases, or APIs:
 
 ```python
 from pyspark.sql import SparkSession
