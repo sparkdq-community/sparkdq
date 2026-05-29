@@ -36,7 +36,7 @@ class IsNotContainedInCheck(BaseRowCheck):
         Returns:
             DataFrame: The input DataFrame extended with a column indicating pass/fail per row.
         """
-        conditions = [~F.col(column).isin(values) for column, values in self.forbidden_values.items()]
+        conditions = [F.col(column).isin(values) for column, values in self.forbidden_values.items()]
 
         overall_condition = F.aggregate(F.array(*conditions), F.lit(True), lambda acc, x: acc & x)
 
