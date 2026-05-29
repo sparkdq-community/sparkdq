@@ -26,7 +26,9 @@ _DQ_SCHEMA = StructType(
         StructField("_dq_passed", BooleanType()),
         StructField(
             "_dq_errors",
-            ArrayType(StructType([StructField("severity", StringType()), StructField("check", StringType())])),
+            ArrayType(
+                StructType([StructField("severity", StringType()), StructField("check", StringType())])
+            ),
         ),
     ]
 )
