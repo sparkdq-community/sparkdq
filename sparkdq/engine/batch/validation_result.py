@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import array_contains, col, expr, lit
+from pyspark.sql.functions import array_contains, array_size, col, expr, lit
 
 from sparkdq.core.check_results import AggregateCheckResult
 from sparkdq.core.severity import Severity
@@ -83,6 +83,7 @@ class BatchValidationResult:
         """
         df = self.df.filter(
             col("_dq_passed")
+            & (array_size(col("_dq_errors")) > 0)
             & array_contains(expr("transform(_dq_errors, x -> x.severity)"), Severity.WARNING.value)
         ).select(*self.input_columns + ["_dq_errors"])
         df = df.withColumn("_dq_validation_ts", lit(self.timestamp))
@@ -103,6 +104,7 @@ class BatchValidationResult:
         failed = total - passed
         warnings = self.df.filter(
             col("_dq_passed")
+            & (array_size(col("_dq_errors")) > 0)
             & array_contains(expr("transform(_dq_errors, x -> x.severity)"), Severity.WARNING.value)
         ).count()
         rate = round(passed / total if total else 0.0, 2)

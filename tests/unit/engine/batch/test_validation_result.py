@@ -14,9 +14,22 @@ and consumers of clean or dirty data, making these tests critical.
 
 import pytest
 from pyspark.sql import Row, SparkSession
+from pyspark.sql.types import ArrayType, BooleanType, IntegerType, StringType, StructField, StructType
 
 from sparkdq.core.severity import Severity
 from sparkdq.engine.batch.validation_result import BatchValidationResult
+
+_DQ_SCHEMA = StructType(
+    [
+        StructField("id", IntegerType()),
+        StructField("value", StringType()),
+        StructField("_dq_passed", BooleanType()),
+        StructField(
+            "_dq_errors",
+            ArrayType(StructType([StructField("severity", StringType()), StructField("check", StringType())])),
+        ),
+    ]
+)
 
 
 @pytest.fixture
@@ -120,6 +133,53 @@ def test_warn_df_returns_only_warnings(sample_df) -> None:
     assert len(errors) == 1
     assert errors[0]["severity"] == Severity.WARNING.value
     assert errors[0]["check"] == "dummy"
+
+
+def test_summary_all_records_pass(spark: SparkSession) -> None:
+    """
+    Validates that summary() works correctly when all records pass and _dq_errors is empty.
+
+    Regression test for the VOID type error that occurred when transform() was applied
+    to an empty array whose element type could not be inferred by Spark.
+    """
+    # Arrange
+    df = spark.createDataFrame(
+        [
+            Row(id=1, value="a", _dq_passed=True, _dq_errors=[]),
+            Row(id=2, value="b", _dq_passed=True, _dq_errors=[]),
+        ],
+        schema=_DQ_SCHEMA,
+    )
+    result = BatchValidationResult(df=df, aggregate_results=[], input_columns=["id", "value"])
+
+    # Act
+    summary = result.summary()
+
+    # Assert
+    assert summary.total_records == 2
+    assert summary.passed_records == 2
+    assert summary.failed_records == 0
+    assert summary.warning_records == 0
+
+
+def test_warn_df_all_records_pass(spark: SparkSession) -> None:
+    """
+    Validates that warn_df() returns an empty DataFrame when all records pass with empty _dq_errors.
+
+    Regression test for the VOID type error when transform() was applied to an empty array.
+    """
+    # Arrange
+    df = spark.createDataFrame(
+        [
+            Row(id=1, value="a", _dq_passed=True, _dq_errors=[]),
+            Row(id=2, value="b", _dq_passed=True, _dq_errors=[]),
+        ],
+        schema=_DQ_SCHEMA,
+    )
+    result = BatchValidationResult(df=df, aggregate_results=[], input_columns=["id", "value"])
+
+    # Act & Assert
+    assert result.warn_df().count() == 0
 
 
 def test_summary_computes_correct_statistics(sample_df) -> None:
