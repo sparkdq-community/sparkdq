@@ -103,17 +103,13 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x. Spar
 
 ## Typical Use Cases
 
-**Data Ingestion**
-Validate schema, check for nulls, enforce value ranges, and detect format violations before bad data enters your platform.
+- **Data Ingestion**: Validate schema, check for nulls, enforce value ranges, and detect format violations before bad data enters your platform.
 
-**Lakehouse Quality**
-Assert completeness, uniqueness, and referential integrity before writing to Delta, Iceberg, or Hudi tables — keep your lakehouse clean at the source.
+- **Lakehouse Quality**: Assert completeness, uniqueness, and referential integrity before writing to Delta, Iceberg, or Hudi tables — keep your lakehouse clean at the source.
 
-**ML & Analytics**
-Validate feature completeness, numeric boundaries, and row counts before model training or reporting. Catch data issues before they silently corrupt your results.
+- **ML & Analytics**: Validate feature completeness, numeric boundaries, and row counts before model training or reporting. Catch data issues before they silently corrupt your results.
 
-**Pipeline Assertions**
-Enforce data contracts between pipeline stages. Fail fast on critical violations, log warnings for soft constraints, and keep your pipelines observable.
+- **Pipeline Assertions**: Enforce data contracts between pipeline stages. Fail fast on critical violations, log warnings for soft constraints, and keep your pipelines observable.
 
 ## Let’s Build Better Data Together
 
