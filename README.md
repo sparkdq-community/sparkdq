@@ -2,20 +2,16 @@
 [![codecov](https://codecov.io/gh/sparkdq-community/sparkdq/branch/main/graph/badge.svg?token=3TVZE8J2DN)](https://codecov.io/gh/sparkdq-community/sparkdq)
 [![Docs](https://img.shields.io/badge/docs-online-green.svg)](https://sparkdq-community.github.io/sparkdq/)
 [![PyPI version](https://badge.fury.io/py/sparkdq.svg)](https://pypi.org/project/sparkdq/)
-[![Python Versions](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue.svg)](https://github.com/sparkdq-community/sparkdq)
+[![Python Versions](https://img.shields.io/badge/python-3.11+%20-blue.svg)](https://github.com/sparkdq-community/sparkdq)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/sparkdq?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/sparkdq)
 
 # SparkDQ — Data Quality Validation for Apache Spark
 
-Most data quality frameworks weren’t designed with PySpark in mind. They aren’t Spark-native and often lack proper support for declarative pipelines. Instead of integrating seamlessly, they require you to build custom wrappers around them just to fit into production workflows. This adds complexity and makes your pipelines harder to maintain. On top of that, many frameworks only validate data after processing — so you can’t react dynamically or fail early when data issues occur.
+**SparkDQ** is a lightweight data quality framework built specifically for PySpark. Define checks declaratively or in Python, run them directly inside your Spark pipelines, and catch data issues before they reach production.
 
-**SparkDQ** takes a different approach. It’s built specifically for PySpark — so you can define and run data quality checks directly inside your Spark pipelines, using Python. Whether you're validating incoming data, verifying outputs before persistence, or enforcing assumptions in your dataflow: SparkDQ helps you catch issues early, without adding complexity.
+**No wrappers. No heavy dependencies. Just Python and Spark.**
 
-<!-- doc-link-start -->
-
-🚀 See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
-
-<!-- doc-link-end -->
 
 ## Quickstart Examples
 
@@ -47,10 +43,66 @@ check_set.add_checks_from_dicts(check_definitions)
 
 result = BatchDQEngine(check_set).run_batch(df)
 print(result.summary())
+# Validation Summary (2024-01-01 00:00:00)
+# Total records:   3
+# Passed records:  2
+# Failed records:  1
+# Warnings:        0
+# Pass rate:       67.00%
 ```
 
 **Prefer Python-native development?**
-Alternatively, you can define checks using Python classes for full type safety, IDE autocompletion, and compile-time validation. [See docs](https://sparkdq-community.github.io/sparkdq/) for examples of both approaches.
+Define checks directly in Python for full type safety, IDE autocompletion, and compile-time validation:
+
+```python
+from pyspark.sql import SparkSession
+
+from sparkdq.checks import NullCheckConfig, RowCountMinCheckConfig
+from sparkdq.core import Severity
+from sparkdq.engine import BatchDQEngine
+from sparkdq.management import CheckSet
+
+spark = SparkSession.builder.getOrCreate()
+
+df = spark.createDataFrame(
+    [
+        {"id": 1, "name": "Alice"},
+        {"id": 2, "name": None},
+        {"id": 3, "name": "Bob"},
+    ]
+)
+
+check_set = (
+    CheckSet()
+    .add_check(
+        NullCheckConfig(
+            check_id="null-check",
+            columns=["name"],
+            severity=Severity.CRITICAL,
+        )
+    )
+    .add_check(
+        RowCountMinCheckConfig(
+            check_id="min-row-count",
+            min_count=1,
+            severity=Severity.WARNING,
+        )
+    )
+)
+
+result = BatchDQEngine(check_set).run_batch(df)
+print(result.summary())
+# Validation Summary (2024-01-01 00:00:00)
+# Total records:   3
+# Passed records:  2
+# Failed records:  1
+# Warnings:        0
+# Pass rate:       67.00%
+```
+
+SparkDQ ships with 30+ built-in checks across null validation, numeric ranges, string patterns, date boundaries, schema enforcement, uniqueness, and referential integrity.
+
+🚀  See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
 
 ## Installation
 
@@ -70,34 +122,29 @@ Install without PySpark (runtime provided by platform):
 pip install sparkdq
 ```
 
-The framework supports Python 3.10+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.
+The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.
 
 ## Why SparkDQ?
 
-- ✅ **Robust Validation Layer**: Clean separation of check definition, execution, and reporting
+- ✅ **Extensible by design**: Add custom checks via a simple plugin system — no changes to the core required
 
-- ✅ **Declarative or Programmatic**: Define checks via config files or directly in Python
+- ✅ **Declarative or Pythonic**: Load checks from YAML/JSON, or define them in Python with full type safety and IDE autocompletion
 
-- ✅ **Severity-Aware**: Built-in distinction between warning and critical violations
+- ✅ **Severity-aware**: Distinguish between hard failures (CRITICAL) and soft constraints (WARNING) — react differently to each
 
-- ✅ **Row & Aggregate Logic**: Supports both record-level and dataset-wide constraints
+- ✅ **Row-level and aggregate**: Validate individual records and entire datasets in a single pass
 
-- ✅ **Typed & Tested**: Built with type safety, testability, and extensibility in mind
-
-- ✅ **Zero Overhead**: Pure PySpark, no heavy dependencies
+- ✅ **Minimal footprint**: Only Pydantic required — PySpark is provided by your platform
 
 ## Typical Use Cases
 
-SparkDQ is built for modern data platforms that demand trust, transparency, and resilience.
-It helps teams enforce quality standards early and consistently — across ingestion, transformation, and delivery layers.
+- **Data Ingestion**: Validate schema, check for nulls, enforce value ranges, and detect format violations before bad data enters your platform
 
-- **Data Ingestion**: Validate raw data as it enters your platform with schema validation, completeness detection, format validation, and early failure detection
+- **Lakehouse Quality**: Assert completeness, uniqueness, and referential integrity before writing to Delta, Iceberg, or Hudi tables
 
-- **Lakehouse Quality**: Enforce rules before persisting to storage including Delta/Iceberg/Hudi table validation, partition checks, and data freshness validation
+- **ML & Analytics**: Validate feature completeness, numeric boundaries, and row counts before model training or reporting
 
-- **ML & Analytics**: Assert conditions before model training with feature quality checks, training data validation, bias detection, and model I/O validation
-
-- **Pipeline Monitoring**: Flag violations in production workflows through real-time alerts, SLA compliance monitoring, data drift detection, and automated incident response
+- **Pipeline Assertions**: Enforce data contracts between pipeline stages — fail fast on critical violations, log warnings for soft constraints
 
 ## Let’s Build Better Data Together
 
