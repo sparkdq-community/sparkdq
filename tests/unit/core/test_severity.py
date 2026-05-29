@@ -26,6 +26,17 @@ def test_normalize_severity_from_valid_string() -> None:
         assert result == expected
 
 
+def test_normalize_severity_from_enum_instance() -> None:
+    """
+    Verify that normalize_severity returns the enum as-is when already a Severity instance.
+
+    Passing an already-normalized Severity enum should be a no-op, enabling safe
+    repeated calls without errors.
+    """
+    assert normalize_severity(Severity.CRITICAL) == Severity.CRITICAL
+    assert normalize_severity(Severity.WARNING) == Severity.WARNING
+
+
 def test_normalize_severity_invalid_string() -> None:
     """
     Verify that normalize_severity raises InvalidSeverityLevelError for unrecognized inputs.

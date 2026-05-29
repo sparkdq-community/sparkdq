@@ -47,9 +47,9 @@ class CheckFactory:
         if not check_name:
             raise MissingCheckTypeError()
 
-        # Normalize severity if present
+        # Normalize severity if present, without mutating the original dict
         if "severity" in config_data:
-            config_data["severity"] = normalize_severity(config_data["severity"])
+            config_data = {**config_data, "severity": normalize_severity(config_data["severity"])}
 
         config_cls = CheckConfigRegistry.get(check_name)
         config = config_cls.model_validate(config_data)

@@ -71,6 +71,41 @@ def test_from_dict_raises_on_missing_check_field() -> None:
         CheckFactory._from_dict({"column": "foo"})
 
 
+def test_from_dict_accepts_severity_enum() -> None:
+    """
+    Verify that from_dict accepts a Severity enum directly instead of a string.
+
+    Passing an already-normalized Severity enum should work without errors,
+    enabling programmatic usage where the caller constructs the config dict in Python.
+    """
+    # Arrange
+    config_data = {"check-id": "test", "check": "dummy-check", "column": "foo", "severity": Severity.WARNING}
+
+    # Act
+    check = CheckFactory._from_dict(config_data)
+
+    # Assert
+    assert check.severity == Severity.WARNING
+
+
+def test_from_dict_does_not_mutate_input() -> None:
+    """
+    Verify that from_dict does not mutate the original config dict.
+
+    The factory should leave the input dict unchanged so it can safely be
+    reused across multiple calls without causing errors.
+    """
+    # Arrange
+    config_data = {"check-id": "test", "check": "dummy-check", "column": "foo", "severity": "warning"}
+
+    # Act
+    CheckFactory._from_dict(config_data)
+    CheckFactory._from_dict(config_data)
+
+    # Assert: severity is still a string in the original dict
+    assert config_data["severity"] == "warning"
+
+
 def test_from_list_creates_multiple_checks() -> None:
     """
     Verify that from_list correctly processes collections of configuration dictionaries.

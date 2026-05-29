@@ -52,7 +52,7 @@ class Severity(Enum):
         return self.value
 
 
-def normalize_severity(value: str) -> Severity:
+def normalize_severity(value: str | Severity) -> Severity:
     """
     Convert string representations to validated Severity enum instances.
 
@@ -65,8 +65,9 @@ def normalize_severity(value: str) -> Severity:
     components while providing clear feedback for configuration errors.
 
     Args:
-        value (str): String representation of the severity level, processed
-            case-insensitively for flexible input handling.
+        value (str | Severity): String representation of the severity level, processed
+            case-insensitively for flexible input handling. If already a Severity
+            instance, it is returned as-is.
 
     Returns:
         Severity: Validated severity enum instance corresponding to the input string.
@@ -75,6 +76,8 @@ def normalize_severity(value: str) -> Severity:
         InvalidSeverityLevelError: When the input string does not match any
             recognized severity level, providing clear feedback for correction.
     """
+    if isinstance(value, Severity):
+        return value
     try:
         return Severity[value.upper()]
     except KeyError:
