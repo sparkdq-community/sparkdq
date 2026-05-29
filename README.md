@@ -15,6 +15,8 @@
 
 ## Quickstart
 
+**Declarative** — define checks as dicts and load them from YAML, JSON, or any external system:
+
 ```python
 from pyspark.sql import SparkSession
 from sparkdq.engine import BatchDQEngine
@@ -29,32 +31,46 @@ df = spark.createDataFrame(
         {"id": 3, "name": "Bob"},
     ]
 )
-```
 
-**Declarative** — load checks from YAML, JSON, or any external system:
-
-```python
 check_set = CheckSet()
 check_set.add_checks_from_dicts([
     {"check-id": "null-check", "check": "null-check", "columns": ["name"]},
 ])
+
+result = BatchDQEngine(check_set).run_batch(df)
+print(result.summary())
+# Validation Summary (2024-01-01 00:00:00)
+# Total records:   3
+# Passed records:  2
+# Failed records:  1
+# Warnings:        0
+# Pass rate:       67.00%
 ```
 
 **Python-native** — full type safety and IDE autocompletion:
 
 ```python
+from pyspark.sql import SparkSession
 from sparkdq.checks import NullCheckConfig
 from sparkdq.core import Severity
+from sparkdq.engine import BatchDQEngine
+from sparkdq.management import CheckSet
+
+spark = SparkSession.builder.getOrCreate()
+
+df = spark.createDataFrame(
+    [
+        {"id": 1, "name": "Alice"},
+        {"id": 2, "name": None},
+        {"id": 3, "name": "Bob"},
+    ]
+)
 
 check_set = (
     CheckSet()
     .add_check(NullCheckConfig(check_id="null-check", columns=["name"], severity=Severity.CRITICAL))
 )
-```
 
-Both approaches produce the same result:
-
-```python
 result = BatchDQEngine(check_set).run_batch(df)
 print(result.summary())
 # Validation Summary (2024-01-01 00:00:00)
