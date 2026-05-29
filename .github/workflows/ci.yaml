@@ -44,9 +44,9 @@ jobs:
       options: --user root
 
     steps:
-      - name: Install git (needed for checkout)
+      - name: Install git and gpg (needed for checkout and codecov validation)
         run: |
-          apt-get update && apt-get install -y git
+          apt-get update && apt-get install -y git gpg
 
       - uses: actions/checkout@v4
 
