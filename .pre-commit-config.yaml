@@ -1,24 +1,34 @@
 repos:
-  - repo: local
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
     hooks:
-      - id: mypy
-        name: mypy
-        entry: uv run mypy
-        language: python
-        types: [python]
-        files: sparkdq/.*
-        args: ["--active"]
-      - id: ruff-check
-        name: ruff-check
-        entry: uv run ruff check --fix
-        language: python
-        types: [python]
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+        args: [--unsafe] # Allow GitLab CI custom tags like !reference
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff
+        args: [--fix]
       - id: ruff-format
-        name: ruff-format
-        entry: uv run ruff format
-        language: python
-        types: [python]
-  - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.6.12
+
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.8.1
     hooks:
-      - id: uv-lock
+      - id: prettier
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/tcort/markdown-link-check
+    rev: v3.12.2
+    hooks:
+      - id: markdown-link-check
+        args: ["--config", ".markdown-link-check.json"]
+        stages: [pre-commit]
