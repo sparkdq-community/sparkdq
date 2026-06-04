@@ -12,8 +12,8 @@ import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "sparkdq"
-copyright = "2025, Marcel Kennert"
-author = "Marcel Kennert"
+copyright = "2025, Marcel Kennert-Diaz"
+author = "Marcel Kennert-Diaz"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
