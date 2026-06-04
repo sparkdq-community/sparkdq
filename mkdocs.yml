@@ -1,0 +1,102 @@
+site_name: SparkDQ
+site_description: A declarative PySpark framework for row- and aggregate-level data quality validation.
+site_url: https://sparkdq-community.github.io/sparkdq/
+repo_url: https://github.com/sparkdq-community/sparkdq
+repo_name: sparkdq-community/sparkdq
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            members_order: source
+            separate_signature: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+extra_css:
+  - assets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/sparkdq-community/sparkdq
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/sparkdq/
+
+copyright: Copyright &copy; 2025 Marcel Kennert-Diaz
+
+nav:
+  - Introduction: index.md
+  - Getting Started:
+      - Introduction: getting_started/introduction.md
+      - Defining Checks: getting_started/defining_checks.md
+      - Validating DataFrames: getting_started/validation_dataframes.md
+      - Integration Patterns: getting_started/applying_validation.md
+  - Built-In Checks:
+      - Row-Level Checks: built_in_checks/row_level.md
+      - Aggregate Checks: built_in_checks/aggregate.md
+  - Custom Checks:
+      - Overview: custom_checks/overview.md
+      - Implementation: custom_checks/implementation.md
+  - API Reference:
+      - Overview: api/index.md
+      - sparkdq.checks: api/checks.md
+      - sparkdq.core: api/core.md
+      - sparkdq.engine: api/engine.md
+      - sparkdq.exceptions: api/exceptions.md
+      - sparkdq.management: api/management.md
+      - sparkdq.plugin: api/plugin.md
+  - References: references.md

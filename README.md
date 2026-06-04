@@ -12,7 +12,6 @@
 
 **No wrappers. No connectors. No bloat. Just data quality checks — nothing else.**
 
-
 ## Quickstart
 
 **Declarative** — checks are passed as dicts, loaded from anywhere: YAML files, JSON, databases, or APIs:
@@ -34,7 +33,7 @@ df = spark.createDataFrame(
 
 check_set = CheckSet()
 check_set.add_checks_from_dicts([
-    {"check-id": "null-check", "check": "null-check", "columns": ["name"]},
+    {"check": "null-check", "check-id": "no-null-name", "columns": ["name"]},
 ])
 
 result = BatchDQEngine(check_set).run_batch(df)
@@ -68,7 +67,7 @@ df = spark.createDataFrame(
 
 check_set = (
     CheckSet()
-    .add_check(NullCheckConfig(check_id="null-check", columns=["name"], severity=Severity.CRITICAL))
+    .add_check(NullCheckConfig(check_id="no-null-name", columns=["name"], severity=Severity.CRITICAL))
 )
 
 result = BatchDQEngine(check_set).run_batch(df)
@@ -83,7 +82,7 @@ print(result.summary())
 
 SparkDQ ships with 30+ built-in checks across null validation, numeric ranges, string patterns, date boundaries, schema enforcement, uniqueness, and referential integrity.
 
-🚀  See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
+🚀 See the [official documentation](https://sparkdq-community.github.io/sparkdq/) to learn more.
 
 ## Installation
 
@@ -107,25 +106,15 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x. Spar
 
 ## Why SparkDQ?
 
-- ✅ **Extensible by design**: Add custom checks via a simple plugin system — no changes to the core required
+- **Extensible by design**: Add custom checks via a simple plugin system — no changes to the core required
 
-- ✅ **Declarative or Pythonic**: YAML/JSON configs or type-safe Python — your choice
+- **Declarative or Pythonic**: YAML/JSON configs or type-safe Python — your choice
 
-- ✅ **Severity-aware**: Distinguish between hard failures (CRITICAL) and soft constraints (WARNING)
+- **Severity-aware**: Distinguish between hard failures (CRITICAL) and soft constraints (WARNING)
 
-- ✅ **Row-level and aggregate**: Validate individual records and entire datasets in a single pass
+- **Row-level and aggregate**: Validate individual records and entire datasets in a single pass
 
-- ✅ **Minimal footprint**: Only Pydantic required — PySpark is provided by your platform
-
-## Typical Use Cases
-
-- **Data Ingestion**: Validate schema, check for nulls, enforce value ranges, and detect format violations before bad data enters your platform.
-
-- **Lakehouse Quality**: Assert completeness, uniqueness, and referential integrity before writing to Delta, Iceberg, or Hudi tables — keep your lakehouse clean at the source.
-
-- **ML & Analytics**: Validate feature completeness, numeric boundaries, and row counts before model training or reporting. Catch data issues before they silently corrupt your results.
-
-- **Pipeline Assertions**: Enforce data contracts between pipeline stages. Fail fast on critical violations, log warnings for soft constraints, and keep your pipelines observable.
+- **Minimal footprint**: Only Pydantic required — PySpark is provided by your platform
 
 ## Let’s Build Better Data Together
 
