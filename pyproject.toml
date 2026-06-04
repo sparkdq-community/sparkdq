@@ -10,12 +10,17 @@ keywords = [
     "data-validation",
     "pyspark",
     "spark",
+    "apache-spark",
+    "databricks",
+    "delta-lake",
     "etl",
     "data-pipeline",
-    "apache-spark",
-    "lightweight",
+    "data-engineering",
+    "dq",
+    "validation-framework",
 ]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
@@ -23,20 +28,22 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = ["pydantic>=2.8.0,<3.0.0"]
 
 [project.optional-dependencies]
 spark = ["pyspark>=3.5.0,<4.0.0"]
 
 [project.urls]
-homepage = "https://github.com/sparkdq-community/sparkdq"
-documentation = "https://sparkdq-community.github.io/sparkdq/"
+Homepage = "https://github.com/sparkdq-community/sparkdq"
+Documentation = "https://sparkdq-community.github.io/sparkdq/"
+Repository = "https://github.com/sparkdq-community/sparkdq"
+"Bug Tracker" = "https://github.com/sparkdq-community/sparkdq/issues"
 
 [tool.uv]
 default-groups = "all"
