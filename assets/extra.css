@@ -1,0 +1,19 @@
+.md-header__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-left: 0;
+}
+
+.md-header__button.md-logo {
+  padding-right: 0;
+}
+
+.md-header__topic:first-child .md-ellipsis {
+  text-decoration: underline;
+}
+
+.md-typeset table th:first-child,
+.md-typeset table td:first-child {
+  width: 220px;
+  min-width: 220px;
+}
