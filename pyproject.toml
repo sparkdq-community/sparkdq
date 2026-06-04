@@ -44,6 +44,7 @@ Homepage = "https://github.com/sparkdq-community/sparkdq"
 Documentation = "https://sparkdq-community.github.io/sparkdq/"
 Repository = "https://github.com/sparkdq-community/sparkdq"
 "Bug Tracker" = "https://github.com/sparkdq-community/sparkdq/issues"
+Changelog = "https://github.com/sparkdq-community/sparkdq/blob/main/CHANGELOG.md"
 
 [tool.uv]
 default-groups = "all"
