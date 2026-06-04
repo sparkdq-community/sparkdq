@@ -1878,12 +1878,12 @@ wheels = [
 
 [[package]]
 name = "pyspark"
-version = "3.5.8"
+version = "4.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "py4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/80/5a/3806f44eb47387e8af803508cdd6bbc0df784febf4dc010700be04a1ff89/pyspark-3.5.8.tar.gz", hash = "sha256:54cca0767b21b40e3953ad1d30f8601c53abf9cbda763653289cdcfcac52313c", size = 317817299, upload-time = "2026-01-15T11:46:14.487Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/71/4dd20c69332a2a4bf7ece8a655c9da98e4bd9b6bcea235349c1a00399d57/pyspark-4.1.2.tar.gz", hash = "sha256:fa5d6159f700d0990a07f4f62df1b7449401dccee9cd7d5d6df8957530841602", size = 455428043, upload-time = "2026-05-21T14:49:21.785Z" }
 
 [[package]]
 name = "pytest"
@@ -2418,7 +2418,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "pydantic", specifier = ">=2.8.0,<3.0.0" },
-    { name = "pyspark", marker = "extra == 'spark'", specifier = ">=3.5.0,<4.0.0" },
+    { name = "pyspark", marker = "extra == 'spark'", specifier = ">=3.5.0,<5.0.0" },
 ]
 provides-extras = ["spark"]
 
@@ -2441,7 +2441,7 @@ test = [
     { name = "numpy", specifier = "<2.0.0" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pyarrow", specifier = ">=19.0.0,<20.0.0" },
-    { name = "pyspark", specifier = ">=3.5.0,<4.0.0" },
+    { name = "pyspark", specifier = ">=3.5.0,<5.0.0" },
     { name = "pytest", specifier = ">=8.3.5,<10.0.0" },
     { name = "pytest-cov", specifier = ">=6.1.0,<7.0.0" },
     { name = "pytest-mock", specifier = ">=3.14.0" },

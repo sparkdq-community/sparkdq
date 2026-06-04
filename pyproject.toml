@@ -37,7 +37,7 @@ requires-python = ">=3.11"
 dependencies = ["pydantic>=2.8.0,<3.0.0"]
 
 [project.optional-dependencies]
-spark = ["pyspark>=3.5.0,<4.0.0"]
+spark = ["pyspark>=3.5.0,<5.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/sparkdq-community/sparkdq"
@@ -59,7 +59,7 @@ test = [
     "numpy<2.0.0",
     "pandas>=2.0.0",
     "pytest-mock>=3.14.0",
-    "pyspark>=3.5.0,<4.0.0",    # Required for testing
+    "pyspark>=3.5.0,<5.0.0",    # Required for testing
 ]
 docs = [
     "mkdocs>=1.6.0,<2.0.0",
