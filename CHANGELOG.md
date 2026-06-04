@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.11.4 (2026-06-04)
+
+### Bug Fixes
+
+- Add version list marker to CHANGELOG for semantic-release
+  ([`94ba17b`](https://github.com/sparkdq-community/sparkdq/commit/94ba17b488b3a5260588d1bcb8722574e3b7cc2c))
+
+
 ## v0.11.0 (2025-08-09)
 
 ### Features
