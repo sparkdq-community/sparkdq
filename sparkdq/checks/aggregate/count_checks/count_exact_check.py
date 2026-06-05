@@ -1,10 +1,9 @@
 from typing import Any
 
 from pydantic import Field, model_validator
-from pyspark.sql import Column, DataFrame
+from pyspark.sql import Column
 from pyspark.sql import functions as F
 
-from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
 from sparkdq.core.observable_check import ObservableAggregateCheck
@@ -13,7 +12,7 @@ from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class RowCountExactCheck(BaseAggregateCheck, ObservableAggregateCheck):
+class RowCountExactCheck(ObservableAggregateCheck):
     """
     Dataset-level validation check that enforces exact row count requirements.
 
@@ -54,10 +53,6 @@ class RowCountExactCheck(BaseAggregateCheck, ObservableAggregateCheck):
                 "expected_row_count": self.expected_count,
             },
         )
-
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
-        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="row-count-exact-check")

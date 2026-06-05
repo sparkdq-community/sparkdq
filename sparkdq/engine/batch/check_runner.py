@@ -187,23 +187,27 @@ class BatchCheckRunner:
         if not checks:
             return []
 
-        # Build a flat dict of prefixed Column expressions: "{check_id}__{metric}" -> Column
-        all_agg_exprs: dict[str, Column] = {}
-        for check in checks:
+        # Build a flat list of (alias, Column, check_index, metric_name) to avoid
+        # any dependency on check_id formatting or separator conventions.
+        aliased_exprs: list[tuple[str, Column, int, str]] = []
+        for check_idx, check in enumerate(checks):
             observable_check: ObservableAggregateCheck = check  # type: ignore[assignment]
             for metric, expr in observable_check.aggregations().items():
-                all_agg_exprs[f"{check.check_id}__{metric}"] = expr
+                alias = f"_obs_{check_idx}_{metric}"
+                aliased_exprs.append((alias, expr, check_idx, metric))
 
-        agg_row = df.agg(*[expr.alias(key) for key, expr in all_agg_exprs.items()]).first()
+        agg_row = df.agg(*[expr.alias(alias) for alias, expr, _, _ in aliased_exprs]).first()
         flat_results: dict[str, Any] = agg_row.asDict() if agg_row else {}  # type: ignore[union-attr]
 
+        # Group results back per check index
+        per_check_metrics: dict[int, dict[str, Any]] = {i: {} for i in range(len(checks))}
+        for alias, _, check_idx, metric in aliased_exprs:
+            per_check_metrics[check_idx][metric] = flat_results.get(alias)
+
         results = []
-        for check in checks:
+        for check_idx, check in enumerate(checks):
             observable_check = check  # type: ignore[assignment]
-            check_metrics = {
-                metric: flat_results[f"{check.check_id}__{metric}"]
-                for metric in observable_check.aggregations()
-            }
+            check_metrics = per_check_metrics[check_idx]
             eval_result = observable_check._evaluate_from_agg_results(check_metrics)
             results.append(
                 AggregateCheckResult(
