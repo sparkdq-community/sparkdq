@@ -108,7 +108,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #0d47a1;
-  border-bottom: 3px solid #1e88e5;
+  border-bottom: 3px solid #0d47a1;
   padding-bottom: 0.3em;
 }
 
@@ -124,7 +124,7 @@
 }
 
 [data-md-color-scheme="slate"] .md-typeset h2 {
-  color: #90caf9;
+  color: #5c8fd6;
 }
 
 /* ─── Content: Links ──────────────────────────────────────────────────────── */
@@ -212,11 +212,11 @@
 /* ─── Footer ──────────────────────────────────────────────────────────────── */
 
 .md-footer {
-  background: #1565c0;
+  background: #0a0f1e;
 }
 
 .md-footer-meta {
-  background: #0d47a1;
+  background: #060a14;
 }
 
 /* ─── Search highlight ────────────────────────────────────────────────────── */
