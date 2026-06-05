@@ -1,16 +1,19 @@
+from typing import Any
+
 from pydantic import Field, model_validator
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class CompletenessRatioCheck(BaseAggregateCheck):
+class CompletenessRatioCheck(BaseAggregateCheck, ObservableAggregateCheck):
     """
     Aggregate-level check that verifies whether the proportion of non-null values in a column
     meets or exceeds a specified threshold.
@@ -33,24 +36,18 @@ class CompletenessRatioCheck(BaseAggregateCheck):
         self.column = column
         self.min_ratio = min_ratio
 
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        """
-        Evaluate the completeness ratio (non-null / total) for the target column.
+    def aggregations(self) -> dict[str, Column]:
+        return {
+            "total_count": F.count("*"),
+            "non_null_count": F.count(F.col(self.column)),
+        }
 
-        Args:
-            df (DataFrame): Spark DataFrame.
-
-        Returns:
-            AggregateEvaluationResult: Check result with ratio metrics and pass/fail status.
-        """
-        total_count = df.count()
-        non_null_count = df.filter(F.col(self.column).isNotNull()).count()
-
+    def _evaluate_from_agg_results(self, results: dict[str, Any]) -> AggregateEvaluationResult:
+        total_count = results["total_count"]
+        non_null_count = results["non_null_count"]
         actual_ratio = non_null_count / total_count if total_count > 0 else 1.0
-        passed = actual_ratio >= self.min_ratio
-
         return AggregateEvaluationResult(
-            passed=passed,
+            passed=actual_ratio >= self.min_ratio,
             metrics={
                 "column": self.column,
                 "total_count": total_count,
@@ -59,6 +56,10 @@ class CompletenessRatioCheck(BaseAggregateCheck):
                 "actual_ratio": actual_ratio,
             },
         )
+
+    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
+        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
+        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="completeness-ratio-check")

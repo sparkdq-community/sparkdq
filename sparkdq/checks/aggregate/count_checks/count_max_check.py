@@ -1,15 +1,19 @@
+from typing import Any
+
 from pydantic import Field, model_validator
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class RowCountMaxCheck(BaseAggregateCheck):
+class RowCountMaxCheck(BaseAggregateCheck, ObservableAggregateCheck):
     """
     Dataset-level validation check that enforces maximum row count limits.
 
@@ -39,30 +43,22 @@ class RowCountMaxCheck(BaseAggregateCheck):
         super().__init__(check_id=check_id, severity=severity)
         self.max_count = max_count
 
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        """
-        Execute the maximum row count validation against the configured threshold.
+    def aggregations(self) -> dict[str, Column]:
+        return {"total_rows": F.count("*")}
 
-        Computes the total row count of the dataset and evaluates it against the
-        configured maximum threshold. The validation passes when the actual count
-        remains within or below the maximum limit.
-
-        Args:
-            df (DataFrame): The dataset to evaluate for maximum count compliance.
-
-        Returns:
-            AggregateEvaluationResult: Validation outcome including pass/fail status
-                and comprehensive metrics comparing actual count to maximum threshold.
-        """
-        actual = df.count()
-        passed = actual <= self.max_count
+    def _evaluate_from_agg_results(self, results: dict[str, Any]) -> AggregateEvaluationResult:
+        actual = results["total_rows"]
         return AggregateEvaluationResult(
-            passed=passed,
+            passed=actual <= self.max_count,
             metrics={
                 "actual_row_count": actual,
                 "max_expected": self.max_count,
             },
         )
+
+    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
+        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
+        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="row-count-max-check")
