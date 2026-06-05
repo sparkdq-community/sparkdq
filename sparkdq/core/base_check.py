@@ -178,7 +178,6 @@ class BaseAggregateCheck(BaseCheck):
     business rules that cannot be evaluated at the individual record level.
     """
 
-    @abstractmethod
     def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
         """
         Implement the core validation logic for this aggregate check.
@@ -188,6 +187,9 @@ class BaseAggregateCheck(BaseCheck):
         should perform necessary calculations and return both the validation
         outcome and supporting metrics.
 
+        Subclasses must override this method unless they also inherit ObservableAggregateCheck,
+        which provides a default implementation based on aggregations().
+
         Args:
             df (DataFrame): The dataset to evaluate against this check's criteria.
 
@@ -195,7 +197,7 @@ class BaseAggregateCheck(BaseCheck):
             AggregateEvaluationResult: Validation outcome including pass/fail status
                 and detailed metrics explaining the evaluation results.
         """
-        ...
+        raise NotImplementedError(f"{type(self).__name__} must implement _evaluate_logic().")
 
     def evaluate(self, df: DataFrame) -> AggregateCheckResult:
         """

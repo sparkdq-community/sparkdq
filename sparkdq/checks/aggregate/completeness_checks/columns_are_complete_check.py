@@ -4,7 +4,6 @@ from pydantic import Field
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
-from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
 from sparkdq.core.observable_check import ObservableAggregateCheck
@@ -13,7 +12,7 @@ from sparkdq.exceptions import MissingColumnError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class ColumnsAreCompleteCheck(BaseAggregateCheck, ObservableAggregateCheck):
+class ColumnsAreCompleteCheck(ObservableAggregateCheck):
     """
     Aggregate-level data quality check that ensures the specified columns are fully populated.
 
