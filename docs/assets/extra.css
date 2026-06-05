@@ -1,19 +1,227 @@
+/* ─── Brand Colors ────────────────────────────────────────────────────────── */
+
+:root {
+  --md-primary-fg-color: #1e88e5; /* Blue 600 */
+  --md-primary-fg-color--light: #42a5f5; /* Blue 400 */
+  --md-primary-fg-color--dark: #1565c0; /* Blue 800 */
+  --md-primary-bg-color: #ffffff;
+  --md-accent-fg-color: #81d4fa; /* Light Blue 200 */
+  --md-accent-fg-color--transparent: rgba(129, 212, 250, 0.15);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #1e88e5;
+  --md-primary-fg-color--light: #42a5f5;
+  --md-primary-fg-color--dark: #1565c0;
+  --md-accent-fg-color: #81d4fa;
+  --md-accent-fg-color--transparent: rgba(129, 212, 250, 0.15);
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+
+@keyframes headerPulse {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.md-header {
+  background: linear-gradient(
+    135deg,
+    #42a5f5,
+    #1e88e5,
+    #1565c0,
+    #1976d2,
+    #42a5f5
+  );
+  background-size: 300% 300%;
+  animation: headerPulse 20s ease infinite;
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.35);
+}
+
 .md-header__title {
   font-size: 1.4rem;
   font-weight: 700;
   margin-left: 0;
+  letter-spacing: -0.01em;
 }
 
 .md-header__button.md-logo {
-  padding-right: 0;
+  padding: 1px;
+  margin: 0;
 }
 
-.md-header__topic:first-child .md-ellipsis {
-  text-decoration: underline;
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  width: 52px;
+  height: 52px;
+  display: block;
+}
+
+/* ─── Navigation Tabs ─────────────────────────────────────────────────────── */
+
+.md-tabs {
+  background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #42a5f5 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.md-tabs__link--active::after {
+  background-color: #81d4fa;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+}
+
+/* ─── Sidebar & Navigation ────────────────────────────────────────────────── */
+
+.md-nav__link--active {
+  color: #1e88e5;
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: #64b5f6;
+}
+
+.md-nav__item--active > .md-nav__link {
+  color: #1e88e5;
+}
+
+[data-md-color-scheme="slate"] .md-nav__item--active > .md-nav__link {
+  color: #64b5f6;
+}
+
+/* ─── Content: Headings ───────────────────────────────────────────────────── */
+
+.md-typeset h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0d47a1;
+  border-bottom: 3px solid #1e88e5;
+  padding-bottom: 0.3em;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  color: #e3f2fd;
+  border-bottom-color: #1e88e5;
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1565c0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  color: #90caf9;
+}
+
+/* ─── Content: Links ──────────────────────────────────────────────────────── */
+
+.md-typeset a {
+  color: #1e88e5;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.md-typeset a:hover {
+  border-bottom-color: #1e88e5;
+}
+
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #64b5f6;
+}
+
+[data-md-color-scheme="slate"] .md-typeset a:hover {
+  border-bottom-color: #64b5f6;
+}
+
+/* ─── Content: Inline Code ────────────────────────────────────────────────── */
+
+.md-typeset code:not(.md-code__content) {
+  background-color: rgba(30, 136, 229, 0.08);
+  color: #1565c0;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.88em;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code:not(.md-code__content) {
+  background-color: rgba(30, 136, 229, 0.2);
+  color: #90caf9;
+}
+
+/* ─── Content: Tables ─────────────────────────────────────────────────────── */
+
+.md-typeset table:not([class]) th {
+  background-color: #1e88e5;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: #1565c0;
+}
+
+.md-typeset table:not([class]) tr:hover {
+  background-color: rgba(30, 136, 229, 0.06);
 }
 
 .md-typeset table th:first-child,
 .md-typeset table td:first-child {
   width: 220px;
   min-width: 220px;
+}
+
+/* ─── Admonitions ─────────────────────────────────────────────────────────── */
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-left-width: 4px;
+  border-radius: 0 6px 6px 0;
+}
+
+.md-typeset .note > .admonition-title,
+.md-typeset .note > summary {
+  background-color: rgba(30, 136, 229, 0.1);
+}
+
+.md-typeset .note {
+  border-left-color: #1e88e5;
+}
+
+/* ─── Breadcrumb underline fix ────────────────────────────────────────────── */
+
+.md-header__topic:first-child .md-ellipsis {
+  text-decoration: underline;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.md-footer {
+  background: #1565c0;
+}
+
+.md-footer-meta {
+  background: #0d47a1;
+}
+
+/* ─── Search highlight ────────────────────────────────────────────────────── */
+
+.md-search-result mark {
+  background-color: rgba(41, 182, 246, 0.3);
+  color: inherit;
 }
