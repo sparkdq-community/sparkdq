@@ -1,15 +1,19 @@
+from typing import Any
+
 from pydantic import Field, model_validator
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class RowCountBetweenCheck(BaseAggregateCheck):
+class RowCountBetweenCheck(BaseAggregateCheck, ObservableAggregateCheck):
     """
     Dataset-level validation check that enforces row count boundaries.
 
@@ -41,31 +45,23 @@ class RowCountBetweenCheck(BaseAggregateCheck):
         self.min_count = min_count
         self.max_count = max_count
 
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        """
-        Execute the row count validation against the configured boundaries.
+    def aggregations(self) -> dict[str, Column]:
+        return {"total_rows": F.count("*")}
 
-        Computes the total row count of the dataset and evaluates it against the
-        configured minimum and maximum thresholds. The validation passes when the
-        actual count falls within the inclusive range, and fails otherwise.
-
-        Args:
-            df (DataFrame): The dataset to evaluate for row count compliance.
-
-        Returns:
-            AggregateEvaluationResult: Validation outcome including pass/fail status
-                and comprehensive metrics comparing actual count to configured boundaries.
-        """
-        actual = df.count()
-        passed = self.min_count <= actual <= self.max_count
+    def _evaluate_from_agg_results(self, results: dict[str, Any]) -> AggregateEvaluationResult:
+        actual = results["total_rows"]
         return AggregateEvaluationResult(
-            passed=passed,
+            passed=self.min_count <= actual <= self.max_count,
             metrics={
                 "actual_row_count": actual,
                 "min_expected": self.min_count,
                 "max_expected": self.max_count,
             },
         )
+
+    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
+        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
+        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="row-count-between-check")

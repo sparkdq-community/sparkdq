@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
@@ -11,6 +11,7 @@ from sparkdq.core.base_check import (
     ReferenceDatasetDict,
 )
 from sparkdq.core.check_results import AggregateCheckResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 
 
@@ -141,14 +142,81 @@ class BatchCheckRunner:
         """
         Evaluates all aggregate-level checks on the given DataFrame.
 
+        Observable checks (implementing ObservableAggregateCheck) are batched into a
+        single df.agg() call to avoid triggering one Spark job per check. Non-observable
+        checks fall back to individual execution.
+
         Args:
             df (DataFrame): The DataFrame to evaluate.
             agg_checks (List[BaseAggregateCheck]): The aggregate-level checks.
 
         Returns:
-            List[AggregateCheckResult]: The result of each aggregate check.
+            List[AggregateCheckResult]: The result of each aggregate check, preserving
+                the original order of the input list.
         """
-        return [check.evaluate(df) for check in agg_checks]
+        observable = [c for c in agg_checks if isinstance(c, ObservableAggregateCheck)]
+        classic = [c for c in agg_checks if not isinstance(c, ObservableAggregateCheck)]
+
+        observable_results = self._run_observable_checks(df, observable)
+        classic_results = [check.evaluate(df) for check in classic]
+
+        # Restore original order
+        result_map: dict[str, AggregateCheckResult] = {
+            r.check_id: r for r in observable_results + classic_results
+        }
+        return [result_map[check.check_id] for check in agg_checks]
+
+    def _run_observable_checks(
+        self,
+        df: DataFrame,
+        checks: List[BaseAggregateCheck],
+    ) -> List[AggregateCheckResult]:
+        """
+        Executes all observable aggregate checks in a single df.agg() Spark job.
+
+        Each check's aggregation expressions are prefixed with its check_id to avoid
+        key collisions. After the single agg() action, results are dispatched back to
+        each check's _evaluate_from_agg_results() method.
+
+        Args:
+            df (DataFrame): The DataFrame to aggregate over.
+            checks (List[BaseAggregateCheck]): Checks that implement ObservableAggregateCheck.
+
+        Returns:
+            List[AggregateCheckResult]: One result per observable check.
+        """
+        if not checks:
+            return []
+
+        # Build a flat dict of prefixed Column expressions: "{check_id}__{metric}" -> Column
+        all_agg_exprs: dict[str, Column] = {}
+        for check in checks:
+            observable_check: ObservableAggregateCheck = check  # type: ignore[assignment]
+            for metric, expr in observable_check.aggregations().items():
+                all_agg_exprs[f"{check.check_id}__{metric}"] = expr
+
+        agg_row = df.agg(*[expr.alias(key) for key, expr in all_agg_exprs.items()]).first()
+        flat_results: dict[str, Any] = agg_row.asDict() if agg_row else {}  # type: ignore[union-attr]
+
+        results = []
+        for check in checks:
+            observable_check = check  # type: ignore[assignment]
+            check_metrics = {
+                metric: flat_results[f"{check.check_id}__{metric}"]
+                for metric in observable_check.aggregations()
+            }
+            eval_result = observable_check._evaluate_from_agg_results(check_metrics)
+            results.append(
+                AggregateCheckResult(
+                    check=check.name,
+                    check_id=check.check_id,
+                    severity=check.severity,
+                    parameters=check._parameters(),
+                    result=eval_result,
+                )
+            )
+
+        return results
 
     def _combine_failure_flags(self, df: DataFrame, fail_flags: List[Column]) -> DataFrame:
         """

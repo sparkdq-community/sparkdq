@@ -1,15 +1,19 @@
+from typing import Any
+
 from pydantic import Field, model_validator
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
+from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import InvalidCheckConfigurationError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class RowCountExactCheck(BaseAggregateCheck):
+class RowCountExactCheck(BaseAggregateCheck, ObservableAggregateCheck):
     """
     Dataset-level validation check that enforces exact row count requirements.
 
@@ -38,30 +42,22 @@ class RowCountExactCheck(BaseAggregateCheck):
         super().__init__(check_id=check_id, severity=severity)
         self.expected_count = expected_count
 
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        """
-        Execute the exact row count validation against the configured target count.
+    def aggregations(self) -> dict[str, Column]:
+        return {"total_rows": F.count("*")}
 
-        Computes the total row count of the dataset and evaluates it against the
-        configured expected count. The validation passes only when the actual
-        count exactly matches the expected value.
-
-        Args:
-            df (DataFrame): The dataset to evaluate for exact count compliance.
-
-        Returns:
-            AggregateEvaluationResult: Validation outcome including pass/fail status
-                and comprehensive metrics comparing actual count to expected value.
-        """
-        actual = df.count()
-        passed = actual == self.expected_count
+    def _evaluate_from_agg_results(self, results: dict[str, Any]) -> AggregateEvaluationResult:
+        actual = results["total_rows"]
         return AggregateEvaluationResult(
-            passed=passed,
+            passed=actual == self.expected_count,
             metrics={
                 "actual_row_count": actual,
                 "expected_row_count": self.expected_count,
             },
         )
+
+    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
+        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
+        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="row-count-exact-check")

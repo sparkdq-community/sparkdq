@@ -1,18 +1,19 @@
-from typing import List
+from typing import Any, List
 
 from pydantic import Field
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
 from sparkdq.core.base_check import BaseAggregateCheck
 from sparkdq.core.base_config import BaseAggregateCheckConfig
 from sparkdq.core.check_results import AggregateEvaluationResult
+from sparkdq.core.observable_check import ObservableAggregateCheck
 from sparkdq.core.severity import Severity
 from sparkdq.exceptions import MissingColumnError
 from sparkdq.plugin.check_config_registry import register_check_config
 
 
-class ColumnsAreCompleteCheck(BaseAggregateCheck):
+class ColumnsAreCompleteCheck(BaseAggregateCheck, ObservableAggregateCheck):
     """
     Aggregate-level data quality check that ensures the specified columns are fully populated.
 
@@ -42,40 +43,28 @@ class ColumnsAreCompleteCheck(BaseAggregateCheck):
         super().__init__(check_id=check_id, severity=severity)
         self.columns = columns
 
-    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
-        """
-        Evaluate whether all specified columns are complete (contain no null values).
+    def aggregations(self) -> dict[str, Column]:
+        # Metric key per column: "null__{col}" to avoid collisions with other checks
+        return {f"null__{col}": F.sum(F.col(col).isNull().cast("int")) for col in self.columns}
 
-        If any of the specified columns contains at least one null, the check fails.
-
-        Args:
-            df (DataFrame): The input Spark DataFrame.
-
-        Returns:
-            AggregateEvaluationResult: An object indicating whether all required columns are complete.
-                Includes per-column null count as metrics.
-        """
-        for column in self.columns:
-            if column not in df.columns:
-                raise MissingColumnError(column, df.columns)
-
-        # Count nulls per column and return as dictionary (i.e., { column_name: null_count })
-        null_counts = (
-            df.select(*[F.sum(F.col(col).isNull().cast("int")).alias(col) for col in self.columns])
-            .first()
-            .asDict()  # type: ignore
-        )
-
+    def _evaluate_from_agg_results(self, results: dict[str, Any]) -> AggregateEvaluationResult:
+        null_counts = {col: results[f"null__{col}"] for col in self.columns}
         failed_columns = [col for col, null_count in null_counts.items() if null_count > 0]
-        passed = len(failed_columns) == 0
-
         return AggregateEvaluationResult(
-            passed=passed,
+            passed=len(failed_columns) == 0,
             metrics={
                 "null_counts": null_counts,
                 "failed_columns": failed_columns,
             },
         )
+
+    def _evaluate_logic(self, df: DataFrame) -> AggregateEvaluationResult:
+        for column in self.columns:
+            if column not in df.columns:
+                raise MissingColumnError(column, df.columns)
+
+        row = df.agg(*[expr.alias(k) for k, expr in self.aggregations().items()]).first()
+        return self._evaluate_from_agg_results(row.asDict())  # type: ignore[union-attr]
 
 
 @register_check_config(check_name="columns-are-complete-check")
