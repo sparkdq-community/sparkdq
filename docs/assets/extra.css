@@ -213,10 +213,25 @@
 
 .md-footer {
   background: #09090b;
+  border-top: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.md-footer__inner {
+  padding: 0.2rem 0.8rem;
+  min-height: unset;
+}
+
+.md-footer-nav__link {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
 
 .md-footer-meta {
   background: #050505;
+}
+
+.md-footer-meta__inner {
+  padding: 0.3rem 0.8rem;
 }
 
 /* ─── Search highlight ────────────────────────────────────────────────────── */

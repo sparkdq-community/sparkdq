@@ -59,6 +59,7 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
   - tables
@@ -86,12 +87,12 @@ nav:
       - Defining Checks: getting_started/defining_checks.md
       - Validating DataFrames: getting_started/validation_dataframes.md
       - Integration Patterns: getting_started/applying_validation.md
+      - Custom Checks:
+          - Overview: custom_checks/overview.md
+          - Implementation: custom_checks/implementation.md
   - Built-In Checks:
       - Row-Level Checks: built_in_checks/row_level.md
       - Aggregate Checks: built_in_checks/aggregate.md
-  - Custom Checks:
-      - Overview: custom_checks/overview.md
-      - Implementation: custom_checks/implementation.md
   - API Reference:
       - Overview: api/index.md
       - sparkdq.checks: api/checks.md
@@ -100,4 +101,8 @@ nav:
       - sparkdq.exceptions: api/exceptions.md
       - sparkdq.management: api/management.md
       - sparkdq.plugin: api/plugin.md
-  - References: references.md
+  - Community:
+      - Contributing: contributing.md
+      - Code of Conduct: code_of_conduct.md
+      - Examples: examples.md
+      - Articles: articles.md
