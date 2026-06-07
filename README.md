@@ -6,9 +6,9 @@
 
 # SparkDQ — Data Quality Validation for Apache Spark
 
-**SparkDQ** is a lightweight data quality framework built specifically for PySpark. Define checks declaratively or in Python, run them directly inside your Spark pipelines, and catch data issues before they reach production.
+**SparkDQ** is a lightweight data quality framework built natively for PySpark — no JVM bridge like [PyDeequ](https://github.com/awslabs/python-deequ), no complexity overhead like [Great Expectations](https://github.com/great-expectations/great_expectations), and no platform lock-in like [Databricks dqx](https://github.com/databrickslabs/dqx). Define checks declaratively via YAML/JSON or through a type-safe Python API, validate at row and aggregate level in a single pass, and extend the framework via a plugin system without touching the core.
 
-**No wrappers. No connectors. No bloat. Just data quality checks — nothing else.**
+**One dependency. No wrappers. No bloat.**
 
 ## Quickstart
 
