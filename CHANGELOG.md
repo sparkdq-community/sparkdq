@@ -9,6 +9,105 @@
 - Add version list marker to CHANGELOG for semantic-release
   ([`94ba17b`](https://github.com/sparkdq-community/sparkdq/commit/94ba17b488b3a5260588d1bcb8722574e3b7cc2c))
 
+## v0.11.3 (2026-05-29)
+
+### Bug Fixes
+
+- Guard against VOID type error in summary and warn_df when all records pass
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Handle Severity enum in normalize_severity and avoid mutating config dicts in CheckFactory
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Resolve multiple bugs in validation result, severity normalization, and docs
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+### Code Style
+
+- Apply ruff format
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+### Continuous Integration
+
+- Enable changelog updates in semantic release
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+### Documentation
+
+- Clarify declarative quickstart description
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Emphasize single-responsibility focus in README opener
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Include README properly
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Restore self-contained quickstart examples
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Revert use cases to bullet list format
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+- Streamline README quickstart and use case sections
+  ([#78](https://github.com/sparkdq-community/sparkdq/pull/78),
+  [`b98dc4f`](https://github.com/sparkdq-community/sparkdq/commit/b98dc4f98a5a0392739cd742539a91b925a77bf5))
+
+---
+
+**Detailed Changes**: [v0.11.2...v0.11.3](https://github.com/sparkdq-community/sparkdq/compare/v0.11.2...v0.11.3)
+
+## v0.11.2 (2026-05-29)
+
+### Bug Fixes
+
+- **docs**: Correct fail condition in custom row-level check example
+  ([#77](https://github.com/sparkdq-community/sparkdq/pull/77),
+  [`9b7b33e`](https://github.com/sparkdq-community/sparkdq/commit/9b7b33e021d56556fe3eaf3c0b0108cf9275b195))
+
+### Documentation
+
+- Improve README and fix custom row-level check example
+  ([#77](https://github.com/sparkdq-community/sparkdq/pull/77),
+  [`9b7b33e`](https://github.com/sparkdq-community/sparkdq/commit/9b7b33e021d56556fe3eaf3c0b0108cf9275b195))
+
+- Improve README clarity and content
+  ([#77](https://github.com/sparkdq-community/sparkdq/pull/77),
+  [`9b7b33e`](https://github.com/sparkdq-community/sparkdq/commit/9b7b33e021d56556fe3eaf3c0b0108cf9275b195))
+
+---
+
+**Detailed Changes**: [v0.11.1...v0.11.2](https://github.com/sparkdq-community/sparkdq/compare/v0.11.1...v0.11.2)
+
+## v0.11.1 (2026-05-29)
+
+### Bug Fixes
+
+- Correct isin condition polarity in IsContainedInCheck and IsNotContainedInCheck
+  ([#76](https://github.com/sparkdq-community/sparkdq/pull/76),
+  [`bc1481b`](https://github.com/sparkdq-community/sparkdq/commit/bc1481bbbbff04d69158324d58709edb1bac92dd))
+
+- Correct isin condition polarity in IsContainedInCheck and IsNotC…
+  ([#76](https://github.com/sparkdq-community/sparkdq/pull/76),
+  [`bc1481b`](https://github.com/sparkdq-community/sparkdq/commit/bc1481bbbbff04d69158324d58709edb1bac92dd))
+
+- **ci**: Install gpg to enable codecov binary signature validation
+  ([#76](https://github.com/sparkdq-community/sparkdq/pull/76),
+  [`bc1481b`](https://github.com/sparkdq-community/sparkdq/commit/bc1481bbbbff04d69158324d58709edb1bac92dd))
+
+---
+
+**Detailed Changes**: [v0.11.0...v0.11.1](https://github.com/sparkdq-community/sparkdq/compare/v0.11.0...v0.11.1)
 
 ## v0.11.0 (2025-08-09)
 
@@ -18,7 +117,6 @@
   ([#55](https://github.com/sparkdq-community/sparkdq/pull/55),
   [`5c8c030`](https://github.com/sparkdq-community/sparkdq/commit/5c8c03019a30ed82ce4afcd3eff28f5dd7f30585))
 
-
 ## v0.10.0 (2025-06-01)
 
 ### Features
@@ -26,7 +124,6 @@
 - **engine**: Add support for reference-based integrity checks
   ([#51](https://github.com/sparkdq-community/sparkdq/pull/51),
   [`f33565b`](https://github.com/sparkdq-community/sparkdq/commit/f33565bf8420ea662a98e5e6b429f32545dfe29d))
-
 
 ## v0.9.0 (2025-05-28)
 
@@ -36,7 +133,6 @@
   ([#48](https://github.com/sparkdq-community/sparkdq/pull/48),
   [`e46734e`](https://github.com/sparkdq-community/sparkdq/commit/e46734eee7c380fa3724885efcb269d282aae29e))
 
-
 ## v0.8.1 (2025-05-27)
 
 ### Bug Fixes
@@ -45,7 +141,6 @@
   ([#47](https://github.com/sparkdq-community/sparkdq/pull/47),
   [`8fe75ab`](https://github.com/sparkdq-community/sparkdq/commit/8fe75ab1210df6b3c17c540fdcf3e01c8e69a515))
 
-
 ## v0.8.0 (2025-05-27)
 
 ### Features
@@ -53,7 +148,6 @@
 - Update ColumnLessThanCheck to use a limit expression
   ([#45](https://github.com/sparkdq-community/sparkdq/pull/45),
   [`06df3b3`](https://github.com/sparkdq-community/sparkdq/commit/06df3b34cde4b70cf2ccdc0076aef9de6ff0125c))
-
 
 ## v0.7.1 (2025-05-25)
 
@@ -65,10 +159,9 @@
 
 ### Refactoring
 
-- **checks**: Dynamically register CheckConfig classes in __init__.py
+- **checks**: Dynamically register CheckConfig classes in **init**.py
   ([#43](https://github.com/sparkdq-community/sparkdq/pull/43),
   [`33023a8`](https://github.com/sparkdq-community/sparkdq/commit/33023a8039e9c5b51091d3941a823261adefaf57))
-
 
 ## v0.7.0 (2025-05-21)
 
@@ -77,7 +170,6 @@
 - Add data freshness check ([#38](https://github.com/sparkdq-community/sparkdq/pull/38),
   [`f0d2318`](https://github.com/sparkdq-community/sparkdq/commit/f0d2318486c55f381a626acda6be68fd48adce45))
 
-
 ## v0.6.1 (2025-05-19)
 
 ### Bug Fixes
@@ -85,7 +177,6 @@
 - **engine**: Ensure aggregate checks run on original input DataFrame
   ([#35](https://github.com/sparkdq-community/sparkdq/pull/35),
   [`4dbd7a5`](https://github.com/sparkdq-community/sparkdq/commit/4dbd7a56e9c8cdf265f86b77b61ce6408ff1afe8))
-
 
 ## v0.6.0 (2025-05-17)
 
@@ -117,7 +208,6 @@
 - **check**: Add UniqueRowsCheck to detect duplicate rows based on full or partial column sets
   ([`71a7f1d`](https://github.com/sparkdq-community/sparkdq/commit/71a7f1dbfdc027728acf267bf1b3309e08087e5f))
 
-
 ## v0.5.2 (2025-05-13)
 
 ### Bug Fixes
@@ -130,7 +220,6 @@
 - **examples**: Add simple example ([#30](https://github.com/sparkdq-community/sparkdq/pull/30),
   [`53fa344`](https://github.com/sparkdq-community/sparkdq/commit/53fa3446a4aa5d53567964f354de7df868b8b446))
 
-
 ## v0.5.1 (2025-05-12)
 
 ### Bug Fixes
@@ -138,7 +227,7 @@
 - **check-definition**: Enforce kebab-case for check definition
   ([`4bd8ada`](https://github.com/sparkdq-community/sparkdq/commit/4bd8ada789fd6046963e359deda8e65b286bd351))
 
-- **check-runner**: _dq_errors contains only validation failures
+- **check-runner**: \_dq_errors contains only validation failures
   ([`db80414`](https://github.com/sparkdq-community/sparkdq/commit/db80414f511e505486fdaf2b9850ae2455e195f8))
 
 - **validation-summary**: Add string representation of validation summary
@@ -157,7 +246,6 @@
 
 - **sphinx**: Restructured documentation
   ([`2c9e670`](https://github.com/sparkdq-community/sparkdq/commit/2c9e670555f1e3f2370e32fc7be7b40316f931fa))
-
 
 ## v0.5.0 (2025-05-11)
 
@@ -194,14 +282,13 @@
 - **checkset**: Add fluent api for check definition
   ([`691cf42`](https://github.com/sparkdq-community/sparkdq/commit/691cf423e87b2e31fdfc1a291b429d010a81261f))
 
-- **versioning**: Add version in __init__.py
+- **versioning**: Add version in **init**.py
   ([`f8f8e6d`](https://github.com/sparkdq-community/sparkdq/commit/f8f8e6d8fbc4c2a8d5b4132a9803c574050bf844))
 
 ### Refactoring
 
 - **string-min-length-check**: Simplify validate logic
   ([`b888d46`](https://github.com/sparkdq-community/sparkdq/commit/b888d4628348db93f7677b75f851889b04a58d31))
-
 
 ## v0.4.0 (2025-05-01)
 
@@ -210,7 +297,6 @@
 - **checks**: Add inclusive parameter to range checks
   ([#11](https://github.com/sparkdq-community/sparkdq/pull/11),
   [`38c9415`](https://github.com/sparkdq-community/sparkdq/commit/38c94151c5fae031332ed036ae1f14ae8d9d7b26))
-
 
 ## v0.3.0 (2025-05-01)
 
@@ -235,7 +321,6 @@
 - Renamed subpackage factory to plugin
   ([`a580d7b`](https://github.com/sparkdq-community/sparkdq/commit/a580d7b79ca17737a0770fd3ba2076a74f6694fb))
 
-
 ## v0.2.1 (2025-04-29)
 
 ### Bug Fixes
@@ -243,7 +328,6 @@
 - **pyproject.toml**: Remov invalid classifier
   ([#9](https://github.com/sparkdq-community/sparkdq/pull/9),
   [`05f89ee`](https://github.com/sparkdq-community/sparkdq/commit/05f89eedba22cbf346f6a6781abbaab431f8e753))
-
 
 ## v0.2.0 (2025-04-29)
 
@@ -289,14 +373,12 @@
 - Add test with different data types
   ([`1841d94`](https://github.com/sparkdq-community/sparkdq/commit/1841d9407a29e1050c40422735c85807ee0e1272))
 
-
 ## v0.1.2 (2025-04-27)
 
 ### Bug Fixes
 
 - **ci**: Add step-id to release step ([#7](https://github.com/sparkdq-community/sparkdq/pull/7),
   [`ba7af39`](https://github.com/sparkdq-community/sparkdq/commit/ba7af3902c5da65c480989d7b0ff83c8d876c9dd))
-
 
 ## v0.1.1 (2025-04-27)
 
@@ -305,7 +387,6 @@
 - **dependencies**: Added pydantic dependency
   ([#6](https://github.com/sparkdq-community/sparkdq/pull/6),
   [`958a9ee`](https://github.com/sparkdq-community/sparkdq/commit/958a9ee96c83b93b84c8b8acd77de7681d689c37))
-
 
 ## v0.1.0 (2025-04-27)
 
