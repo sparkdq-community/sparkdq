@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Sequence, Tuple
 
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
@@ -168,7 +168,7 @@ class BatchCheckRunner:
     def _run_observable_checks(
         self,
         df: DataFrame,
-        checks: List[BaseAggregateCheck],
+        checks: Sequence[ObservableAggregateCheck],
     ) -> List[AggregateCheckResult]:
         """
         Executes all observable aggregate checks in a single df.agg() Spark job.
@@ -179,7 +179,7 @@ class BatchCheckRunner:
 
         Args:
             df (DataFrame): The DataFrame to aggregate over.
-            checks (List[BaseAggregateCheck]): Checks that implement ObservableAggregateCheck.
+            checks (Sequence[ObservableAggregateCheck]): Checks that implement ObservableAggregateCheck.
 
         Returns:
             List[AggregateCheckResult]: One result per observable check.
@@ -191,13 +191,12 @@ class BatchCheckRunner:
         # any dependency on check_id formatting or separator conventions.
         aliased_exprs: list[tuple[str, Column, int, str]] = []
         for check_idx, check in enumerate(checks):
-            observable_check: ObservableAggregateCheck = check  # type: ignore[assignment]
-            for metric, expr in observable_check.aggregations().items():
+            for metric, expr in check.aggregations().items():
                 alias = f"_obs_{check_idx}_{metric}"
                 aliased_exprs.append((alias, expr, check_idx, metric))
 
         agg_row = df.agg(*[expr.alias(alias) for alias, expr, _, _ in aliased_exprs]).first()
-        flat_results: dict[str, Any] = agg_row.asDict() if agg_row else {}  # type: ignore[union-attr]
+        flat_results: dict[str, Any] = agg_row.asDict() if agg_row else {}
 
         # Group results back per check index
         per_check_metrics: dict[int, dict[str, Any]] = {i: {} for i in range(len(checks))}
@@ -206,9 +205,8 @@ class BatchCheckRunner:
 
         results = []
         for check_idx, check in enumerate(checks):
-            observable_check = check  # type: ignore[assignment]
             check_metrics = per_check_metrics[check_idx]
-            eval_result = observable_check._evaluate_from_agg_results(check_metrics)
+            eval_result = check._evaluate_from_agg_results(check_metrics)
             results.append(
                 AggregateCheckResult(
                     check=check.name,
