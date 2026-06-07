@@ -2,6 +2,59 @@
 
 <!-- version list -->
 
+## v0.12.0 (2026-06-07)
+
+### Bug Fixes
+
+- **engine**: Resolve mypy type errors in batch check runner
+  ([`853a1b1`](https://github.com/sparkdq-community/sparkdq/commit/853a1b16d7ddebe89e55358a3999107577c0bc9b))
+
+### Continuous Integration
+
+- **codecov**: Add coverage threshold configuration with 80% target
+  ([`ed8417f`](https://github.com/sparkdq-community/sparkdq/commit/ed8417f87c654d46ac727ca66b4e01959d625245))
+
+### Documentation
+
+- Migrate documentation to MkDocs with Material theme
+  ([`6db2470`](https://github.com/sparkdq-community/sparkdq/commit/6db2470914a9e592563afa9638ca91dcb60c1546))
+
+- **conduct**: Rewrite Code of Conduct for consistent professional tone
+  ([`52b1d59`](https://github.com/sparkdq-community/sparkdq/commit/52b1d59505ecf752d99a5eb2e4a25d545f7e5876))
+
+- **contributing**: Rewrite contributing guide for clarity and accuracy
+  ([`80110c2`](https://github.com/sparkdq-community/sparkdq/commit/80110c2c2ced64a850f623efd51c1e274394beea))
+
+- **introduction**: Sharpen hook with competitive positioning and framework links
+  ([`7dcd86d`](https://github.com/sparkdq-community/sparkdq/commit/7dcd86d4e0d7b47d22d977ca995dea873ad71719))
+
+- **README**: Remove unnecessary badges
+  ([`90e89df`](https://github.com/sparkdq-community/sparkdq/commit/90e89df75da9f0c75baf6292b53654d136499acc))
+
+- **security**: Rewrite security policy with clearer reporting process
+  ([`4f80f56`](https://github.com/sparkdq-community/sparkdq/commit/4f80f56810889514660724b25634e4cbba801913))
+
+- **site**: Restructure navigation and expand community section
+  ([`af33a06`](https://github.com/sparkdq-community/sparkdq/commit/af33a06ec50dff6676d78c6b6c86e379f1bc642c))
+
+- **theme**: Migrate color palette from blue to charcoal + teal
+  ([`5acac63`](https://github.com/sparkdq-community/sparkdq/commit/5acac63cc6212a907e2d1a839d27d3b0fee2fb09))
+
+- **theme**: Overhaul visual branding for documentation site
+  ([`986a88f`](https://github.com/sparkdq-community/sparkdq/commit/986a88fc4eccdd366256561052c05782a6372b20))
+
+- **theme**: Refine visual polish on colors, logo, and footer
+  ([`b33453a`](https://github.com/sparkdq-community/sparkdq/commit/b33453af378a4d1705bcee2d177f83e63699ad58))
+
+### Features
+
+- **engine**: Batch observable aggregate checks into single Spark job
+  ([`495f9f8`](https://github.com/sparkdq-community/sparkdq/commit/495f9f8f2005e5ee0212f2c2819a649467648b36))
+
+- **engine**: Batch observable aggregate checks into single Spark job
+  ([`f7fcb3d`](https://github.com/sparkdq-community/sparkdq/commit/f7fcb3d0ebdfd3278ab779dd4d28527e17fa9b42))
+
+
 ## v0.11.4 (2026-06-04)
 
 ### Bug Fixes
