@@ -1,98 +1,87 @@
-# 🤝 Contributing to SparkDQ
+# Contributing to SparkDQ
 
-🎉 First off, thank you for considering contributing to SparkDQ!Your help is greatly appreciated and helps make this project better for everyone. 🚀
+Thank you for your interest in contributing to SparkDQ. This document outlines the process for reporting issues, proposing changes, and submitting pull requests.
 
-This document explains how to contribute effectively. Whether it's fixing a bug, improving the documentation, or proposing a new check — all contributions are welcome.
+## Project Scope
 
-## 🎯 Project Scope
+SparkDQ provides declarative data quality checks for PySpark workloads. Contributions should align with the project's focus on:
 
-SparkDQ provides declarative data quality checks for PySpark workloads.
+- Simple, expressive, and testable check definitions
+- Row-level and aggregate-level validations
+- YAML/Pydantic-based configuration with strong test coverage
 
-The focus is on:
+If you are unsure whether a contribution fits the project's direction, open an issue to discuss it before investing significant effort.
 
-* ✅ Simple, expressive, and testable checks
+## Reporting Issues
 
-* 🧪 Both row-level and aggregate-level validations
+Use [GitHub Issues](https://github.com/sparkdq-community/sparkdq/issues) to report bugs, request features, or suggest improvements. Before opening a new issue, search existing issues to avoid duplicates.
 
-* 🛠️ Easy YAML/Pydantic configuration and strong test coverage
+When reporting a bug, include:
 
-If you’re unsure whether a contribution fits, feel free to open an issue and start the conversation! 💬
+- A minimal reproducible example
+- The Python and PySpark versions in use
+- The full error message or unexpected behavior
 
-## 🛠️ How to Contribute
+## Development Workflow
 
-### 🐛 Issues
-
-Please use GitHub Issues to:
-
-* Report bugs 🐞
-
-* Request features 💡
-
-* Suggest improvements ✍️
-
-If you find an issue you'd like to work on, comment on it to avoid duplication.
-
-New ideas? Use the enhancement or discussion label.
-
-### 👩‍💻 Code Contributions
-
-#### 1️⃣ Fork the repository and clone it locally:
+### 1. Fork and clone the repository
 
 ```shell
 git clone https://github.com/sparkdq-community/sparkdq.git
 cd sparkdq
 ```
 
-#### 2️⃣ Create a new branch:
+### 2. Create a feature branch
 
 ```shell
 git checkout -b feature/your-feature-name
 ```
 
-#### 3️⃣ Install dependencies (recommended via uv):
+### 3. Install dependencies
+
+Dependencies are managed via `uv`:
 
 ```shell
 uv sync
 ```
 
-#### 4️⃣ Add your changes (including tests if applicable).
+### 4. Implement your changes
 
-#### 5️⃣ Run the test suite:
+Include unit tests for all new functionality. Update the documentation if the change affects public APIs or user-facing behavior.
+
+### 5. Run the test suite
 
 ```shell
 pytest --cov=sparkdq --cov-report=term-missing
 ```
 
-#### 6️⃣ Commit your changes following Conventional Commits:
+All tests must pass before submitting a pull request.
+
+### 6. Commit your changes
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 ```shell
-git commit -m "feat: add new check for XYZ"
+git commit -m "feat: add null-ratio aggregate check"
+git commit -m "fix: handle empty DataFrame in row-level engine"
+git commit -m "docs: update custom check implementation guide"
 ```
 
-#### 7️⃣ Push your branch and open a pull request 🚀:
+### 7. Open a pull request
 
-Please describe the problem, solution, and include examples if helpful.
+Push your branch and open a pull request against `main`. In the pull request description, include:
 
-* 🧪 Code Style and Guidelines
+- A summary of the change and its motivation
+- References to any related issues
+- Notes on testing approach if non-obvious
 
-* 🖤 Use consistent code style (black, ruff, or flake8 recommended).
+## Code Style
 
-* ✅ Write unit tests for all new functionality.
+- Code formatting is enforced via `ruff`
+- Type annotations are required for all public interfaces
+- Docstrings follow the Google style convention
+- Pull requests should be focused and minimal in scope
 
-* 📖 Update the documentation if needed (Sphinx docstrings, YAML examples).
+## Good First Issues
 
-* 💎 Keep pull requests focused and as small as reasonably possible.
-
-## 🌱 Good First Issues
-
-We label beginner-friendly tasks with good first issue 🟢.Check the open issues to get started!
-
-## 🤗 Community and Behavior
-
-Please be respectful and kind in all interactions.We follow the Code of Conduct — thank you for helping keep this a welcoming place! ❤️
-
-## 🙏 Thank You
-
-Your contribution helps improve SparkDQ — and you make a real impact!Feel free to reach out via GitHub Issues or Discussions if you need help getting started.
-
-Happy contributing! 🧡🚀
+Issues labeled [`good first issue`](https://github.com/sparkdq-community/sparkdq/issues?q=is%3Aopen+label%3A%22good+first+issue%22) are suitable entry points for new contributors.
