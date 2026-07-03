@@ -28,12 +28,16 @@ When `run_batch()` is called, the engine:
 
 ## Working with the Result
 
-| Method      | Description                                                         |
-| ----------- | ------------------------------------------------------------------- |
-| `pass_df()` | Records that passed all critical checks                             |
-| `fail_df()` | Records that failed at least one critical check                     |
-| `warn_df()` | Passing records that triggered one or more warning-level violations |
-| `summary()` | Structured summary with record counts, pass rate, and timestamp     |
+| Method      | Description                                                           |
+| ----------- | --------------------------------------------------------------------- |
+| `pass_df()` | Records that passed every failure-level check (`CRITICAL` by default) |
+| `fail_df()` | Records that failed at least one failure-level check                  |
+| `warn_df()` | Passing records that triggered one or more warning-level violations   |
+| `summary()` | Structured summary with record counts, pass rate, and timestamp       |
+
+By default only `CRITICAL` checks cause a row to fail; `WARNING` checks are
+recorded without failing the row. You can change which severities count as
+failures via the engine's `fail_levels` parameter.
 
 ## Result Columns
 
@@ -41,6 +45,6 @@ SparkDQ automatically adds the following columns to your DataFrame:
 
 | Column              | Description                                                            |
 | ------------------- | ---------------------------------------------------------------------- |
-| `_dq_passed`        | Boolean flag — `true` if the row passed all critical checks            |
+| `_dq_passed`        | Boolean flag — `true` if the row passed every failure-level check      |
 | `_dq_errors`        | Array of structured errors per failed check (check-id, name, severity) |
 | `_dq_validation_ts` | Timestamp of the validation run                                        |

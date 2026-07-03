@@ -13,7 +13,7 @@
     RowCountExactCheckConfig(
         check_id="snapshot-row-count",
         expected_count=500,
-        severity=Severity.ERROR
+        severity=Severity.CRITICAL
     )
     ```
 
@@ -23,7 +23,7 @@
     - check: row-count-exact-check
       check-id: snapshot-row-count
       expected-count: 500
-      severity: error
+      severity: critical
     ```
 
 ## Typical Use Cases
