@@ -53,7 +53,11 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -90,6 +94,18 @@ nav:
       - Custom Checks:
           - Overview: custom_checks/overview.md
           - Implementation: custom_checks/implementation.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Core Abstractions: architecture/core_abstractions.md
+      - Execution Flow: architecture/execution_flow.md
+      - Output Model: architecture/output_model.md
+      - Design Decisions:
+          - Overview: architecture/design_decisions.md
+          - Declarative Configuration: architecture/decisions/declarative_config.md
+          - Plugin System: architecture/decisions/plugin_system.md
+          - Row vs. Aggregate: architecture/decisions/row_vs_aggregate.md
+          - Observable Aggregation: architecture/decisions/observable_aggregation.md
+          - DataFrame Annotations: architecture/decisions/dataframe_annotations.md
   - Built-In Checks:
       - Row-Level Checks: built_in_checks/row_level.md
       - Aggregate Checks: built_in_checks/aggregate.md
