@@ -79,7 +79,13 @@ class ForeignKeyCheckConfig(BaseAggregateCheckConfig):
     check_class = ForeignKeyCheck
 
     column: str = Field(..., description="The column in the source DataFrame to validate")
-    reference_dataset: str = Field(..., description="The name of the reference dataset to compare against")
+    reference_dataset: str = Field(
+        ...,
+        description="The name of the reference dataset to compare against",
+        alias="reference-dataset",
+    )
     reference_column: str = Field(
-        ..., description="The column in the reference dataset that contains valid values"
+        ...,
+        description="The column in the reference dataset that contains valid values",
+        alias="reference-column",
     )
