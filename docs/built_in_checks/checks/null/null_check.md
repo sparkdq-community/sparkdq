@@ -13,7 +13,7 @@
     NullCheckConfig(
         check_id="no-null-email",
         columns=["email"],
-        severity=Severity.ERROR
+        severity=Severity.CRITICAL
     )
     ```
 
@@ -24,7 +24,7 @@
       check-id: no-null-email
       columns:
         - email
-      severity: error
+      severity: critical
     ```
 
 ## Typical Use Cases

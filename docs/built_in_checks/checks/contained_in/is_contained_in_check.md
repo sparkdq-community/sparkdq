@@ -18,7 +18,7 @@ This check supports any data type comparable by equality (strings, integers, dat
             "status": ["ACTIVE", "INACTIVE", "PENDING"],
             "country": ["DE", "FR", "IT"]
         },
-        severity=Severity.ERROR
+        severity=Severity.CRITICAL
     )
     ```
 
@@ -36,7 +36,7 @@ This check supports any data type comparable by equality (strings, integers, dat
           - DE
           - FR
           - IT
-      severity: error
+      severity: critical
     ```
 
 ## Typical Use Cases

@@ -32,7 +32,7 @@ Rows where the condition evaluates to `True` are marked as **failing**.
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from sparkdq.core import BaseRowCheck, Severity
+from sparkdq.core import BaseRowCheck, BaseRowCheckConfig, Severity
 from sparkdq.plugin import register_check_config
 
 

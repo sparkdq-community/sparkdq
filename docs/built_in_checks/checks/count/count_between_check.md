@@ -14,7 +14,7 @@
         check_id="daily-batch-size",
         min_count=1000,
         max_count=5000,
-        severity=Severity.ERROR
+        severity=Severity.CRITICAL
     )
     ```
 
@@ -25,7 +25,7 @@
       check-id: daily-batch-size
       min-count: 1000
       max-count: 5000
-      severity: error
+      severity: critical
     ```
 
 ## Typical Use Cases

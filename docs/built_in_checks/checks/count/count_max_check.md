@@ -13,7 +13,7 @@
     RowCountMaxCheckConfig(
         check_id="batch-size-upper-bound",
         max_count=100000,
-        severity=Severity.ERROR
+        severity=Severity.CRITICAL
     )
     ```
 
@@ -23,7 +23,7 @@
     - check: row-count-max-check
       check-id: batch-size-upper-bound
       max-count: 100000
-      severity: error
+      severity: critical
     ```
 
 ## Typical Use Cases
