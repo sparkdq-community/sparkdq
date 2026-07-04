@@ -2,6 +2,64 @@
 
 <!-- version list -->
 
+## v0.12.1 (2026-07-04)
+
+### Bug Fixes
+
+- **checks**: Add kebab-case aliases to foreign key check config
+  ([`f13b401`](https://github.com/sparkdq-community/sparkdq/commit/f13b4017a9a5d685c8ee8447a463e6dfd567246f))
+
+### Build System
+
+- **prettier**: Stop formatting docs/
+  ([`3debb29`](https://github.com/sparkdq-community/sparkdq/commit/3debb290ad92a047f218e25e8da72eac758e9216))
+
+### Continuous Integration
+
+- Run lint and docs jobs on setup-uv instead of a container
+  ([`0f84351`](https://github.com/sparkdq-community/sparkdq/commit/0f84351d92d1278a550c2730fbbf47f40b5f1d46))
+
+- Test across Python 3.11-3.13 and build docs in pull requests
+  ([`6643885`](https://github.com/sparkdq-community/sparkdq/commit/66438852e7a903720d9d484e017e7c19661e556a))
+
+### Documentation
+
+- Fix review findings across pages
+  ([`f6fd577`](https://github.com/sparkdq-community/sparkdq/commit/f6fd57754d28cf89085d6c24ffe0256b36ba7e16))
+
+- **architecture**: Add architecture and design-decision documentation
+  ([`a8cb03d`](https://github.com/sparkdq-community/sparkdq/commit/a8cb03d2c838c4348891ba3772fb6c9d11fe8323))
+
+- **checks**: Expand all built-in check reference pages
+  ([`4d43e8e`](https://github.com/sparkdq-community/sparkdq/commit/4d43e8ef09152a8804700b5016fd5c56b79c8b34))
+
+- **checks**: Fix invalid examples in user documentation
+  ([`0b89d51`](https://github.com/sparkdq-community/sparkdq/commit/0b89d512acb1dc94b2ca972ec9231af7e4f5f3df))
+
+- **custom-checks**: Fix chained add_checks_from_dicts examples
+  ([`ba966e3`](https://github.com/sparkdq-community/sparkdq/commit/ba966e3d4d45e9cd77385e3fb8abd991d10cea35))
+
+- **getting-started**: Rework around an end-to-end orders scenario
+  ([`f46a717`](https://github.com/sparkdq-community/sparkdq/commit/f46a717c6f9236585ac4f0b4c8852ec9a268b802))
+
+- **introduction**: Position the deliberately small scope as a strength
+  ([`65f0088`](https://github.com/sparkdq-community/sparkdq/commit/65f00888cda420669f3b74a665d8d30c8f414c09))
+
+- **nav**: Put Built-In Checks before Architecture
+  ([`18875d2`](https://github.com/sparkdq-community/sparkdq/commit/18875d2cc1045b2b5199c8c58c16ed74d3f11e27))
+
+- **theme**: Relax table column width and style console output
+  ([`84aca6e`](https://github.com/sparkdq-community/sparkdq/commit/84aca6eb115416a86cbd68bbdb3577e59e73bdce))
+
+- **theme**: Widen content on built-in check pages
+  ([`23097de`](https://github.com/sparkdq-community/sparkdq/commit/23097de075bc61f75ade96f8cfec3b3535674c53))
+
+### Testing
+
+- Add setuptools shim for PySpark on Python 3.12+
+  ([`2683ba3`](https://github.com/sparkdq-community/sparkdq/commit/2683ba3123171b13e336dc053614675da41ed173))
+
+
 ## v0.12.0 (2026-06-07)
 
 ### Bug Fixes
