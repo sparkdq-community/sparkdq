@@ -60,6 +60,9 @@ test = [
     "pandas>=2.0.0",
     "pytest-mock>=3.14.0",
     "pyspark>=3.5.0,<4.0.0",    # Required for testing
+    # PySpark 3.5.x imports the stdlib `distutils`, removed in Python 3.12+.
+    # setuptools provides the compatibility shim so tests run on 3.12/3.13.
+    "setuptools>=69.0.0; python_version >= '3.12'",
 ]
 docs = [
     "mkdocs>=1.6.0,<2.0.0",
