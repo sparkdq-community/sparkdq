@@ -182,8 +182,48 @@
 
 .md-typeset table th:first-child,
 .md-typeset table td:first-child {
-  width: 220px;
-  min-width: 220px;
+  min-width: 120px;
+}
+
+/* ─── Console / output blocks ─────────────────────────────────────────────── */
+
+/* `text` fenced blocks are used for captured console output (e.g. df.show()).
+   Give them a terminal look so they read as output, not as source code. */
+.md-typeset .language-text {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.md-typeset .language-text > pre {
+  margin: 0;
+}
+
+.md-typeset .language-text > pre > code {
+  display: block;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  border-radius: 6px;
+  padding: 1.9em 1em 0.9em;
+  font-size: 0.6rem;
+  line-height: 1.5;
+}
+
+/* A small "OUTPUT" label in the top-left corner of the block. */
+.md-typeset .language-text > pre::before {
+  content: "OUTPUT";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0.25em 0.7em;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #5eead4;
+  background-color: rgba(20, 184, 166, 0.12);
+  border-bottom-right-radius: 6px;
 }
 
 /* ─── Admonitions ─────────────────────────────────────────────────────────── */
