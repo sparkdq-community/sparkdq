@@ -12,32 +12,40 @@ It is honest about where it stops: if you need automated data profiling, statist
 
 ## How it fits into your pipeline
 
-It is built for data engineers who work with PySpark and want a lightweight, non-invasive way to enforce data quality. There is no extra infrastructure, no external services, and no wrappers around your existing code. SparkDQ runs alongside your pipeline, validates your data in a single pass, and returns a structured result you can act on — whether that means stopping the pipeline, routing bad records to a quarantine zone, or simply logging what went wrong.
+SparkDQ is built for data engineers who work with PySpark and want a lightweight, non-invasive way to enforce data quality. There is no extra infrastructure, no external services, and no wrappers around your existing code. It runs alongside your pipeline, validates a DataFrame in a single pass, and returns a structured result you can act on — stop the pipeline, route bad records to a quarantine zone, or simply log what went wrong.
 
-To do that, it relies on a few components that build on each other.
+## Core concepts
 
-## Core Concepts
+Four building blocks compose into one flow:
 
-You start by defining a **CheckConfig** — a single validation rule, like "this column must not be null" or "the row count must be between 1,000 and 10,000". Each rule has its own config class with typed, validated parameters.
+```mermaid
+flowchart LR
+    A["<b>CheckConfig</b><br/>one validation rule"] --> B["<b>CheckSet</b><br/>collects the rules"] --> C["<b>BatchDQEngine</b><br/>runs them in one pass"] --> D["<b>ValidationResult</b><br/>pass / fail / warn / summary"]
+```
 
-Multiple configs are collected in a **CheckSet**, which acts as the single source of truth for everything you want to validate in one run.
+- **CheckConfig** — a single validation rule, such as "this column must not be null" or "the row count must be at least 1,000". Each rule has its own typed, validated config class.
+- **CheckSet** — the collection of configs and the single source of truth for one validation run.
+- **BatchDQEngine** — takes the CheckSet and a Spark DataFrame, applies every rule in a single pass, and produces the result.
+- **ValidationResult** — a structured object with filtered views of passed, failed, and warning-level records, plus summary statistics like pass rate.
 
-The **ValidationEngine** (e.g. `BatchDQEngine`) takes the CheckSet and a Spark DataFrame, applies all rules, and returns a **ValidationResult** — a structured object that gives you filtered views of passed, failed, and warning-level records, plus summary statistics like pass rate and timestamps.
+## A scenario to follow
 
-## Example
+The rest of this guide validates one small `orders` dataset end to end, enforcing three rules:
+
+| Rule                              | Check type | Severity   |
+| --------------------------------- | ---------- | ---------- |
+| `customer_email` must not be null | row-level  | `CRITICAL` |
+| `amount` must be greater than 0   | row-level  | `CRITICAL` |
+| at least 100 rows per batch       | aggregate  | `WARNING`  |
+
+The dataset contains one violation of each rule, so every result view has something to show:
 
 ```python
-from sparkdq.checks import NullCheckConfig
-from sparkdq.engine import BatchDQEngine
-from sparkdq.management import CheckSet
-
-check_set = CheckSet()
-check_set.add_check(NullCheckConfig(check_id="no-nulls-in-email", columns=["email"]))
-
-df = spark.read.parquet("/path/to/data")
-result = BatchDQEngine(check_set).run_batch(df)
-
-result.pass_df().show()
-result.fail_df().show()
-print(result.summary())
+df = spark.createDataFrame([
+    {"order_id": 1, "customer_email": "alice@example.com", "amount": 42.0},
+    {"order_id": 2, "customer_email": None,                "amount": 19.5},
+    {"order_id": 3, "customer_email": "carol@example.com", "amount": -5.0},
+])
 ```
+
+Next: [define these checks](defining_checks.md).
