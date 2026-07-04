@@ -22,11 +22,15 @@ jobs:
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/astral-sh/uv:python3.13-trixie
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+          enable-cache: true
 
       - name: Install lint dependencies
         run: uv sync --group lint
@@ -84,11 +88,15 @@ jobs:
     name: "Documentation"
     needs: lint
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/astral-sh/uv:python3.13-trixie
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+          enable-cache: true
 
       - name: Install docs dependencies
         run: uv sync --group docs
