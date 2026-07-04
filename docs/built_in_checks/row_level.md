@@ -12,7 +12,7 @@ Row-level checks validate each record individually. If a row fails a check, it i
 | [Exactly One Not Null](checks/null/exactly_one_not_null_check.md)       | Exactly one of the specified columns is non-null per row.           |
 | [Is Contained In](checks/contained_in/is_contained_in_check.md)         | Column values are within a predefined set of allowed values.        |
 | [Is Not Contained In](checks/contained_in/is_not_contained_in_check.md) | Column values are not within a set of forbidden values.             |
-| [Not Null](checks/null/not_null_check.md)                               | Column contains at least one non-null value.                        |
+| [Not Null](checks/null/not_null_check.md)                               | Columns are expected to stay null; flags rows that contain a value. |
 | [Null Check](checks/null/null_check.md)                                 | Column contains no null values.                                     |
 | [Numeric Between](checks/numeric/numeric_between_check.md)              | Numeric values fall within a defined range.                         |
 | [Numeric Max](checks/numeric/numeric_max_check.md)                      | Numeric values do not exceed a defined maximum.                     |
