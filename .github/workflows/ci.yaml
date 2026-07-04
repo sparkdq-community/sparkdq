@@ -79,7 +79,7 @@ jobs:
       # Upload coverage once, from the primary version.
       - name: Upload coverage reports to Codecov
         if: matrix.python-version == '3.13'
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: sparkdq-community/sparkdq
