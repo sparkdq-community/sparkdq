@@ -62,7 +62,7 @@
       
 
     
-    
+       
   </head>
   
   
@@ -272,6 +272,26 @@
   
   
   Built-In Checks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
 
         </a>
       </li>
@@ -576,10 +596,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-happens-under-the-hood" class="md-nav__link">
+  <a href="#what-the-engine-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Happens Under the Hood
+        What the engine does
       
     </span>
   </a>
@@ -587,10 +607,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-the-result" class="md-nav__link">
+  <a href="#result-views" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with the Result
+        Result views
       
     </span>
   </a>
@@ -598,10 +618,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#result-columns" class="md-nav__link">
+  <a href="#reading-the-result" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result Columns
+        Reading the result
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata columns
       
     </span>
   </a>
@@ -916,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Architecture
   
 
     
@@ -929,6 +960,405 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/core_abstractions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Abstractions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/execution_flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/output_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Output Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/design_decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/declarative_config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Declarative Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/plugin_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/row_vs_aggregate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Row vs. Aggregate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/observable_aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observable Aggregation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/dataframe_annotations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataFrame Annotations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1161,10 +1591,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -1182,8 +1612,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1339,10 +1769,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-happens-under-the-hood" class="md-nav__link">
+  <a href="#what-the-engine-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Happens Under the Hood
+        What the engine does
       
     </span>
   </a>
@@ -1350,10 +1780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-the-result" class="md-nav__link">
+  <a href="#result-views" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with the Result
+        Result views
       
     </span>
   </a>
@@ -1361,10 +1791,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#result-columns" class="md-nav__link">
+  <a href="#reading-the-result" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result Columns
+        Reading the result
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata columns
       
     </span>
   </a>
@@ -1392,57 +1833,97 @@
 
 
 <h1 id="validating-dataframes">Validating DataFrames<a class="headerlink" href="#validating-dataframes" title="Permanent link">&para;</a></h1>
-<p>Once your checks are defined and grouped into a <code>CheckSet</code>, pass them to the <code>BatchDQEngine</code> together with your Spark DataFrame. The engine evaluates all rules in a single pass and returns a structured <code>BatchValidationResult</code>.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullCheckConfig</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchDQEngine</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.management</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckSet</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">check_set</span> <span class="o">=</span> <span class="n">CheckSet</span><span class="p">()</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">check_set</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span><span class="n">NullCheckConfig</span><span class="p">(</span><span class="n">check_id</span><span class="o">=</span><span class="s2">&quot;my-null-check&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]))</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">result</span> <span class="o">=</span> <span class="n">BatchDQEngine</span><span class="p">(</span><span class="n">check_set</span><span class="p">)</span><span class="o">.</span><span class="n">run_batch</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">result</span><span class="o">.</span><span class="n">pass_df</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">result</span><span class="o">.</span><span class="n">fail_df</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;_dq_errors&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+<p>Take the <code>check_set</code> from the <a href="../defining_checks/">previous step</a> and the
+<code>orders</code> DataFrame from the <a href="../introduction/">introduction</a>, and pass both to a
+<code>BatchDQEngine</code>. The engine evaluates every rule in a single pass and returns a
+<code>BatchValidationResult</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sparkdq.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchDQEngine</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">BatchDQEngine</span><span class="p">(</span><span class="n">check_set</span><span class="p">)</span><span class="o">.</span><span class="n">run_batch</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="what-happens-under-the-hood">What Happens Under the Hood<a class="headerlink" href="#what-happens-under-the-hood" title="Permanent link">&para;</a></h2>
-<p>When <code>run_batch()</code> is called, the engine:</p>
+<h2 id="what-the-engine-does">What the engine does<a class="headerlink" href="#what-the-engine-does" title="Permanent link">&para;</a></h2>
+<p>In a single pass, the engine:</p>
 <ul>
-<li>evaluates all row-level checks and marks failing rows individually</li>
-<li>evaluates all aggregate checks against the full DataFrame</li>
-<li>annotates every row with <code>_dq_passed</code>, <code>_dq_errors</code>, and <code>_dq_validation_ts</code></li>
-<li>returns a result object ready to be queried or routed</li>
+<li>applies each row-level check and flags failing rows individually,</li>
+<li>evaluates each aggregate check against the full DataFrame,</li>
+<li>annotates every row with <code>_dq_passed</code> and <code>_dq_errors</code>,</li>
+<li>returns a <code>BatchValidationResult</code> ready to be queried or routed.</li>
 </ul>
-<h2 id="working-with-the-result">Working with the Result<a class="headerlink" href="#working-with-the-result" title="Permanent link">&para;</a></h2>
+<h2 id="result-views">Result views<a class="headerlink" href="#result-views" title="Permanent link">&para;</a></h2>
+<p><code>BatchValidationResult</code> exposes filtered views over the annotated data:</p>
 <table>
 <thead>
 <tr>
-<th>Method</th>
-<th>Description</th>
+<th>View</th>
+<th>Returns</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>pass_df()</code></td>
-<td>Records that passed all critical checks</td>
+<td>Rows that passed every failure-level check (<code>CRITICAL</code> by default), original schema.</td>
 </tr>
 <tr>
 <td><code>fail_df()</code></td>
-<td>Records that failed at least one critical check</td>
+<td>Rows that failed at least one failure-level check, plus error metadata.</td>
 </tr>
 <tr>
 <td><code>warn_df()</code></td>
-<td>Passing records that triggered one or more warning-level violations</td>
+<td>Passing rows that carry at least one <code>WARNING</code>-level violation.</td>
 </tr>
 <tr>
 <td><code>summary()</code></td>
-<td>Structured summary with record counts, pass rate, and timestamp</td>
+<td>Counts, pass rate, and timestamp for the run.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="result-columns">Result Columns<a class="headerlink" href="#result-columns" title="Permanent link">&para;</a></h2>
-<p>SparkDQ automatically adds the following columns to your DataFrame:</p>
+<p>By default only <code>CRITICAL</code> checks cause a row to fail; <code>WARNING</code> checks are
+recorded without failing it. You can change which severities count as failures
+via the engine's <code>fail_levels</code> parameter.</p>
+<h2 id="reading-the-result">Reading the result<a class="headerlink" href="#reading-the-result" title="Permanent link">&para;</a></h2>
+<p><code>pass_df()</code> returns only the clean order, restored to its original schema:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">result</span><span class="o">.</span><span class="n">pass_df</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>+------+-----------------+--------+
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>|amount|customer_email   |order_id|
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>+------+-----------------+--------+
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>|42.0  |alice@example.com|1       |
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>+------+-----------------+--------+
+</span></code></pre></div>
+<p><code>fail_df()</code> returns the rows that failed a critical check, with <code>_dq_errors</code>
+listing every violation. Note the <code>WARNING</code>-level <code>min-volume</code> check appears here
+too, alongside the critical one that failed each row:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">result</span><span class="o">.</span><span class="n">fail_df</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;order_id&quot;</span><span class="p">,</span> <span class="s2">&quot;_dq_errors&quot;</span><span class="p">,</span> <span class="s2">&quot;_dq_passed&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>+--------+---------------------------------------------------------------------------------------+----------+
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>|order_id|_dq_errors                                                                             |_dq_passed|
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>+--------+---------------------------------------------------------------------------------------+----------+
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>|2       |[{NullCheck, email-required, critical}, {RowCountMinCheck, min-volume, warning}]       |false     |
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>|3       |[{NumericMinCheck, amount-positive, critical}, {RowCountMinCheck, min-volume, warning}]|false     |
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>+--------+---------------------------------------------------------------------------------------+----------+
+</span></code></pre></div>
+<p><code>warn_df()</code> surfaces rows that <em>passed</em> but still carry a warning — here the valid
+order, flagged only by the batch-level <code>min-volume</code> check:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">result</span><span class="o">.</span><span class="n">warn_df</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;order_id&quot;</span><span class="p">,</span> <span class="s2">&quot;_dq_errors&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>+--------+-----------------------------------------+
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>|order_id|_dq_errors                               |
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>+--------+-----------------------------------------+
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>|1       |[{RowCountMinCheck, min-volume, warning}]|
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>+--------+-----------------------------------------+
+</span></code></pre></div>
+<p><code>summary()</code> gives run-level statistics:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Validation Summary (2026-01-01 00:00:00)
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Total records:   3
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Passed records:  1
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Failed records:  2
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Warnings:        1
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>Pass rate:       33.00%
+</span></code></pre></div>
+<h2 id="metadata-columns">Metadata columns<a class="headerlink" href="#metadata-columns" title="Permanent link">&para;</a></h2>
+<p>The engine adds these columns to the DataFrame:</p>
 <table>
 <thead>
 <tr>
@@ -1453,18 +1934,19 @@
 <tbody>
 <tr>
 <td><code>_dq_passed</code></td>
-<td>Boolean flag — <code>true</code> if the row passed all critical checks</td>
+<td><code>true</code> if the row passed every failure-level check.</td>
 </tr>
 <tr>
 <td><code>_dq_errors</code></td>
-<td>Array of structured errors per failed check (check-id, name, severity)</td>
+<td>Array of <code>{check, check-id, severity}</code> structs for each violation (row- and aggregate-level).</td>
 </tr>
 <tr>
 <td><code>_dq_validation_ts</code></td>
-<td>Timestamp of the validation run</td>
+<td>Timestamp of the run (added by <code>fail_df()</code> / <code>warn_df()</code>).</td>
 </tr>
 </tbody>
 </table>
+<p>Next: <a href="../applying_validation/">act on the result</a> in your pipeline.</p>
 
 
 
@@ -1540,7 +2022,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2025 Marcel Kennert-Diaz
+      Copyright &copy; 2026 Marcel Kennert-Diaz
     </div>
   
   

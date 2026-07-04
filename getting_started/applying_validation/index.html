@@ -62,7 +62,7 @@
       
 
     
-    
+       
   </head>
   
   
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#integration-patterns" class="md-skip">
+        <a href="#acting-on-results" class="md-skip">
           Skip to content
         </a>
       
@@ -272,6 +272,26 @@
   
   
   Built-In Checks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Architecture
 
         </a>
       </li>
@@ -607,7 +627,7 @@
   <a href="#fail-fast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fail-Fast
+        Fail-fast
       
     </span>
   </a>
@@ -619,6 +639,17 @@
     <span class="md-ellipsis">
       
         Quarantine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#warnings-alongside-either-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warnings alongside either pattern
       
     </span>
   </a>
@@ -905,7 +936,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Architecture
   
 
     
@@ -918,6 +949,405 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/core_abstractions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Abstractions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/execution_flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/output_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Output Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Decisions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/design_decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/declarative_config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Declarative Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/plugin_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/row_vs_aggregate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Row vs. Aggregate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/observable_aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observable Aggregation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/dataframe_annotations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataFrame Annotations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1150,10 +1580,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -1171,8 +1601,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1331,7 +1761,7 @@
   <a href="#fail-fast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fail-Fast
+        Fail-fast
       
     </span>
   </a>
@@ -1343,6 +1773,17 @@
     <span class="md-ellipsis">
       
         Quarantine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#warnings-alongside-either-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Warnings alongside either pattern
       
     </span>
   </a>
@@ -1369,21 +1810,49 @@
   
 
 
-<h1 id="integration-patterns">Integration Patterns<a class="headerlink" href="#integration-patterns" title="Permanent link">&para;</a></h1>
-<p>After running the validation engine, you need to decide what to do with the results. The right approach depends on how much trust your downstream systems require and how you want to handle bad data.</p>
-<p>SparkDQ supports two common patterns: stopping the pipeline entirely when data quality is critical, or separating valid and invalid records so both can be handled independently. Both can be implemented with just a few lines of code.</p>
-<h2 id="fail-fast">Fail-Fast<a class="headerlink" href="#fail-fast" title="Permanent link">&para;</a></h2>
-<p>Stop the pipeline immediately if any critical check fails. No data is written downstream.</p>
+<h1 id="acting-on-results">Acting on Results<a class="headerlink" href="#acting-on-results" title="Permanent link">&para;</a></h1>
+<p>Once <code>run_batch</code> returns a <code>result</code>, you decide what happens next. The right
+pattern depends on how much trust downstream systems require and how you want to
+handle bad data. Two common approaches — fail-fast and quarantine — each take
+only a few lines, and both build on the <code>result</code> from the
+<a href="../validation_dataframes/">previous step</a>.</p>
+<h2 id="fail-fast">Fail-fast<a class="headerlink" href="#fail-fast" title="Permanent link">&para;</a></h2>
+<p>Stop the pipeline as soon as data quality drops, before anything is written
+downstream. <code>summary().all_passed</code> is <code>True</code> only when every row passed:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">all_passed</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Critical checks failed — stopping pipeline.&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Data quality checks failed — stopping pipeline.&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Use this when your downstream consumers require complete trust in the data, or when you operate in regulated domains where partial data is worse than no data.</p>
+<p>Use this when downstream consumers require complete trust in the data, or in
+regulated domains where partial data is worse than no data. In the <code>orders</code>
+scenario this raises, because two of three rows failed a critical check.</p>
 <h2 id="quarantine">Quarantine<a class="headerlink" href="#quarantine" title="Permanent link">&para;</a></h2>
-<p>Route valid and invalid records to separate destinations. Failing records are enriched with <code>_dq_errors</code>, <code>_dq_passed</code>, and <code>_dq_validation_ts</code> — giving you full context for debugging and monitoring.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">result</span><span class="o">.</span><span class="n">pass_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/trusted-zone&quot;</span><span class="p">)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">result</span><span class="o">.</span><span class="n">fail_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/quarantine-zone&quot;</span><span class="p">)</span>
+<p>Route valid and invalid records to separate destinations, so clean data flows on
+while bad records are preserved for inspection. Failing rows keep their
+<code>_dq_errors</code> metadata, giving you the full reason for each rejection:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">result</span><span class="o">.</span><span class="n">pass_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/trusted/orders&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">result</span><span class="o">.</span><span class="n">fail_df</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;/quarantine/orders&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Use this when you want clean data to flow forward uninterrupted while preserving invalid records for inspection, remediation, or alerting.</p>
+<p>Use this when clean data should flow forward uninterrupted while invalid records
+are set aside for remediation, alerting, or backfill.</p>
+<div class="admonition tip">
+<p class="admonition-title">Cache before deriving multiple views</p>
+<p>Each of <code>pass_df()</code>, <code>fail_df()</code>, <code>warn_df()</code>, and <code>summary()</code> triggers a
+Spark action over the validated data. If you use more than one, cache the
+result once to avoid recomputing the plan:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">result</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<h2 id="warnings-alongside-either-pattern">Warnings alongside either pattern<a class="headerlink" href="#warnings-alongside-either-pattern" title="Permanent link">&para;</a></h2>
+<p>Warnings never fail a row, so they compose with both patterns. Log them for
+monitoring while the pipeline continues:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">warn_count</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">warn_df</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">if</span> <span class="n">warn_count</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> record(s) passed with warnings&quot;</span><span class="p">,</span> <span class="n">warn_count</span><span class="p">)</span>
+</span></code></pre></div>
+<p>That completes the core workflow: <strong>define</strong> checks, <strong>collect</strong> them in a
+<code>CheckSet</code>, <strong>run</strong> the engine, and <strong>act</strong> on the result. From here, browse the
+<a href="../../built_in_checks/row_level/">built-in checks</a> or learn to write your own in
+<a href="../../custom_checks/overview/">Custom Checks</a>.</p>
 
 
 
@@ -1459,7 +1928,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2025 Marcel Kennert-Diaz
+      Copyright &copy; 2026 Marcel Kennert-Diaz
     </div>
   
   
