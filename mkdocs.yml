@@ -5,8 +5,12 @@ repo_url: https://github.com/sparkdq-community/sparkdq
 repo_name: sparkdq-community/sparkdq
 edit_uri: edit/main/docs/
 
+exclude_docs: |
+  overrides/
+
 theme:
   name: material
+  custom_dir: docs/overrides
   logo: assets/logo.svg
   favicon: assets/logo.svg
   palette:
