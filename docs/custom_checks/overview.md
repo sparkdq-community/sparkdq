@@ -43,7 +43,8 @@ Once registered, the check is available declaratively by name. The factory resol
 ```python
 from sparkdq.management import CheckSet
 
-check_set = CheckSet().add_checks_from_dicts([
+check_set = CheckSet()
+check_set.add_checks_from_dicts([
     {"check": "positive-value", "check-id": "positive-salary", "column": "salary"}
 ])
 ```

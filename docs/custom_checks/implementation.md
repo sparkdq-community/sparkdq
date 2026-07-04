@@ -56,7 +56,8 @@ class PositiveValueCheckConfig(BaseRowCheckConfig):
 === "Python"
 
     ```python
-    check_set = CheckSet().add_checks_from_dicts([
+    check_set = CheckSet()
+    check_set.add_checks_from_dicts([
         {"check": "positive-value", "check-id": "positive-salary", "column": "salary"}
     ])
     ```
@@ -113,7 +114,8 @@ class RowCountMinCheckConfig(BaseAggregateCheckConfig):
 === "Python"
 
     ```python
-    check_set = CheckSet().add_checks_from_dicts([
+    check_set = CheckSet()
+    check_set.add_checks_from_dicts([
         {"check": "custom-row-count-min", "check-id": "min-records", "min-count": 1000}
     ])
     ```
