@@ -1,17 +1,25 @@
+---
+wide: true
+---
+
 # Schema Check
 
-**Check**: `schema-check`
+**Check name**: `schema-check` · **Type**: aggregate · **Config**: `SchemaCheckConfig`
 
-**Purpose**: Validates that the DataFrame matches an expected schema in terms of column names and Spark data types. Optionally enforces strict matching to reject unexpected additional columns.
+Validates that the DataFrame matches an expected schema — the required columns
+are present with the expected Spark types, and (in strict mode) no unexpected
+columns exist. Use it as a full structural contract on an input.
 
-## Supported Data Types
+## Parameters
 
-The following Spark types are supported and must be specified as lowercase strings:
+| Parameter         | Type             | Required | Default    | Description                                                              |
+| ----------------- | ---------------- | -------- | ---------- | ------------------------------------------------------------------------ |
+| `check_id`        | `str`            | yes      | —          | Unique identifier for this check within the `CheckSet`.                  |
+| `expected_schema` | `dict[str, str]` | yes      | —          | Mapping of column name → Spark type string. YAML key: `expected-schema`. |
+| `strict`          | `bool`           | no       | `True`     | If `True`, extra columns not in the schema fail the check.               |
+| `severity`        | `Severity`       | no       | `CRITICAL` | `CRITICAL` fails the whole batch; `WARNING` only reports.                |
 
-`string`, `boolean`, `int`, `bigint`, `float`, `double`, `date`, `timestamp`, `binary`, `array`, `map`, `struct`, `decimal(precision, scale)` — e.g., `decimal(10,2)`
-
-!!! important
-For `decimal` types, both precision and scale must be specified inside parentheses. Formats such as `integer` or `decimal(10.2)` are not accepted.
+## Usage
 
 === "Python"
 
@@ -20,15 +28,10 @@ For `decimal` types, both precision and scale must be specified inside parenthes
     from sparkdq.core import Severity
 
     SchemaCheckConfig(
-        check_id="enforce-schema-contract",
-        expected_schema={
-            "id": "int",
-            "name": "string",
-            "amount": "decimal(10,2)",
-            "created_at": "timestamp"
-        },
+        check_id="input-schema",
+        expected_schema={"id": "bigint", "name": "string", "email": "string"},
         strict=True,
-        severity=Severity.CRITICAL
+        severity=Severity.CRITICAL,
     )
     ```
 
@@ -36,21 +39,95 @@ For `decimal` types, both precision and scale must be specified inside parenthes
 
     ```yaml
     - check: schema-check
-      check-id: enforce-schema-contract
+      check-id: input-schema
       expected-schema:
-        id: int
+        id: bigint
         name: string
-        amount: decimal(10,2)
-        created_at: timestamp
+        email: string
       strict: true
       severity: critical
     ```
 
-## Typical Use Cases
+## Behavior
 
-- Enforce schema contracts between ingestion, transformation, and consumption stages.
-- Detect missing, renamed, or type-changed columns introduced by upstream schema evolution.
-- Prevent silent data corruption caused by implicit type casting on incorrect column types.
+- **Three failure modes.** The check fails on any missing column, any type
+  mismatch, or — when `strict=True` — any unexpected extra column.
+- **Type strings are Spark types.** Use Spark SQL type names such as `bigint`,
+  `string`, `double`, `timestamp`. They must match the DataFrame's actual types
+  exactly.
+- **`strict` defaults to `True`.** Set `strict=False` to allow additional columns
+  beyond the expected schema.
+- **A critical failure fails the batch.** A failing `CRITICAL` aggregate marks
+  _every_ row `_dq_passed = False`. A `WARNING` failure is reported only.
+- **Result and metrics.** Available via `result.aggregate_results`; the `metrics`
+  dict reports `missing_columns`, `type_mismatches`, and `unexpected_columns`.
+
+## Example
+
+Expecting an `email` column that is absent, the check fails.
+
+=== "Python"
+
+    ```python
+    from pyspark.sql import SparkSession
+    from sparkdq.checks import SchemaCheckConfig
+    from sparkdq.engine import BatchDQEngine
+    from sparkdq.management import CheckSet
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.createDataFrame([{"id": 1, "name": "Alice"}])
+
+    check_set = CheckSet().add_check(
+        SchemaCheckConfig(
+            check_id="input-schema",
+            expected_schema={"id": "bigint", "name": "string", "email": "string"},
+        )
+    )
+    result = BatchDQEngine(check_set).run_batch(df)
+
+    for r in result.aggregate_results:
+        print(r.check_id, r.passed, r.metrics)
+    ```
+
+=== "YAML"
+
+    ```python
+    import yaml
+    from pyspark.sql import SparkSession
+    from sparkdq.engine import BatchDQEngine
+    from sparkdq.management import CheckSet
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.createDataFrame([{"id": 1, "name": "Alice"}])
+
+    with open("checks.yml") as f:
+        config = yaml.safe_load(f)
+
+    check_set = CheckSet()
+    check_set.add_checks_from_dicts(config)
+    result = BatchDQEngine(check_set).run_batch(df)
+
+    for r in result.aggregate_results:
+        print(r.check_id, r.passed, r.metrics)
+    ```
+
+The aggregate result breaks the failure down by category:
+
+```text
+input-schema False {'missing_columns': ['email'], 'type_mismatches': {}, 'unexpected_columns': []}
+```
+
+## Typical use cases
+
+- Enforce a full input contract (columns + types) before processing.
+- Detect schema drift such as renamed columns or changed types.
+- Reject unexpected extra columns in strict pipelines.
+
+## Related checks
+
+- [Column Presence Check](column_presence_check.md) — a lighter check for column existence only.
 
 ---
 
