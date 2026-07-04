@@ -81,10 +81,10 @@ config classes. `CheckSet` supports both a fluent and a classic style.
     ```
 
 !!! tip "Choosing severity and check IDs"
-Use `CRITICAL` for rules that must hold for a record to be usable, and
-`WARNING` for signals you want to monitor without failing the batch. Give
-each check a stable, descriptive `check_id` — it appears verbatim in
-`_dq_errors`, so `email-required` reads better in a report than `check_1`.
+    Use `CRITICAL` for rules that must hold for a record to be usable, and
+    `WARNING` for signals you want to monitor without failing the batch. Give
+    each check a stable, descriptive `check_id` — it appears verbatim in
+    `_dq_errors`, so `email-required` reads better in a report than `check_1`.
 
 ## Declarative (YAML / JSON)
 
@@ -111,8 +111,8 @@ as dictionaries — for example loaded from a YAML file:
 ```
 
 !!! note
-SparkDQ does not bundle `pyyaml` or any config parser. You load the config
-into a Python list of dicts; SparkDQ takes it from there.
+    SparkDQ does not bundle `pyyaml` or any config parser. You load the config
+    into a Python list of dicts; SparkDQ takes it from there.
 
 ```python
 import yaml

@@ -35,9 +35,9 @@ Use this when clean data should flow forward uninterrupted while invalid records
 are set aside for remediation, alerting, or backfill.
 
 !!! tip "Cache before deriving multiple views"
-Each of `pass_df()`, `fail_df()`, `warn_df()`, and `summary()` triggers a
-Spark action over the validated data. If you use more than one, cache the
-result once to avoid recomputing the plan:
+    Each of `pass_df()`, `fail_df()`, `warn_df()`, and `summary()` triggers a
+    Spark action over the validated data. If you use more than one, cache the
+    result once to avoid recomputing the plan:
 
     ```python
     result.df.cache()

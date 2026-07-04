@@ -95,7 +95,7 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x.
 Either way, `run_batch` produces the following summary:
 
 ```text
-Validation Summary (2024-01-01 00:00:00)
+Validation Summary (2026-01-01 00:00:00)
 Total records:   3
 Passed records:  2
 Failed records:  1
