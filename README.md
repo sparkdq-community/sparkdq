@@ -6,7 +6,9 @@
 
 # SparkDQ — Data Quality Validation for Apache Spark
 
-**SparkDQ** is a lightweight data quality framework built natively for PySpark — no JVM bridge like [PyDeequ](https://github.com/awslabs/python-deequ), no complexity overhead like [Great Expectations](https://github.com/great-expectations/great_expectations), and no platform lock-in like [Databricks dqx](https://github.com/databrickslabs/dqx). Define checks declaratively via YAML/JSON or through a type-safe Python API, validate at row and aggregate level in a single pass, and extend the framework via a plugin system without touching the core.
+**SparkDQ** is a lightweight data quality framework built natively for PySpark. You describe what valid data looks like — declaratively via YAML/JSON or through a type-safe Python API — and it validates your DataFrame at row and aggregate level in a single pass.
+
+Its defining trait is what it leaves out. SparkDQ is intentionally small in scope and low in complexity — a focused set of checks and a single-pass engine, with no metadata store, orchestration layer, or profiling engine to operate. For most pipelines, that is exactly enough, and the reduced complexity is a feature in itself. That focus is what sets it apart: no JVM bridge like [PyDeequ](https://github.com/awslabs/python-deequ), no complexity overhead like [Great Expectations](https://github.com/great-expectations/great_expectations), and no platform lock-in like [Databricks dqx](https://github.com/databrickslabs/dqx).
 
 **One dependency. No wrappers. No bloat.**
 
@@ -103,6 +105,8 @@ pip install sparkdq
 The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x. SparkDQ will automatically check for PySpark availability on import and provide clear error messages if PySpark is missing in your environment.
 
 ## Why SparkDQ?
+
+- **Small on purpose**: A focused scope and low complexity — quick to learn, hard to misconfigure, and enough for most pipelines
 
 - **Extensible by design**: Add custom checks via a simple plugin system — no changes to the core required
 

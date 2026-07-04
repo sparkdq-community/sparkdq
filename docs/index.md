@@ -6,7 +6,11 @@ hide:
 
 # SparkDQ — Data Quality Validation for Apache Spark
 
-**SparkDQ** is a lightweight data quality framework built natively for PySpark — no JVM bridge like [PyDeequ](https://github.com/awslabs/python-deequ), no complexity overhead like [Great Expectations](https://github.com/great-expectations/great_expectations), and no platform lock-in like [Databricks dqx](https://github.com/databrickslabs/dqx). Define checks declaratively via YAML/JSON or through a type-safe Python API, validate at row and aggregate level in a single pass, and extend the framework via a plugin system without touching the core.
+**SparkDQ** is a lightweight data quality framework built natively for PySpark. You describe what valid data looks like — declaratively via YAML/JSON or through a type-safe Python API — and it validates your DataFrame at row and aggregate level in a single pass, returning a structured result you can act on.
+
+Its defining trait is what it leaves out. SparkDQ is intentionally small in scope and low in complexity — a focused set of checks, a declarative config layer, and a single-pass engine, with no metadata store, orchestration layer, or profiling engine to operate. That is a deliberate design choice: fewer moving parts to learn, fewer ways to misconfigure, and a codebase you can understand in an afternoon. For the large majority of pipelines — enforcing a known set of rules and routing good and bad records accordingly — this is exactly enough. If you need automated profiling or a full data-quality platform with its own UI and storage, a heavier tool is the better fit; SparkDQ trades that breadth for clarity.
+
+That focus is what sets it apart from the alternatives: no JVM bridge like [PyDeequ](https://github.com/awslabs/python-deequ), no complexity overhead like [Great Expectations](https://github.com/great-expectations/great_expectations), and no platform lock-in like [Databricks dqx](https://github.com/databrickslabs/dqx). And when the built-in checks are not enough, you extend the framework via a plugin system without touching the core.
 
 ## Installation
 
@@ -32,6 +36,8 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x.
 
 === "Declarative"
 
+    Checks are plain dictionaries, so they can be loaded from anywhere — YAML or JSON files, a database, or an API:
+
     ```python
     from pyspark.sql import SparkSession
     from sparkdq.engine import BatchDQEngine
@@ -54,17 +60,11 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x.
 
     result = BatchDQEngine(check_set).run_batch(df)
     print(result.summary())
-    # Validation Summary (2024-01-01 00:00:00)
-    # Total records:   3
-    # Passed records:  2
-    # Failed records:  1
-    # Warnings:        0
-    # Pass rate:       67.00%
     ```
 
 === "Python-native"
 
-    Full type safety and IDE autocompletion:
+    Typed config classes give you full type safety, IDE autocompletion, and static analysis support:
 
     ```python
     from pyspark.sql import SparkSession
@@ -90,18 +90,24 @@ The framework supports Python 3.11+ and is fully tested with PySpark 3.5.x.
 
     result = BatchDQEngine(check_set).run_batch(df)
     print(result.summary())
-    # Validation Summary (2024-01-01 00:00:00)
-    # Total records:   3
-    # Passed records:  2
-    # Failed records:  1
-    # Warnings:        0
-    # Pass rate:       67.00%
     ```
 
-SparkDQ ships with 30+ built-in checks across null validation, numeric ranges, string patterns, date boundaries, schema enforcement, uniqueness, and referential integrity.
+Either way, `run_batch` produces the following summary:
+
+```text
+Validation Summary (2024-01-01 00:00:00)
+Total records:   3
+Passed records:  2
+Failed records:  1
+Warnings:        0
+Pass rate:       67.00%
+```
+
+SparkDQ ships with a library of over 30 built-in checks, spanning null and completeness validation, numeric and date range constraints, string pattern matching, schema enforcement, uniqueness, and referential integrity.
 
 ## Why SparkDQ?
 
+- **Small on purpose** — A focused scope and low complexity: quick to learn, hard to misconfigure, easy to maintain — and enough for most pipelines
 - **Extensible by design** — Add custom checks via a simple plugin system, no changes to the core required
 - **Declarative or Pythonic** — YAML/JSON configs or type-safe Python, your choice
 - **Severity-aware** — Distinguish between hard failures (`CRITICAL`) and soft constraints (`WARNING`)
