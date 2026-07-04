@@ -1,0 +1,4 @@
+# Prettier reformats MkDocs Material admonitions (`!!!`) by stripping the
+# 4-space body indentation they require, which breaks their rendering.
+# Exclude the docs so Material-specific Markdown is left intact.
+docs/
