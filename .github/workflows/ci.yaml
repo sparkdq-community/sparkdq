@@ -9,12 +9,18 @@ env:
   UV_LINK_MODE: "copy"
   UV_FROZEN: "1"
 
+# Least privilege by default; the release job elevates as needed.
 permissions:
-  contents: write
+  contents: read
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
-    name: "🔍 Code Linting"
+    name: "Lint"
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/astral-sh/uv:python3.13-trixie
@@ -35,23 +41,30 @@ jobs:
         run: uv run mypy .
 
   tests:
-    name: "🔍 Run Tests"
+    name: "Tests (py${{ matrix.python-version }})"
     needs: lint
-
     runs-on: ubuntu-latest
-    container:
-      image: jupyter/pyspark-notebook
-      options: --user root
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
-      - name: Install git and gpg (needed for checkout and codecov validation)
-        run: |
-          apt-get update && apt-get install -y git gpg
-
       - uses: actions/checkout@v4
 
-      - name: Install uv
-        run: pip install uv
+      # PySpark needs a JRE; pin it for reproducibility.
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
 
       - name: Install test dependencies
         run: uv sync --group test
@@ -59,16 +72,34 @@ jobs:
       - name: Run unit tests
         run: uv run pytest --cov -v --cov-report=term --cov-report=xml
 
+      # Upload coverage once, from the primary version.
       - name: Upload coverage reports to Codecov
+        if: matrix.python-version == '3.13'
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: sparkdq-community/sparkdq
 
+  docs:
+    name: "Documentation"
+    needs: lint
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:python3.13-trixie
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install docs dependencies
+        run: uv sync --group docs
+
+      - name: Build documentation (strict)
+        run: uv run mkdocs build --strict
+
   release:
-    name: "🚀 Publish Package"
+    name: "Release"
     if: github.ref == 'refs/heads/main'
-    needs: tests
+    needs: [tests, docs]
 
     runs-on: ubuntu-latest
     container:
@@ -109,13 +140,16 @@ jobs:
           uv publish
 
   pages:
-    name: "🚀 Publish Documentation to GitHub Pages"
+    name: "Deploy Docs"
     if: github.ref == 'refs/heads/main'
     needs: release
 
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/astral-sh/uv:python3.13-trixie
+
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
