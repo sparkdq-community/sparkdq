@@ -86,7 +86,7 @@ extra:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/sparkdq/
 
-copyright: Copyright &copy; 2025 Marcel Kennert-Diaz
+copyright: Copyright &copy; 2026 Marcel Kennert-Diaz
 
 nav:
   - Introduction: index.md
@@ -98,6 +98,9 @@ nav:
       - Custom Checks:
           - Overview: custom_checks/overview.md
           - Implementation: custom_checks/implementation.md
+  - Built-In Checks:
+      - Row-Level Checks: built_in_checks/row_level.md
+      - Aggregate Checks: built_in_checks/aggregate.md
   - Architecture:
       - Overview: architecture/overview.md
       - Core Abstractions: architecture/core_abstractions.md
@@ -110,9 +113,6 @@ nav:
           - Row vs. Aggregate: architecture/decisions/row_vs_aggregate.md
           - Observable Aggregation: architecture/decisions/observable_aggregation.md
           - DataFrame Annotations: architecture/decisions/dataframe_annotations.md
-  - Built-In Checks:
-      - Row-Level Checks: built_in_checks/row_level.md
-      - Aggregate Checks: built_in_checks/aggregate.md
   - API Reference:
       - Overview: api/index.md
       - sparkdq.checks: api/checks.md
