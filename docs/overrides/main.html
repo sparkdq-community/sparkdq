@@ -1,0 +1,13 @@
+{% extends "base.html" %} {# Opt-in wider content grid for individual pages. A
+page enables it by setting `wide: true` in its front matter. The rule is
+injected only on those pages, so the default width is untouched everywhere else.
+#} {% block extrahead %} {{ super() }} {% if page and page.meta and
+page.meta.wide %}
+<style>
+  @media screen and (min-width: 76.25em) {
+    .md-grid {
+      max-width: 76rem;
+    }
+  }
+</style>
+{% endif %} {% endblock %}
